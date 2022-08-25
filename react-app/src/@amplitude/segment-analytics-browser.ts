@@ -1,5 +1,5 @@
 import { AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
-import { IAnalytics, Event } from "./analytics-browser";
+import { IAnalytics, Event } from "./analytics/browser";
 
 export class SegmentAnalytics extends AmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = "ANALYTICS";

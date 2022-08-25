@@ -1,6 +1,6 @@
 import { Amplitude as AmplitudeCore } from "../@amplitude/amplitude-browser";
 import { User as UserCore } from "../@amplitude/user-browser";
-import { Analytics as AnalyticsCore, Event } from "../@amplitude/analytics-browser";
+import { Analytics as AnalyticsCore, Event } from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentCore } from "../@amplitude/experiment-browser";
 import { AmplitudeLoadOptions } from "../@amplitude/amplitude-browser/client";
 

@@ -1,7 +1,7 @@
 // For untyped usage
 import { amplitude, AmplitudePluginBase, AmplitudePluginCategory } from '../@amplitude/amplitude-browser'
 import { user } from '../@amplitude/user-browser'
-import { analytics } from '../@amplitude/analytics-browser'
+import { analytics } from '../@amplitude/analytics/browser'
 import { analytics as segmentAnalytics } from '../@amplitude/segment-analytics-browser'
 import { experiment } from '../@amplitude/experiment-browser'
 

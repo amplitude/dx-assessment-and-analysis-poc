@@ -2,7 +2,9 @@ import { Amplitude as AmplitudeCore } from "../@amplitude/amplitude/browser";
 import { Analytics as AnalyticsCore, Event } from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentCore } from "../@amplitude/experiment-browser";
 import { AmplitudeLoadOptions } from "../@amplitude/amplitude/browser/client";
-import { Typed, User, user } from "./core";
+import { AMultiVariateExperiment, Typed, User, user, VariantMethods } from "./core";
+
+export { User, user };
 
 /**
  * AMPLITUDE
@@ -56,13 +58,6 @@ export const analytics = new Analytics();
 /**
  * EXPERIMENT
  */
-type AMultiVariateExperiment = { control?: any, treatment?: any };
-
-interface VariantMethods {
-  flagCodegenEnabled(): boolean;
-  aMultiVariateExperiment(): AMultiVariateExperiment
-}
-
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
 export class Experiment extends ExperimentCore implements Typed<VariantMethods> {

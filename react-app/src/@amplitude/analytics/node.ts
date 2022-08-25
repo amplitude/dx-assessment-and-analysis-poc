@@ -13,7 +13,7 @@ export interface IAnalytics extends AmplitudePlugin {
   user(user: IUser): IAnalyticsClient;
 }
 
-class AnalyticsClient implements IAnalyticsClient {
+export class AnalyticsClient implements IAnalyticsClient {
   constructor(
     protected user: IUser,
     protected config: Config,

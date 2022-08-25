@@ -1,5 +1,5 @@
 // For strongly typed usage
-import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
+import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',

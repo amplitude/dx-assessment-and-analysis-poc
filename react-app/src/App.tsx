@@ -3,9 +3,10 @@ import logo from './logo.svg';
 import './App.css';
 
 // import './usage/coreSdkUsage';
-import './usage/coreToWrapperSdkUsage';
 // import './usage/generatedSdkUsage';
+// import './usage/coreToWrapperSdkUsage';
 // import './usage/productPlugins';
+import './usage/multitenantUser';
 
 function App() {
   return (

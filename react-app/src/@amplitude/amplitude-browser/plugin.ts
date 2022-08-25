@@ -1,6 +1,9 @@
 import { Config } from "./config";
+import { User } from "../user-browser";
 
-export interface PluginConfig extends Config {}
+export interface PluginConfig extends Config {
+  user: User,
+}
 
 export type AmplitudePluginCategory = 'ANALYTICS' | 'EXPERIMENT' | 'USER' | 'CUSTOM';
 

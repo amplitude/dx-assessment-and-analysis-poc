@@ -2,10 +2,11 @@ import { User, user as defaultUser} from "../user-browser";
 import { AmplitudePlugin, PluginConfig, Timeline } from "./plugin";
 import { AtLeast } from "../../util";
 import { Logger, systemLogger } from "./logger";
+import { Config } from "./config";
 
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 
-export interface AmplitudeConfig extends PluginConfig {
+export interface AmplitudeConfig extends Config {
   plugins?: AmplitudePlugin[];
 }
 
@@ -30,7 +31,7 @@ export class Amplitude {
       ...config
     };
     this._config.plugins?.forEach(plugin => {
-      this.timeline.add(plugin, this.config)
+      this.timeline.add(plugin, this.getPluginConfig())
     })
   }
 
@@ -40,13 +41,15 @@ export class Amplitude {
 
   addPlugin(plugin: AmplitudePlugin) {
     if (this.assertIsInitialized()) {
-      this.timeline.add(plugin, this.config);
+      this.timeline.add(plugin, this.getPluginConfig());
     }
   }
 
   isLoaded = () => !!this._config;
 
-  protected get config() { return this._config! };
+  protected get config() {
+    return this._config!
+  };
 
   private assertIsInitialized(): boolean {
     if (this.isLoaded()) {
@@ -56,6 +59,11 @@ export class Amplitude {
 
     return false;
   }
+
+  private getPluginConfig = (): PluginConfig => ({
+    ...this.config,
+    user: this._user,
+  });
 }
 
 export const amplitude = new Amplitude();

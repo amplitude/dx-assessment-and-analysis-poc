@@ -1,8 +1,8 @@
-import { User, user as defaultUser} from "../user-browser";
+import { User, user as defaultUser } from "../../user-browser";
 import { AmplitudePlugin, PluginConfig, Timeline } from "./plugin";
-import { AtLeast } from "../../util";
-import { Logger, systemLogger } from "./logger";
-import { Config } from "./config";
+import { AtLeast } from "../../../util";
+import { Logger, systemLogger } from "../core/logger";
+import { Config } from "../core/config";
 
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 

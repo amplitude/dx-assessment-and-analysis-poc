@@ -1,4 +1,4 @@
-import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
+import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude/browser";
 import { User } from "./user-browser";
 
 export interface IExperiment extends AmplitudePlugin {

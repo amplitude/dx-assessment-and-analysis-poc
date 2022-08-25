@@ -1,5 +1,5 @@
-import { Config } from "./config";
-import { User } from "../user-browser";
+import { Config } from "../core/config";
+import { User } from "../../user-browser";
 
 export interface PluginConfig extends Config {
   user: User,

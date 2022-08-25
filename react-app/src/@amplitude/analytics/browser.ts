@@ -1,5 +1,5 @@
 import { Event } from "./core";
-import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude-browser";
+import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/browser";
 import { jsons } from "../../util";
 
 export type { Event };

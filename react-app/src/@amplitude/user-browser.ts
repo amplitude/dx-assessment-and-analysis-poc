@@ -1,4 +1,4 @@
-import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
+import { AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
 
 export interface IUser {
   get userId(): string | undefined;

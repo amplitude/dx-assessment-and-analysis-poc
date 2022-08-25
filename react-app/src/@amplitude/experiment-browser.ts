@@ -1,15 +1,25 @@
-import { AmplitudePlugin, AmplitudePluginBase } from "./amplitude-browser";
+import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
 
 export interface IExperiment extends AmplitudePlugin {
-  fetch(): Promise<boolean>;
+  fetch(): void; //: Promise<boolean>;
   variant(key: string): boolean;
 }
 
 export class Experiment extends AmplitudePluginBase implements IExperiment {
-  fetch = () => Promise<boolean>.resolve(true);
+  category: AmplitudePluginCategory = 'EXPERIMENT';
+
+  fetch = () => {
+    this.config.logger.log(`[Experiment.fetch]`)
+    // FIXME: Use current Amplitude user
+    // this.config.user.id
+
+    // return Promise<boolean>.resolve(true);
+  }
 
   variant(key: string): boolean {
-    return true;
+    this.config.logger.log(`[Experiment.variant] ${key}`)
+
+    return key === 'flag-codegen-enabled';
   }
 }
 

@@ -1,4 +1,4 @@
-import { AmplitudePlugin, AmplitudePluginBase } from "./amplitude-browser";
+import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "./amplitude-browser";
 
 export interface IUser {
   setUserId(userId: string): void;
@@ -7,6 +7,8 @@ export interface IUser {
 }
 
 export class User extends AmplitudePluginBase implements IUser {
+  category: AmplitudePluginCategory = 'USER';
+
   setUserId(userId: string) {}
   setDeviceId(userId: string) {}
   setUserProperties(userProperties: Record<string, any>) {}

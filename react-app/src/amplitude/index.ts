@@ -1,7 +1,8 @@
-import { amplitude } from "../@amplitude/amplitude-browser";
+import { Amplitude as AmplitudeCore } from "../@amplitude/amplitude-browser";
 import { User as UserCore } from "../@amplitude/user-browser";
 import { Analytics as AnalyticsCore, Event } from "../@amplitude/analytics-browser";
 import { Experiment as ExperimentCore } from "../@amplitude/experiment-browser";
+import { AmplitudeLoadOptions } from "../@amplitude/amplitude-browser/client";
 
 /**
  * GENERAL INTERFACES
@@ -10,15 +11,11 @@ export interface Typed<T> {
   get data(): T;
 }
 
-export {
-  amplitude,
-};
-
 /**
  * USER
  */
 interface UserProperties {
-  requiredProp: string;
+  requiredProp: 'strongly typed';
 }
 interface TypedUserMethods{
   setUserProperties(properties: UserProperties): void;
@@ -34,6 +31,27 @@ export class User extends UserCore implements Typed<TypedUserMethods> {
 }
 
 export const user = new User();
+
+/**
+ * AMPLITUDE
+ */
+export class Amplitude extends AmplitudeCore {
+  constructor() {
+    super(user)
+  }
+
+  load(config: AmplitudeLoadOptions) {
+    super.load(config);
+    this.addPlugin(analytics);
+    this.addPlugin(experiment);
+  }
+
+  get user(): User {
+    return this._user as User;
+  }
+}
+
+export const amplitude = new Amplitude();
 
 /**
  * ANALYTICS

@@ -2,6 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+// import './usage/coreSdkUsage';
+import './usage/coreToWrapperSdkUsage';
+// import './usage/generatedSdkUsage';
+// import './usage/productPlugins';
 
 function App() {
   return (
@@ -17,4 +21,3 @@ function App() {
 }
 
 export default App;
-

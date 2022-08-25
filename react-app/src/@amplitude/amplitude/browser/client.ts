@@ -1,8 +1,9 @@
+import { BrowserPluginConfig } from "./plugin";
 import { User, user as defaultUser } from "../../user-browser";
-import { AmplitudePlugin, PluginConfig, Timeline } from "./plugin";
-import { AtLeast } from "../../../util";
-import { Logger, systemLogger } from "../core/logger";
 import { Config } from "../core/config";
+import { Logger, systemLogger } from "../core/logger";
+import { AmplitudePlugin, Timeline } from "../core/plugin";
+import { AtLeast } from "../../../util";
 
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 
@@ -60,7 +61,7 @@ export class Amplitude {
     return false;
   }
 
-  private getPluginConfig = (): PluginConfig => ({
+  private getPluginConfig = (): BrowserPluginConfig => ({
     ...this.config,
     user: this._user,
   });

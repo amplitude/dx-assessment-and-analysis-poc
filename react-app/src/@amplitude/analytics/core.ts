@@ -7,3 +7,9 @@ export interface Event extends EventOptions {
   event_type: string;
   event_properties?: Record<string, any>;
 }
+
+export interface IAnalyticsClient {
+  track(eventType: string, eventProperties?: Record<string, any>): void;
+  track(event: Event): void;
+  flush(): void;
+}

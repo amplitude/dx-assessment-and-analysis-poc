@@ -1,16 +1,14 @@
-import { Event } from "./core";
+import { Event, IAnalyticsClient } from "./core";
 import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/browser";
 import { jsons } from "../../util";
+import { BrowserAmplitudePluginBase } from "../amplitude/browser/plugin";
 
 export type { Event };
 
-export interface IAnalytics extends AmplitudePlugin {
-  track(eventType: string, eventProperties?: Record<string, any>): void;
-  track(event: Event): void;
-  flush(): void;
+export interface IAnalytics extends AmplitudePlugin, IAnalyticsClient {
 }
 
-export class Analytics extends AmplitudePluginBase implements IAnalytics {
+export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = 'ANALYTICS';
 
   track(eventType: string | Event, eventProperties?: Record<string, any>) {

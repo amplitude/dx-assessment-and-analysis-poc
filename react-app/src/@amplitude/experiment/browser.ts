@@ -1,11 +1,9 @@
-import { AmplitudePlugin, AmplitudePluginCategory } from "./amplitude/browser";
-import { User } from "./user-browser";
-import { BrowserAmplitudePluginBase } from "./amplitude/browser/plugin";
+import { AmplitudePlugin, AmplitudePluginCategory } from "../amplitude/browser";
+import { User } from "../user-browser";
+import { BrowserAmplitudePluginBase } from "../amplitude/browser/plugin";
+import { IExperimentClient } from "./core";
 
-export interface IExperiment extends AmplitudePlugin {
-  fetch(): void;
-  variant(key: string): boolean;
-}
+export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 
 export class Experiment extends BrowserAmplitudePluginBase implements IExperiment {
   category: AmplitudePluginCategory = 'EXPERIMENT';

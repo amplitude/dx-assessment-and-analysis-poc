@@ -1,23 +1,37 @@
-import { amplitude, user, analytics, UserLoggedIn } from '../amplitude/node'
+import { amplitude, User, analytics, experiment, UserLoggedIn } from '../amplitude/node'
 
 // ====== Untyped Types =======
 amplitude.load({
   apiKey: 'a-key',
 })
 
-amplitude.user.setUserId('u-id')
+//  1. Track with `userId`
+analytics.userId('node-user').track(new UserLoggedIn());
 
-// set untyped user properties
-user.setUserProperties({
-  requiredProp: "untyped"
-});
+//  2. Track with `userId`
+analytics.deviceId('node-device').data.userSignedUp();
 
-analytics.userId('node-user').track('My Event');
+// 3. Track with `userProperties`
+const user = new User('node-user-2');
+user.data.setUserProperties({
+  requiredProp: 'strongly typed'
+})
+experiment.user(user).data.flagCodegenEnabled();
 
-analytics.userId('id').data.userSignedUp();
-
-// analytics.user().track(UserLoggedIn);
-// single user, multi-tenant is tbd
+// 4. Create RequestScoped client
+type Middleware = (req: any, res: any, next: () => void) => any;
+const app = { // express()
+  use: (middleware: Middleware) => {}
+};
+app.use((req, res, next) => {
+  const userId = req.params.id;
+  req.analytics =  analytics.userId(userId);
+  req.experiment =  experiment.userId(userId);
+  next()
+})
+app.use((req) => {
+  req.analytics.data.userSignedUp();
+})
 
 // amplitude.track({
 //   event_type: 'My Event',
@@ -26,34 +40,17 @@ analytics.userId('id').data.userSignedUp();
 // amplitude.track('My Event', undefined, {
 //   user_id: 'id'
 // })
-//
-// analytics.associate(user.id, new MyEvent())
-// analytics.associate(user.id).track(new MyEvent())
-//
-// analytics.user('id').myEvent();
-//
+// analytics.userId('id').myEvent();
+
 // amplitude(user).getPlugin('analytics');
-//
-// amplitude.getPlugin('analytics');
-//
+
 // analytics(user).myEvent();
-// experiment(user).
-//
-// analytics.data.myEvent('user-id', new MyEvent({
-//   prop1: true,
-//   user_id__: '',
-// }));
-//
-// analytics.data.myEvent(new MyEvent({
+
+// analytics.data.myEvent(userId, new MyEvent({
 //   prop1: true
 // }), {
-//   user_id: 'id'
+//   user_id: 'id',
+//   device_id: ''
 // });
-//
 
 // analytics.track(User.setUserId('u-id').setUserProperties(), new UserLoggedIn());
-
-// set untyped user properties
-// user.setUserProperties({
-//   requiredProp: "untyped"
-// });

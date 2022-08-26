@@ -1,67 +1,20 @@
 import { BrowserPluginConfig } from "./plugin";
 import { User, user as defaultUser } from "../../user-browser";
-import { Config } from "../core/config";
-import { Logger, systemLogger } from "../core/logger";
-import { AmplitudePlugin, Timeline } from "../core/plugin";
-import { AtLeast } from "../../../util";
+import { Amplitude as AmplitudeCore} from "../core/client";
 
-export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
-
-export interface AmplitudeConfig extends Config {
-  plugins?: AmplitudePlugin[];
-}
-
-export const getDefaultAmplitudeConfig = (): Omit<AmplitudeConfig, 'apiKey'> => ({
-  logger: new Logger(),
-});
-
-export class Amplitude {
+export class Amplitude extends AmplitudeCore {
   protected _user = defaultUser;
 
-  private _config: AmplitudeConfig | undefined;
-  private timeline: Timeline;
-
   constructor(user = defaultUser) {
-    this.timeline = new Timeline();
+    super();
     this._user = user;
-  }
-
-  load(config: AtLeast<AmplitudeConfig, 'apiKey'>) {
-    this._config = {
-      ...getDefaultAmplitudeConfig(),
-      ...config
-    };
-    this._config.plugins?.forEach(plugin => {
-      this.timeline.add(plugin, this.getPluginConfig())
-    })
   }
 
   get user(): User {
     return this._user;
   }
 
-  addPlugin(plugin: AmplitudePlugin) {
-    if (this.assertIsInitialized()) {
-      this.timeline.add(plugin, this.getPluginConfig());
-    }
-  }
-
-  isLoaded = () => !!this._config;
-
-  protected get config() {
-    return this._config!
-  };
-
-  private assertIsInitialized(): boolean {
-    if (this.isLoaded()) {
-      return true;
-    }
-    systemLogger.log('Amplitude is not yet initialized');
-
-    return false;
-  }
-
-  private getPluginConfig = (): BrowserPluginConfig => ({
+  protected getPluginConfig = (): BrowserPluginConfig => ({
     ...this.config,
     user: this._user,
   });

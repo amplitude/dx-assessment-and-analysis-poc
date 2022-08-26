@@ -3,7 +3,7 @@ import { amplitude, AmplitudePluginBase, AmplitudePluginCategory } from '../@amp
 import { user } from '../@amplitude/user-browser'
 import { analytics } from '../@amplitude/analytics/browser'
 import { analytics as segmentAnalytics } from '../@amplitude/segment-analytics-browser'
-import { experiment } from '../@amplitude/experiment-browser'
+import { experiment } from '../@amplitude/experiment/browser'
 
 // 1. Register plugins with Amplitude
 amplitude.load({

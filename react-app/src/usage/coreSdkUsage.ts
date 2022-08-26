@@ -5,7 +5,7 @@
 import { amplitude } from '../@amplitude/amplitude/browser'
 import { user } from '../@amplitude/user-browser'
 import { analytics } from '../@amplitude/analytics/browser'
-import { experiment } from '../@amplitude/experiment-browser'
+import { experiment } from '../@amplitude/experiment/browser'
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',

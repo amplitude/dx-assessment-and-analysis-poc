@@ -4,14 +4,11 @@ import { jsons } from "../../util";
 import { IUser } from "../amplitude/core/user";
 import { Config } from "../amplitude/core/config";
 import { User } from "../../amplitude/core";
+import { UserClient } from "../amplitude/node/client";
 
 export type { Event };
 
-export interface IAnalytics extends AmplitudePlugin {
-  userId(userId: string): IAnalyticsClient;
-  deviceId(deviceId: string): IAnalyticsClient;
-  user(user: IUser): IAnalyticsClient;
-}
+export interface IAnalytics extends AmplitudePlugin, UserClient<IAnalyticsClient> {}
 
 export class AnalyticsClient implements IAnalyticsClient {
   constructor(

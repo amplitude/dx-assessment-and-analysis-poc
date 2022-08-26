@@ -14,15 +14,18 @@ export interface Typed<T> {
 interface UserProperties {
   requiredProp: 'strongly typed';
 }
-interface TypedUserMethods{
-  setUserProperties(properties: UserProperties): void;
+interface TypedUserMethods {
+  setUserProperties(properties: UserProperties): TypedUserMethods;
 }
 
 export class User extends UserCore implements Typed<TypedUserMethods> {
   get data(): TypedUserMethods {
     const core = this;
     return {
-      setUserProperties(properties) { core.setUserProperties(properties) },
+      setUserProperties(properties) {
+        core.setUserProperties(properties);
+        return this;
+      },
     };
   }
 }

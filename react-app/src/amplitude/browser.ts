@@ -1,7 +1,7 @@
-import { Amplitude as AmplitudeCore } from "../@amplitude/amplitude/browser";
-import { Analytics as AnalyticsCore, Event } from "../@amplitude/analytics/browser";
-import { Experiment as ExperimentCore } from "../@amplitude/experiment-browser";
-import { AmplitudeLoadOptions } from "../@amplitude/amplitude/browser/client";
+import { Amplitude as AmplitudeBrowser } from "../@amplitude/amplitude/browser";
+import { Analytics as AnalyticsBrowser, Event } from "../@amplitude/analytics/browser";
+import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
+import { AmplitudeLoadOptions } from "../@amplitude/amplitude/core/client";
 import { AMultiVariateExperiment, Typed, User, user, VariantMethods } from "./core";
 
 export { User, user };
@@ -9,7 +9,7 @@ export { User, user };
 /**
  * AMPLITUDE
  */
-export class Amplitude extends AmplitudeCore {
+export class Amplitude extends AmplitudeBrowser {
   constructor() {
     super(user)
   }
@@ -41,7 +41,7 @@ interface TrackingPlanMethods{
   checkout(): void;
 }
 
-export class Analytics extends AnalyticsCore implements Typed<TrackingPlanMethods> {
+export class Analytics extends AnalyticsBrowser implements Typed<TrackingPlanMethods> {
   get data() {
     const core = this;
     return {
@@ -60,7 +60,7 @@ export const analytics = new Analytics();
  */
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
-export class Experiment extends ExperimentCore implements Typed<VariantMethods> {
+export class Experiment extends ExperimentBrowser implements Typed<VariantMethods> {
   get data() {
     const core = this;
     return {

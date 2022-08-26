@@ -1,43 +1,42 @@
-import { Amplitude as AmplitudeCore } from "../@amplitude/amplitude/browser";
-import { Analytics as AnalyticsCore, AnalyticsClient as AnalyticsClientCore, Event } from "../@amplitude/analytics/node";
-// import { Experiment as ExperimentCore } from "../@amplitude/experiment-browser";
-import { AmplitudeLoadOptions } from "../@amplitude/amplitude/browser/client";
-import { TrackingPlanMethods, User, user, UserLoggedIn, } from "./core";
+import { Amplitude as AmplitudeNode } from "../@amplitude/amplitude/node";
+import { Analytics as AnalyticsNode, AnalyticsClient as AnalyticsClientNode } from "../@amplitude/analytics/node";
+import { Experiment as ExperimentNode, ExperimentClient as ExperimentClientNode } from "../@amplitude/experiment/node";
+import { AmplitudeLoadOptions } from "../@amplitude/amplitude/core/client";
+import { AMultiVariateExperiment, TrackingPlanMethods, Typed, User, UserLoggedIn, VariantMethods, } from "./core";
 import { IUser } from "../@amplitude/amplitude/core/user";
 
-export { User, user, UserLoggedIn };
+export { User, UserLoggedIn };
 export type { TrackingPlanMethods } from './core';
 
 /**
  * AMPLITUDE
  */
-export class Amplitude extends AmplitudeCore {
-  constructor() {
-    super(user)
-  }
-
+export class Amplitude extends AmplitudeNode {
   load(config: AmplitudeLoadOptions) {
     super.load(config);
     this.addPlugin(analytics);
-    // this.addPlugin(experiment);
+    this.addPlugin(experiment);
   }
 }
 
 export const amplitude = new Amplitude();
 
-export class AnalyticsClient extends AnalyticsClientCore {
+/**
+ * ANALYTICS
+ */
+export class AnalyticsClient extends AnalyticsClientNode {
   get data() {
     const core = this;
     return {
       userSignedUp() { core.track('User Signed Up') },
-      userLoggedIn() { core.track('User Logged In') },
+      userLoggedIn() { core.track(new UserLoggedIn()) },
       addToCart() { core.track('Add To Cart') },
       checkout() { core.track('Checkout') },
     };
   }
 }
 
-export class Analytics extends AnalyticsCore {
+export class Analytics extends AnalyticsNode {
   user(user: IUser): AnalyticsClient {
     return new AnalyticsClient(user, this.config);
   }
@@ -59,14 +58,28 @@ export const analytics = new Analytics();
 
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
-// export class Experiment extends ExperimentCore implements Typed<VariantMethods> {
-//   get data() {
-//     const core = this;
-//     return {
-//       flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
-//       aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
-//     };
-//   }
-// }
-//
-// export const experiment = new Experiment();
+export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
+  get data() {
+    const core = this;
+    return {
+      flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
+      aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
+    };
+  }
+}
+
+export class Experiment extends ExperimentNode {
+  user(user: IUser): ExperimentClient {
+    return new ExperimentClient(user, this.config);
+  }
+
+  userId(userId: string): ExperimentClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): ExperimentClient {
+    return this.user(new User(undefined, deviceId));
+  }
+}
+
+export const experiment = new Experiment();

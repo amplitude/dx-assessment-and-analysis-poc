@@ -8,7 +8,7 @@ amplitude.load({
 //  1. Track with `userId`
 analytics.userId('node-user').track(new UserLoggedIn());
 
-//  2. Track with `userId`
+//  2. Track with `deviceId`
 analytics.deviceId('node-device').data.userSignedUp();
 
 // 3. Track with `userProperties`

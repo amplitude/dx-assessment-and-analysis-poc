@@ -2,4 +2,4 @@
 POC displaying improvement SDK architecture
 
 # Examples
-* [react-app](./react-app/README.md) - TypeScript example of both Browser and Node
+* [react-app](./react-app/) - TypeScript example of both Browser and Node

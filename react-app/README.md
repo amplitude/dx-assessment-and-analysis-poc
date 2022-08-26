@@ -4,10 +4,12 @@
 This POC demonstrates a new architecture for our SDKs.
 
 ## Key improvements:
-* Products as Plugins
-  * Centralized configuration, logging
-  * Product interfaces allow for easy extension
+* Unified interface for all products
+* Typed SDKs for all products
 * Easy migration from static SDK to generated typed SDKs
+* Products as Plugins
+  * Centralized configuration, logging, privacy, user
+  * Product interfaces allow for easy extension
 * Improved user management
   * Centralized across products
   * Improved server interfaces (multitenant)

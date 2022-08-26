@@ -13,7 +13,7 @@ import { experiment } from '../@amplitude/experiment/browser'
  *
  * Migrating to the [Typed] SDK is as easy as changing your imports to the following
  */
-// import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
+// import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
 
 /**
  * Load is similar for [Untyped] and [Typed]

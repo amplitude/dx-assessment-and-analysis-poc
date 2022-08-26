@@ -42,6 +42,4 @@ if (experiment.data.flagCodegenEnabled()) {
    */
   analytics.data.userLoggedIn();
   analytics.track(new UserLoggedIn());
-} else {
-  analytics.track('My Event')
 }

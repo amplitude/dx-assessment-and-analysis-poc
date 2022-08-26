@@ -2,11 +2,16 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-// import './usage/coreSdkUsage';
-// import './usage/generatedSdkUsage';
-// import './usage/coreToWrapperSdkUsage';
+/**
+ * Usage Examples
+ *
+ * Uncomment the individual usages to see output in console
+ */
+import './usage/coreSdkUsage';
+// import './usage/typedSdkUsage';
+// import './usage/coreToTypedSdkUsage';
 // import './usage/productPlugins';
-import './usage/multitenantUser';
+// import './usage/multiTenantUser';
 
 function App() {
   return (

@@ -16,7 +16,7 @@
  * For the `deviceId` and other less common fields users could include an additional `options` object.
  *   `ampli.track(undefined, event, { device_id: 'device', timestamp: '123' })`
  *
- * However this creates a different from single tenant SDKs like the browser which doesn't require a userId.
+ * This creates a different interface from single-tenant SDKs like the Browser which doesn't require a `userId`.
  *   `ampli.track(event, options)`
  *
  * To resolve this friction the new server SDK is a ProductClient factory, which produces the same client interface
@@ -50,7 +50,7 @@ const user = new User('node-user-2');
 user.data.setUserProperties({
   requiredProp: 'strongly typed'
 })
-experiment.user(user).data.flagCodegenEnabled();
+analytics.user(user).data.checkout();
 
 /**
  * 4. Create Request scoped clients

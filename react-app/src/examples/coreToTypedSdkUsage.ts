@@ -1,5 +1,7 @@
 /**
  * [Untyped] Imports
+ *
+ * These imports of the static core SDKs provide standard "untyped" usage
  */
 import { amplitude } from '../@amplitude/amplitude/browser'
 import { user } from '../@amplitude/user-browser'
@@ -9,12 +11,12 @@ import { experiment } from '../@amplitude/experiment/browser'
 /**
  * [Typed] Imports
  *
- * Migrating to the Typed SDK is as easy as changing your imports
+ * Migrating to the [Typed] SDK is as easy as changing your imports to the following
  */
 // import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
 
 /**
- * Load [Untyped] and [Typed]
+ * Load is similar for [Untyped] and [Typed]
  */
 amplitude.load({
   apiKey: 'scoped-source-write-key',
@@ -62,6 +64,4 @@ if (experiment.variant('flag-codegen-on')) {
 // if (experiment.data.flagCodegenEnabled()) {
 //   analytics.data.userLoggedIn();
 //   analytics.track(new UserLoggedIn());
-// } else {
-//   analytics.track('My Event')
 // }

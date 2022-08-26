@@ -3,9 +3,10 @@
  */
 import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
 
-amplitude.load({
-  apiKey: 'scoped-source-write-key',
-})
+/**
+ * With a scoped source key we could reduce to a single API key to rule all sub-products
+ */
+amplitude.load({ apiKey: 'scoped-source-write-key' })
 
 /**
  * Single user
@@ -21,13 +22,21 @@ amplitude.user.setUserId('u-id')
 
 /**
  * All generated methods are available on 'data' objects per product
+ *
+ * For User, we can require specific properties based on the Data Plan
  */
 user.data.setUserProperties({
   requiredProp: "strongly typed",
 });
 
 experiment.fetch();
+/**
+ * For Experiment, we get strong types for feature flags and variants.
+ */
 if (experiment.data.flagCodegenEnabled()) {
+  /**
+   * For Analytics, we get strong types for Events and Properties.
+   */
   analytics.data.userLoggedIn();
   analytics.track(new UserLoggedIn());
 } else {

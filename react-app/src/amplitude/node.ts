@@ -1,12 +1,28 @@
 import { Amplitude as AmplitudeNode } from "../@amplitude/amplitude/node";
-import { Analytics as AnalyticsNode, AnalyticsClient as AnalyticsClientNode } from "../@amplitude/analytics/node";
-import { Experiment as ExperimentNode, ExperimentClient as ExperimentClientNode } from "../@amplitude/experiment/node";
+import {
+  Analytics as AnalyticsNode,
+  AnalyticsClient as AnalyticsClientNode
+} from "../@amplitude/analytics/node";
+import {
+  Experiment as ExperimentNode,
+  ExperimentClient as ExperimentClientNode
+} from "../@amplitude/experiment/node";
 import { AmplitudeLoadOptions } from "../@amplitude/amplitude/core/client";
-import { AMultiVariateExperiment, TrackingPlanMethods, Typed, User, UserLoggedIn, VariantMethods, } from "./core";
+import {
+  AMultiVariateExperiment,
+  IAnalyticsClient,
+  IExperimentClient,
+  TrackingPlanMethods,
+  Typed,
+  User,
+  UserLoggedIn,
+  VariantMethods,
+  Event
+} from "./core";
 import { IUser } from "../@amplitude/amplitude/core/user";
 
 export { User, UserLoggedIn };
-export type { TrackingPlanMethods } from './core';
+export type { Event, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
 
 /**
  * AMPLITUDE
@@ -24,7 +40,7 @@ export const amplitude = new Amplitude();
 /**
  * ANALYTICS
  */
-export class AnalyticsClient extends AnalyticsClientNode {
+export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
   get data() {
     const core = this;
     return {

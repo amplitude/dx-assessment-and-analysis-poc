@@ -1,5 +1,9 @@
 import { User as UserCore } from "../@amplitude/user-browser";
 import { Event } from "../@amplitude/analytics/core";
+import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytics/core";
+import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
+
+export type { Event };
 
 /**
  * GENERAL INTERFACES
@@ -46,6 +50,8 @@ export interface TrackingPlanMethods{
   checkout(): void;
 }
 
+export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
+
 /**
  * EXPERIMENT
  */
@@ -55,3 +61,5 @@ export interface VariantMethods {
   flagCodegenEnabled(): boolean;
   aMultiVariateExperiment(): AMultiVariateExperiment
 }
+
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}

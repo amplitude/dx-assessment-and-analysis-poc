@@ -11,9 +11,10 @@ import {
   VariantMethods,
   TrackingPlanMethods,
   Event,
+  UserLoggedIn,
 } from "./core";
 
-export { User, user };
+export { User, user, UserLoggedIn };
 export type { Event, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
 
 /**

@@ -5,13 +5,13 @@ import './App.css';
 /**
  * Usage Examples
  *
- * Uncomment the individual usages to see output in console
+ * Uncomment the individual examples to see output in console
  */
-import './usage/coreSdkUsage';
-// import './usage/typedSdkUsage';
-// import './usage/coreToTypedSdkUsage';
-// import './usage/productPlugins';
-// import './usage/multiTenantUser';
+import './examples/coreSdkUsage';
+// import './examples/typedSdkUsage';
+// import './examples/coreToTypedSdkUsage';
+// import './examples/productPlugins';
+// import './examples/multiTenantUser';
 
 function App() {
   return (

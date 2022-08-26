@@ -16,7 +16,7 @@ This POC demonstrates a new architecture for our SDKs.
 * Group management
 * Environment support (codegen)
 
-# Project structure
+## Project structure
 * README.md - you are here *
 * src/
 * [App.tsx](src/App.tsx) - Example user app using Amply SDK. A good place to start.
@@ -28,7 +28,7 @@ This POC demonstrates a new architecture for our SDKs.
   * [multiTenantUser.ts](src/examples/multiTenantUser.ts) - Server usage with multiple Users
   * [crossPlatform.ts](src/examples/crossPlatform.ts) - Client/server hybrid applications
 
-# Setup
+## Setup
 To run locally
 1. Install `NodeJS`
 2. Install `yarn`

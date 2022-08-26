@@ -36,7 +36,13 @@ export class Timeline {
 
   add(plugin: AmplitudePlugin, config: PluginConfig) {
     config.logger.log(`[Timeline.add] ${plugin.category}`); // eslint-disable-line no-console
-    plugin.load(config);
+
+    if (this.plugins.includes(plugin)) {
+      config.logger.warn(`Plugin ${plugin.category} is already added.`)
+      return;
+    }
+
     this.plugins.push(plugin)
+    plugin.load(config);
   }
 }

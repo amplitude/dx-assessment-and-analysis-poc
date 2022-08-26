@@ -18,12 +18,13 @@ amplitude.load({
 // plugins can also be added dynamically
 amplitude.addPlugin(experiment);
 
-// single user, multi-tenant is tbd
-// Amplitude keeps a reference to current user
-// Plugins can access the user
-// 1. via module import
-// 2. ?
+// Single user
+//   Amplitude keeps a reference to current user
+//   Plugins can access the user via config
 amplitude.user.setUserId('u-id')
+
+// Multiple users (server usage)
+//   See `multiTenantUser.ts`
 
 // set untyped user properties
 user.setUserProperties({

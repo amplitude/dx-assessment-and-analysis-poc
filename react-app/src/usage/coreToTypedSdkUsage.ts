@@ -5,6 +5,7 @@ import { analytics } from '../@amplitude/analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
 // [Typed] Imports
+// Migrating to the Typed SDK is as easy as changing your imports
 // import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
 
 /**

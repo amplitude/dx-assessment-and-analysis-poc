@@ -1,11 +1,15 @@
-// [Untyped] Imports
+/**
+ * [Untyped] Imports
+ */
 import { amplitude } from '../@amplitude/amplitude/browser'
 import { user } from '../@amplitude/user-browser'
 import { analytics } from '../@amplitude/analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
-// [Typed] Imports
-// Migrating to the Typed SDK is as easy as changing your imports
+/**
+ * [Typed] Imports
+ * Migrating to the Typed SDK is as easy as changing your imports
+ */
 // import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
 
 /**
@@ -13,8 +17,10 @@ import { experiment } from '../@amplitude/experiment/browser'
  */
 amplitude.load({
   apiKey: 'scoped-source-write-key',
-  // [Untyped] We need to register plugins manually
-  // [Typed] Plugins are added automatically - comment out plugins below
+  /**
+   * [Untyped] We need to register plugins manually
+   * [Typed] Plugins are added automatically. Comment out plugins below to avoid warnings.
+   */
   plugins: [
     analytics,
     experiment

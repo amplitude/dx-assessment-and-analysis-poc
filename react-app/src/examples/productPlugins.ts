@@ -4,7 +4,9 @@ import { analytics } from '../@amplitude/analytics/browser'
 import { analytics as segmentAnalytics } from '../@amplitude/segment-analytics-browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
-// 1. Register plugins with Amplitude
+/**
+ * 1. Register plugins with Amplitude
+ */
 amplitude.load({
   apiKey: 'a-key',
   plugins: [
@@ -14,13 +16,17 @@ amplitude.load({
   ]
 })
 
-// 2. Use product plugins directly
+/**
+ * 2. Use product plugins directly
+ */
 experiment.fetch()
 if (experiment.variant('some-flag')) {
   analytics.track('Use analytics');
 }
 
-// 3. Create custom plugins
+/**
+ * 3. Create custom plugins
+ */
 class MyPlugin extends AmplitudePluginBase {
   category: AmplitudePluginCategory = 'CUSTOM';
 
@@ -29,6 +35,8 @@ class MyPlugin extends AmplitudePluginBase {
   }
 }
 
-// 4. Add plugins dynamically after load()
+/**
+ * 4. Add plugins dynamically after load()
+ */
 const customPlugin = new MyPlugin();
 amplitude.addPlugin(customPlugin);

@@ -27,3 +27,12 @@ This POC demonstrates a new architecture for our SDKs.
   * [productPlugins.ts](src/examples/productPlugins.ts) - Amplitude plugins
   * [multiTenantUser.ts](src/examples/multiTenantUser.ts) - Server usage with multiple Users
   * [crossPlatform.ts](src/examples/crossPlatform.ts) - Client/server hybrid applications
+
+# Setup
+To run locally
+1. Install `NodeJS`
+2. Install `yarn`
+3. Clone the repo
+4. `cd ~/react-app`
+5. `yarn install`
+6. `yarn start`

@@ -24,11 +24,8 @@ amplitude.load({
 /**
  * [Untyped] usage
  */
-// single user, multi-tenant is tbd
 amplitude.user.setUserId('u-id')
 
-// set untyped user properties
-// groups
 user.setUserProperties({
   requiredProp: "untyped"
 });

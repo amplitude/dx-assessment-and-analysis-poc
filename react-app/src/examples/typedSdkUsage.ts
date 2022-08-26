@@ -5,6 +5,9 @@ import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitu
 
 /**
  * With a scoped source key we could reduce to a single API key to rule all sub-products
+ *
+ * In the generated SDK we know all the users products and can automatically register the
+ * necessary plugins for them.
  */
 amplitude.load({ apiKey: 'scoped-source-write-key' })
 

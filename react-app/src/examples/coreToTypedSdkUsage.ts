@@ -8,17 +8,19 @@ import { experiment } from '../@amplitude/experiment/browser'
 
 /**
  * [Typed] Imports
+ *
  * Migrating to the Typed SDK is as easy as changing your imports
  */
 // import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude'
 
 /**
- * Load (Untyped and Typed)
+ * Load [Untyped] and [Typed]
  */
 amplitude.load({
   apiKey: 'scoped-source-write-key',
   /**
    * [Untyped] We need to register plugins manually
+   *
    * [Typed] Plugins are added automatically. Comment out plugins below to avoid warnings.
    */
   plugins: [
@@ -29,6 +31,8 @@ amplitude.load({
 
 /**
  * [Untyped] usage
+ *
+ * Notice: This will keep working even with the [Typed] imports
  */
 amplitude.user.setUserId('u-id')
 
@@ -45,7 +49,10 @@ if (experiment.variant('flag-codegen-on')) {
 
 /**
  * [Typed] usage
- * To enable the usage below simply switch to the [Typed] imports above
+ *
+ * To enable the usage below simply switch to the [Typed] imports above.
+ *
+ * Notice: Switching the imports ADDS new functionality AND is backward COMPATIBLE with the original untyped usage
  */
 // all codegen methods are available on 'data' objects per product
 // user.data.setUserProperties({

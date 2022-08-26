@@ -2,7 +2,7 @@
  * Multi-tenant usage
  *
  * In single user platforms like the Browser, user information can be set once and then used on all subsequent requests.
- * Server applications on the other handle requests from many users, as a result each event requires an associated user
+ * Server applications, however, handle requests from many users. As a result each event requires an associated user
  * at the time it is sent.
  *
  * In the untyped sdk `user_id` and/or `deviceId` can be passed in with the other Event fields
@@ -13,8 +13,8 @@
  *     event_properties: { ... },
  *   })`
  *
- * In the typed SDK, we previously made this a required param as it is needed on almost all requests. And wanted to
- * make the usage as concise as possible for the common case.
+ * In the typed SDK, we previously made this a required param as it is needed on almost all requests.
+ * We wanted to make the usage as concise as possible for the common case.
  *
  *   `ampli.track(userId, event)`
  *

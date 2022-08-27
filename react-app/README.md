@@ -21,7 +21,7 @@ This POC demonstrates a new architecture for our SDKs.
 ## Project structure
 * README.md - you are here *
 * src/
-* [App.tsx](src/App.tsx) - Example user app using Amply SDK. A good place to start.
+  * [App.tsx](src/App.tsx) - Example user app using Amply SDK. A good place to start.
 * src/examples/
   * [coreSdkUsage.ts](src/examples/coreSdkUsage.ts) - *Untyped* usage of Amplitude SDK
   * [typedSdkUsage.ts](src/examples/typedSdkUsage.ts) - *Typed* usage of Amplitude SDK

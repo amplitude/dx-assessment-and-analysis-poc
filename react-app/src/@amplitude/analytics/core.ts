@@ -13,3 +13,7 @@ export interface IAnalyticsClient {
   track(event: AnalyticsEvent): void;
   flush(): void;
 }
+
+export interface AnalyticsPluginConfig {
+  flushIntervalMs: number;
+}

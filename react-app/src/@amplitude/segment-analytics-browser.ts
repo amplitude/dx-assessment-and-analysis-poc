@@ -6,7 +6,8 @@ import { jsons } from "../util";
 
 export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = "ANALYTICS";
-  name = 'com.segment.analytics.browser';
+  id = 'com.segment.analytics.browser';
+  name = 'segment';
   version = 0;
 
   load(config: BrowserPluginConfig) {

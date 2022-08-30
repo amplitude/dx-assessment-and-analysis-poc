@@ -35,7 +35,8 @@ export class AnalyticsClient implements IAnalyticsClient {
 
 export class Analytics extends AmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = 'ANALYTICS';
-  name = 'com.amplitude.analytics.node';
+  id = 'com.amplitude.analytics.node';
+  name = 'analytics';
   version = 0;
 
   user(user: IUser): IAnalyticsClient {

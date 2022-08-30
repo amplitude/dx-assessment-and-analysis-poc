@@ -8,6 +8,7 @@ import { EventBus } from "./bus";
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 
 export interface AmplitudeConfig extends Config {
+  configuration?: Record<string, any>;
   plugins?: AmplitudePlugin[];
 }
 
@@ -29,14 +30,15 @@ export class Amplitude {
       ...getDefaultAmplitudeConfig(),
       ...config
     };
-    this._config.plugins?.forEach(plugin => {
-      this.timeline.add(plugin, this.getPluginConfig())
+    this.config.plugins?.forEach(plugin => {
+      const pluginConfig = this.getPluginConfig(plugin.name);
+      this.timeline.add(plugin, this.getPluginConfig(plugin.name))
     })
   }
 
   addPlugin(plugin: AmplitudePlugin) {
     if (this.assertIsInitialized()) {
-      this.timeline.add(plugin, this.getPluginConfig());
+      this.timeline.add(plugin, this.getPluginConfig(plugin.name));
     }
   }
 
@@ -55,7 +57,11 @@ export class Amplitude {
     return false;
   }
 
-  protected getPluginConfig = (): PluginConfig => ({
-    ...this.config
-  });
+  protected getPluginConfig(pluginName: string): PluginConfig {
+    const { configuration, plugins, ...otherConfig } = this.config;
+    return {
+      ...otherConfig,
+      ...configuration?.[pluginName],
+    };
+  };
 }

@@ -1,4 +1,4 @@
-import { AnalyticsEvent, IAnalyticsClient } from "./core";
+import { AnalyticsEvent, IAnalyticsClient, AnalyticsPluginConfig as AnalyticsPluginConfigCore } from "./core";
 import { AmplitudePlugin, AmplitudePluginCategory } from "../amplitude/browser";
 import { jsons } from "../../util";
 import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
@@ -6,15 +6,20 @@ import { analyticsMessage } from "../amplitude/core/bus";
 
 export type { AnalyticsEvent };
 
+export interface AnalyticsPluginConfig extends BrowserPluginConfig, AnalyticsPluginConfigCore {
+
+}
+
 export interface IAnalytics extends AmplitudePlugin, IAnalyticsClient {
 }
 
 export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = 'ANALYTICS';
-  name = 'com.amplitude.analytics.browser';
+  id = 'com.amplitude.analytics.browser';
+  name = 'analytics';
   version = 0;
 
-  load(config: BrowserPluginConfig) {
+  load(config: AnalyticsPluginConfig) {
     super.load(config);
 
     config.bus?.subscribe(analyticsMessage, message => {

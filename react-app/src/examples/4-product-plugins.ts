@@ -45,7 +45,8 @@ if (experiment.variant('some-flag')) {
  */
 class MyPlugin extends AmplitudePluginBase {
   category: AmplitudePluginCategory = 'CUSTOM';
-  name = 'My Custom Plugin';
+  id = 'org.example.custom.plugin';
+  name = 'custom';
   version = 0;
 
   doSomethingSpecial() {

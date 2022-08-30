@@ -46,7 +46,8 @@ export class ExperimentClient implements IExperimentClient {
 
 export class Experiment extends AmplitudePluginBase implements IExperiment {
   category: AmplitudePluginCategory = 'EXPERIMENT';
-  name = 'com.amplitude.experiment.node';
+  id = 'com.amplitude.experiment.node';
+  name = 'experiment';
   version = 0;
 
   user(user: IUser): IExperimentClient {

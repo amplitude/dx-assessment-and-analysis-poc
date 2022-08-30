@@ -8,6 +8,7 @@ export type AmplitudePluginCategory = 'ANALYTICS' | 'EXPERIMENT' | 'USER' | 'CUS
 
 export interface AmplitudePlugin {
   category: AmplitudePluginCategory;
+  id: string;
   name: string;
   version: number;
   load(config: PluginConfig): void;
@@ -15,6 +16,7 @@ export interface AmplitudePlugin {
 
 export abstract class AmplitudePluginBase implements AmplitudePlugin {
   abstract category: AmplitudePluginCategory;
+  abstract id: string;
   abstract name: string;
   abstract version: number;
 

@@ -14,9 +14,9 @@ export class Amplitude extends AmplitudeCore {
     return this._user;
   }
 
-  protected getPluginConfig = (): BrowserPluginConfig => ({
-    ...this.config,
-    user: this._user,
+  protected override getPluginConfig = (pluginName: string): BrowserPluginConfig => ({
+    ...super.getPluginConfig(pluginName),
+    user: this.user,
   });
 }
 

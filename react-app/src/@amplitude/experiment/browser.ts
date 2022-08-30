@@ -8,7 +8,8 @@ export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 
 export class Experiment extends BrowserAmplitudePluginBase implements IExperiment {
   category: AmplitudePluginCategory = 'EXPERIMENT';
-  name = 'com.amplitude.experiment.browser';
+  id = 'com.amplitude.experiment.browser';
+  name = 'experiment';
   version = 0;
 
   fetch = (user?: User) => {

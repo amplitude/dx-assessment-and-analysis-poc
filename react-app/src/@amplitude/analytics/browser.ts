@@ -19,7 +19,7 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
 
     config.bus?.subscribe(analyticsMessage, message => {
       this.onAcceptableMessage(message.payload, ({event}) => {
-        this.track(event);
+        this._track(event);
       })
     })
   }
@@ -35,7 +35,7 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
       event.device_id = this.config.user.deviceId;
     }
 
-    this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
+    this._track(event);
 
     // Publish event on bus to send to other listeners
     this.config.bus?.publish(analyticsMessage({
@@ -44,6 +44,10 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
       sender: { name: this.name, version: this.version },
       event,
     }));
+  }
+
+  protected _track(event: AnalyticsEvent) {
+    this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
   }
 
   flush() {

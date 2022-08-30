@@ -45,6 +45,8 @@ if (experiment.variant('some-flag')) {
  */
 class MyPlugin extends AmplitudePluginBase {
   category: AmplitudePluginCategory = 'CUSTOM';
+  name = 'My Custom Plugin';
+  version = 0;
 
   doSomethingSpecial() {
     this.config.logger.log('[MyPlugin] did something special!');

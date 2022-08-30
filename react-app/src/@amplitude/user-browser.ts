@@ -5,6 +5,8 @@ export type { IUser } from './amplitude/core/user'
 
 export class User extends AmplitudePluginBase implements IUser {
   category: AmplitudePluginCategory = 'USER';
+  name = 'com.amplitude.user';
+  version = 0;
 
   constructor(
     private _userId?: string,

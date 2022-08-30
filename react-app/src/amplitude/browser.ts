@@ -10,12 +10,12 @@ import {
   user,
   VariantMethods,
   TrackingPlanMethods,
-  Event,
+  AnalyticsEvent,
   UserLoggedIn,
 } from "./core";
 
 export { User, user, UserLoggedIn };
-export type { Event, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
+export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
 
 /**
  * AMPLITUDE

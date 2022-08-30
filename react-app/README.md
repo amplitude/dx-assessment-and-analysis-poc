@@ -11,6 +11,9 @@ This POC demonstrates a new architecture for our SDKs.
 * Improved user management
   * Centralized across products
   * Improved server interfaces (multitenant)
+* Cross-product communication
+  * One product can integrate with others as soon as they are added
+  * 3rd parties plugins can hook into the event bus for quick, flexible integrations
 
 ## TODO
 * Group management
@@ -27,6 +30,7 @@ This POC demonstrates a new architecture for our SDKs.
   * [productPlugins.ts](src/examples/productPlugins.ts) - Amplitude plugins
   * [multiTenantUser.ts](src/examples/multiTenantUser.ts) - Server usage with multiple Users
   * [crossPlatform.ts](src/examples/crossPlatform.ts) - Client/server hybrid applications
+  * [cross-plugin-communication.ts](src/examples/cross-plugin-communication.ts) - Centralized event bus for decoupled hooks
 
 ## Setup
 To run locally

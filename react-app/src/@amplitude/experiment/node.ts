@@ -3,6 +3,7 @@ import { IUser, User } from "../user-browser";
 import { UserClient } from "../amplitude/node/client";
 import { Config } from "../amplitude/core/config";
 import { IExperimentClient } from "./core";
+import { analyticsMessage } from "../amplitude/core/bus";
 
 export interface IExperiment extends AmplitudePlugin, UserClient<IExperimentClient> {}
 
@@ -10,6 +11,7 @@ export class ExperimentClient implements IExperimentClient {
   constructor(
     protected user: IUser,
     protected config: Config,
+    private plugin: AmplitudePlugin,
   ) {}
 
   fetch = (user?: User) => {
@@ -24,13 +26,31 @@ export class ExperimentClient implements IExperimentClient {
 
     return key === 'flag-codegen-enabled';
   }
+
+  exposure() {
+    this.config.bus?.publish(analyticsMessage({
+      category: 'ANALYTICS',
+      method: 'TRACK',
+      sender: { name: this.plugin.name, version: this.plugin.version },
+      event: {
+        event_type: 'Exposure',
+        user_id: this.user.userId,
+        device_id: this.user.deviceId,
+        event_properties: {
+          someExperimentProperty: true,
+        }
+      }
+    }));
+  }
 }
 
 export class Experiment extends AmplitudePluginBase implements IExperiment {
   category: AmplitudePluginCategory = 'EXPERIMENT';
+  name = 'com.amplitude.experiment.node';
+  version = 0;
 
   user(user: IUser): IExperimentClient {
-    return new ExperimentClient(user, this.config);
+    return new ExperimentClient(user, this.config, this);
   }
 
   userId(userId: string): IExperimentClient {

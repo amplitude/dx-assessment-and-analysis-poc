@@ -1,9 +1,9 @@
 import { User as UserCore } from "../@amplitude/user-browser";
-import { Event } from "../@amplitude/analytics/core";
+import { AnalyticsEvent } from "../@amplitude/analytics/core";
 import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytics/core";
 import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
 
-export type { Event };
+export type { AnalyticsEvent };
 
 /**
  * GENERAL INTERFACES
@@ -39,7 +39,7 @@ export const user = new User();
 /**
  * ANALYTICS
  */
-export class UserLoggedIn implements Event {
+export class UserLoggedIn implements AnalyticsEvent {
   event_type = 'User Logged In';
 }
 

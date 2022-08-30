@@ -7,11 +7,12 @@ import './App.css';
  *
  * Uncomment the individual examples to see output in console
  */
-import './examples/coreSdkUsage';
+// import './examples/coreSdkUsage';
 // import './examples/typedSdkUsage';
 // import './examples/coreToTypedSdkUsage';
 // import './examples/productPlugins';
 // import './examples/multiTenantUser';
+import './examples/cross-plugin-communication';
 
 function App() {
   return (

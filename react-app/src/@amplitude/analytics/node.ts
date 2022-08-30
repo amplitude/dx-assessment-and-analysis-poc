@@ -1,12 +1,13 @@
-import { Event, IAnalyticsClient } from "./core";
+import { AnalyticsEvent, IAnalyticsClient } from "./core";
 import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/browser";
 import { jsons } from "../../util";
 import { IUser } from "../amplitude/core/user";
 import { Config } from "../amplitude/core/config";
 import { User } from "../../amplitude/core";
 import { UserClient } from "../amplitude/node/client";
+import { analyticsMessage } from "../amplitude/core/bus";
 
-export type { Event };
+export type { AnalyticsEvent };
 
 export interface IAnalytics extends AmplitudePlugin, UserClient<IAnalyticsClient> {}
 
@@ -16,7 +17,7 @@ export class AnalyticsClient implements IAnalyticsClient {
     protected config: Config,
   ) {}
 
-  track(eventType: string | Event, eventProperties?: Record<string, any>) {
+  track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
     const event = (typeof eventType === 'string')
       ? { event_type: eventType, event_properties: eventProperties }
       : eventType;
@@ -34,9 +35,19 @@ export class AnalyticsClient implements IAnalyticsClient {
 
 export class Analytics extends AmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = 'ANALYTICS';
+  name = 'com.amplitude.analytics.node';
+  version = 0;
 
   user(user: IUser): IAnalyticsClient {
-    return new AnalyticsClient(user, this.config);
+    const client = new AnalyticsClient(user, this.config);
+
+    this.config.bus?.subscribe(analyticsMessage, message => {
+      this.onAcceptableMessage(message.payload, ({event}) => {
+        client.track(event)
+      })
+    });
+
+    return client;
   }
 
   userId(userId: string): IAnalyticsClient {

@@ -41,6 +41,7 @@ user.setUserProperties({
  * Use individual product SDKs
  */
 experiment.fetch();
+experiment.exposure();
 if (experiment.variant('flag-codegen-on')) {
   throw new Error('codegen not available')
 } else {

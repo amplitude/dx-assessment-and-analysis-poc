@@ -3,6 +3,7 @@ import { Config } from "./config";
 import { Logger, systemLogger } from "./logger";
 import { AmplitudePlugin, Timeline } from "./plugin";
 import { AtLeast } from "../../../util";
+import { EventBus } from "./bus";
 
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 
@@ -12,6 +13,7 @@ export interface AmplitudeConfig extends Config {
 
 export const getDefaultAmplitudeConfig = (): Omit<AmplitudeConfig, 'apiKey'> => ({
   logger: new Logger(),
+  bus: new EventBus(),
 });
 
 export class Amplitude {

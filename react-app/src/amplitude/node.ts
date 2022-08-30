@@ -17,12 +17,12 @@ import {
   User,
   UserLoggedIn,
   VariantMethods,
-  Event
+  AnalyticsEvent
 } from "./core";
 import { IUser } from "../@amplitude/amplitude/core/user";
 
 export { User, UserLoggedIn };
-export type { Event, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
+export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
 
 /**
  * AMPLITUDE
@@ -86,7 +86,7 @@ export class ExperimentClient extends ExperimentClientNode implements Typed<Vari
 
 export class Experiment extends ExperimentNode {
   user(user: IUser): ExperimentClient {
-    return new ExperimentClient(user, this.config);
+    return new ExperimentClient(user, this.config, this);
   }
 
   userId(userId: string): ExperimentClient {

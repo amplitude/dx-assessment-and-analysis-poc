@@ -28,7 +28,7 @@ This POC demonstrates a new architecture for our SDKs.
 * src/examples/
   * [1-core-sdk-usage.ts](src/examples/1-core-sdk-usage.ts) - *Untyped* usage of Amplitude SDK
   * [2-typed-sdk-usage.ts](src/examples/2-typed-sdk-usage.ts) - *Typed* usage of Amplitude SDK
-  * [3-core-to-typed-sdk.ts](src/examples/3-core-to-typed-sdk.ts) - Migrating from *untyped* to *typed* SDK
+  * [3-core-to-typed-sdk-migration.ts](src/examples/3-core-to-typed-sdk-migration.ts) - Migrating from *untyped* to *typed* SDK
   * [4-product-plugins.ts](src/examples/4-product-plugins.ts) - Amplitude plugins
   * [5-multiple-users-on-a-server.ts](src/examples/5-multiple-users-on-a-server.ts) - Server usage with multiple Users
   * [6-cross-platform-usage.ts](src/examples/6-cross-platform-usage.ts) - Client/server hybrid applications

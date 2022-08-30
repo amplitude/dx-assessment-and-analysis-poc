@@ -26,13 +26,13 @@ This POC demonstrates a new architecture for our SDKs.
 * src/
   * [App.tsx](src/App.tsx) - Example user app using Amply SDK. A good place to start.
 * src/examples/
-  * [coreSdkUsage.ts](src/examples/coreSdkUsage.ts) - *Untyped* usage of Amplitude SDK
-  * [typedSdkUsage.ts](src/examples/typedSdkUsage.ts) - *Typed* usage of Amplitude SDK
-  * [coreToTypedSdkUsage.ts](src/examples/coreToTypedSdkUsage.ts) - Migrating from *untyped* to *typed* SDK
-  * [productPlugins.ts](src/examples/productPlugins.ts) - Amplitude plugins
-  * [multiTenantUser.ts](src/examples/multiTenantUser.ts) - Server usage with multiple Users
-  * [crossPlatform.ts](src/examples/crossPlatform.ts) - Client/server hybrid applications
-  * [cross-plugin-communication.ts](src/examples/cross-plugin-communication.ts) - Centralized event bus for decoupled hooks
+  * [1-core-sdk-usage.ts](src/examples/1-core-sdk-usage.ts) - *Untyped* usage of Amplitude SDK
+  * [2-typed-sdk-usage.ts](src/examples/2-typed-sdk-usage.ts) - *Typed* usage of Amplitude SDK
+  * [3-core-to-typed-sdk.ts](src/examples/3-core-to-typed-sdk.ts) - Migrating from *untyped* to *typed* SDK
+  * [4-product-plugins.ts](src/examples/4-product-plugins.ts) - Amplitude plugins
+  * [5-multiple-users-on-a-server.ts](src/examples/5-multiple-users-on-a-server.ts) - Server usage with multiple Users
+  * [6-cross-platform-usage.ts](src/examples/6-cross-platform-usage.ts) - Client/server hybrid applications
+  * [7-cross-plugin-communication.ts](src/examples/7-cross-plugin-communication.ts) - Centralized event bus for decoupled hooks
 
 ## Setup
 To run locally

@@ -7,12 +7,13 @@ import './App.css';
  *
  * Uncomment the individual examples to see output in console
  */
-// import './examples/coreSdkUsage';
-// import './examples/typedSdkUsage';
-// import './examples/coreToTypedSdkUsage';
-// import './examples/productPlugins';
-// import './examples/multiTenantUser';
-import './examples/cross-plugin-communication';
+// import './examples/1-core-sdk-usage';
+// import './examples/2-typed-sdk-usage';
+// import './examples/3-core-to-typed-sdk';
+// import './examples/4-product-plugins';
+// import './examples/5-multiple-users-on-a-server';
+// import './examples/6-cross-platform-usage';
+import './examples/7-cross-plugin-communication';
 
 function App() {
   return (

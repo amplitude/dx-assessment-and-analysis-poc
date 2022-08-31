@@ -8,22 +8,24 @@ import { analytics as segmentAnalytics } from "../@amplitude/segment-analytics-b
  */
 amplitude.load({
   apiKey: 'a-key',
-  configuration: {
-    amplitude: {
-      logLevel: 'Verbose',
-      disabled: false,
-    },
-    analytics: {
-      flushIntervalMs: 1000,
-    },
-    experiment: {
-      flushIntervalMs: 100,
-    }
-  },
+  disabled: false,
+  // logLevel: 'verbose',
   plugins: [
     analytics,
     experiment,
-  ]
+  ],
+  configuration: {
+    analytics: {
+      flushIntervalMs: 1000,
+      logLevel: 'none',
+    },
+    experiment: {
+      flushIntervalMs: 100,
+    },
+    segment: {
+
+    }
+  },
 })
 
 // TODO: Support addPlugin with config

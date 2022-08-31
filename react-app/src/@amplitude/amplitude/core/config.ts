@@ -5,4 +5,5 @@ export interface Config {
   apiKey: string;
   logger: Logger;
   bus?: EventBus;
+  disabled: boolean;
 }

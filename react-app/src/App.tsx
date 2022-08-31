@@ -13,8 +13,8 @@ import './App.css';
 // import './examples/4-product-plugins';
 // import './examples/5-multiple-users-on-a-server';
 // import './examples/6-cross-platform-usage';
-// import './examples/7-cross-plugin-communication';
-import './examples/8-plugin-configuration';
+import './examples/7-cross-plugin-communication';
+// import './examples/8-plugin-configuration';
 
 function App() {
   return (

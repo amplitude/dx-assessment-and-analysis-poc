@@ -40,7 +40,7 @@
  */
 import { amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient } from '../amplitude/node'
 
-amplitude.load({ apiKey: 'a-key' })
+amplitude.data.load({ environment: 'production' })
 
 /**
  * 1. Track with `userId`

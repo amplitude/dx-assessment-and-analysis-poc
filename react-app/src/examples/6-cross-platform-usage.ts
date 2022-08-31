@@ -15,7 +15,7 @@ import {
 /**
  * Client
  */
-amplitudeBrowser.load({ apiKey: 'a-key' })
+amplitudeBrowser.data.load({ environment: 'production' })
 if (experimentBrowser.data.aMultiVariateExperiment()) {
   analyticsBrowser.track('Client side event')
 }
@@ -23,7 +23,7 @@ if (experimentBrowser.data.aMultiVariateExperiment()) {
 /**
  * Server
  */
-amplitudeNode.load({ apiKey: 'a-key' })
+amplitudeNode.data.load({ environment: 'production' })
 if (experimentNode.deviceId('device').data.flagCodegenEnabled()) {
   analyticsNode.userId('user').track('Server side event')
 }

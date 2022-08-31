@@ -4,12 +4,12 @@
 import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
 
 /**
- * With a scoped source key we could reduce to a single API key to rule all sub-products
- *
- * In the generated SDK we know all the users products and can automatically register the
- * necessary plugins for them.
+ * Code generated SDK can set sensible defaults based on environment including
+ * - API key
+ * - logLevel
+ * - disabled ( testing)
  */
-amplitude.load({ apiKey: 'scoped-source-write-key' })
+amplitude.data.load({ environment: 'production'})
 
 /**
  * Single user
@@ -32,10 +32,11 @@ user.data.setUserProperties({
   requiredProp: "strongly typed",
 });
 
-experiment.fetch();
 /**
  * For Experiment, we get strong types for feature flags and variants.
  */
+experiment.fetch();
+experiment.exposure();
 if (experiment.data.flagCodegenEnabled()) {
   /**
    * For Analytics, we get strong types for Events and Properties.

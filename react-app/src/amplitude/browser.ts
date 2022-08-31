@@ -1,7 +1,6 @@
 import { Amplitude as AmplitudeBrowser } from "../@amplitude/amplitude/browser";
 import { Analytics as AnalyticsBrowser } from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
-import { AmplitudeLoadOptions } from "../@amplitude/amplitude/core/client";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,
@@ -12,10 +11,19 @@ import {
   TrackingPlanMethods,
   AnalyticsEvent,
   UserLoggedIn,
+  AmplitudeLoadOptions,
+  ApiKey,
 } from "./core";
 
 export { User, user, UserLoggedIn };
-export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
+export type {
+  AmplitudeLoadOptions,
+  AnalyticsEvent,
+  IAnalyticsClient,
+  IExperimentClient,
+  TrackingPlanMethods,
+  VariantMethods
+};
 
 /**
  * AMPLITUDE
@@ -25,14 +33,24 @@ export class Amplitude extends AmplitudeBrowser {
     super(user)
   }
 
-  load(config: AmplitudeLoadOptions) {
-    super.load(config);
-    this.addPlugin(analytics);
-    this.addPlugin(experiment);
-  }
+  get data() {
+    const core = this;
+    return {
+      load(config: AmplitudeLoadOptions) {
+        const environment = config.environment ?? 'development';
+        const apiKey = config.apiKey ?? ApiKey[environment];
 
-  get user(): User {
-    return this._user as User;
+        core.load({
+          ...config,
+          apiKey,
+        });
+        core.addPlugin(analytics);
+        core.addPlugin(experiment);
+      },
+      get user(): User {
+        return core.user as User;
+      }
+    }
   }
 }
 

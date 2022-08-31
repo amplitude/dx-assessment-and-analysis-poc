@@ -2,6 +2,7 @@ import { User as UserCore } from "../@amplitude/user-browser";
 import { AnalyticsEvent } from "../@amplitude/analytics/core";
 import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytics/core";
 import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
+import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore } from "../@amplitude/amplitude/core/client";
 
 export type { AnalyticsEvent };
 
@@ -10,6 +11,21 @@ export type { AnalyticsEvent };
  */
 export interface Typed<T> {
   get data(): T;
+}
+
+/**
+ * ENVIRONMENT
+ */
+export type Environment = 'development' | 'production' | 'test';
+
+export const ApiKey: Record<Environment, string> = {
+  development: 'dev-api-key',
+  production: 'prod-api-key',
+  test: 'test-api-key'
+};
+
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
 }
 
 /**

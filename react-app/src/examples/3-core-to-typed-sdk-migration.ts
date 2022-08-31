@@ -16,20 +16,34 @@ import { experiment } from '../@amplitude/experiment/browser'
 // import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
 
 /**
- * Load is similar for [Untyped] and [Typed]
+ * [Untyped] Load
+ *
  */
 amplitude.load({
-  apiKey: 'scoped-source-write-key',
   /**
-   * [Untyped] We need to register plugins manually
-   *
-   * [Typed] Plugins are added automatically. Comment out plugins below to avoid warnings.
+   * Api key is required, for each environment
+   */
+  apiKey: process.env.ENV === 'prod' ? 'scoped-source-write-key' : 'dev-key',
+  /**
+   * We need to register plugins manually
    */
   plugins: [
     analytics,
     experiment
   ]
 })
+
+/**
+ * [Typed] Load
+ *
+ * Code generated SDK can set sensible defaults based on environment including
+ * - API key
+ * - logLevel
+ * - disabled ( testing)
+ *
+ * Plugins are added automatically based on
+ */
+// amplitude.data.load({ environment: 'production'})
 
 /**
  * [Untyped] usage

@@ -15,6 +15,7 @@ export interface AmplitudeConfig extends Config {
 export const getDefaultAmplitudeConfig = (): Omit<AmplitudeConfig, 'apiKey'> => ({
   logger: new Logger(),
   bus: new EventBus(),
+  disabled: false,
 });
 
 export class Amplitude {
@@ -31,7 +32,6 @@ export class Amplitude {
       ...config
     };
     this.config.plugins?.forEach(plugin => {
-      const pluginConfig = this.getPluginConfig(plugin.name);
       this.timeline.add(plugin, this.getPluginConfig(plugin.name))
     })
   }

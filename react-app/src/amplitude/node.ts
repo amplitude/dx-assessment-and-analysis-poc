@@ -7,7 +7,6 @@ import {
   Experiment as ExperimentNode,
   ExperimentClient as ExperimentClientNode
 } from "../@amplitude/experiment/node";
-import { AmplitudeLoadOptions } from "../@amplitude/amplitude/core/client";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,
@@ -17,7 +16,9 @@ import {
   User,
   UserLoggedIn,
   VariantMethods,
-  AnalyticsEvent
+  AnalyticsEvent,
+  AmplitudeLoadOptions,
+  ApiKey
 } from "./core";
 import { IUser } from "../@amplitude/amplitude/core/user";
 
@@ -28,10 +29,21 @@ export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanM
  * AMPLITUDE
  */
 export class Amplitude extends AmplitudeNode {
-  load(config: AmplitudeLoadOptions) {
-    super.load(config);
-    this.addPlugin(analytics);
-    this.addPlugin(experiment);
+  get data() {
+    const core = this;
+    return {
+      load(config: AmplitudeLoadOptions) {
+        const environment = config.environment ?? 'development';
+        const apiKey = config.apiKey ?? ApiKey[environment];
+
+        core.load({
+          ...config,
+          apiKey,
+        });
+        core.addPlugin(analytics);
+        core.addPlugin(experiment);
+      },
+    };
   }
 }
 

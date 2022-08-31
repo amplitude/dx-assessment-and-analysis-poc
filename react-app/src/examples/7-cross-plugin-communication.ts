@@ -8,11 +8,8 @@
  * - Add Messages to core packages with minimal interfaces `analyticsMessage({ event: AnalyticsEvent, method: 'track' })
  * - Core products forward messages on bus that can be listened to by other Plugins
  */
-import { amplitude } from "../@amplitude/amplitude/browser";
-import { analytics } from "../@amplitude/analytics/browser";
-import { experiment } from "../@amplitude/experiment/browser";
 import { analytics as segmentAnalytics } from "../@amplitude/segment-analytics-browser";
-import { user } from "../@amplitude/user-browser";
+import { amplitude, analytics, experiment, user } from "../amplitude/browser";
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',
@@ -30,8 +27,8 @@ amplitude.load({
  * User
  */
 user.setUserId('u-id')
-user.setUserProperties({
-  requiredProp: "untyped"
+user.data.setUserProperties({
+  requiredProp: "strongly typed"
 });
 
 /**

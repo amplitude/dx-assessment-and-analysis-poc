@@ -52,8 +52,8 @@ export class Timeline {
   add(plugin: AmplitudePlugin, config: PluginConfig) {
     config.logger.log(`[Timeline.add] ${plugin.category}`); // eslint-disable-line no-console
 
-    if (this.plugins.includes(plugin)) {
-      config.logger.warn(`Plugin ${plugin.category} is already added.`)
+    if (this.plugins.some(p => p.id === plugin.id)) {
+      config.logger.warn(`Plugin id=${plugin.id} is already added. Skipping.`)
       return;
     }
 

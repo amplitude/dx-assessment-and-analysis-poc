@@ -9,7 +9,9 @@ import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitu
  * - logLevel
  * - disabled ( testing)
  */
-amplitude.data.load({ environment: 'production'})
+amplitude.data.load({
+  environment: 'production',
+})
 
 /**
  * Single user

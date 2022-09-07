@@ -73,8 +73,15 @@ const app = { // express()
  */
 app.use((req, res, next) => {
   const userId = req.params.id;
-  req.analytics =  analytics.userId(userId);
-  req.experiment =  experiment.userId(userId);
+  // create shared user for both clients
+  const user = new User(userId);
+  req.user = user;
+
+  // create individual product clients for user
+  req.analytics =  analytics.user(user);
+  req.experiment =  experiment.user(user);
+
+  // pre-fetch experiment for the given user
   req.experiment.fetch();
 
   next()

@@ -1,5 +1,5 @@
 import { BrowserPluginConfig } from "./plugin";
-import { User, user as defaultUser } from "../../user-browser";
+import { User, user as defaultUser } from "../../user";
 import { Amplitude as AmplitudeCore} from "../core/client";
 
 export class Amplitude extends AmplitudeCore {

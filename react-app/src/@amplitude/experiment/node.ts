@@ -1,5 +1,5 @@
 import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/node";
-import { IUser, User } from "../user-browser";
+import { IUser, User } from "../user";
 import { UserClient } from "../amplitude/node/client";
 import { Config } from "../amplitude/core/config";
 import { IExperimentClient } from "./core";

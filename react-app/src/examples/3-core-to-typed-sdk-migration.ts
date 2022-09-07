@@ -4,7 +4,7 @@
  * These imports of the static core SDKs provide standard "untyped" usage
  */
 import { amplitude } from '../@amplitude/amplitude/browser'
-import { user } from '../@amplitude/user-browser'
+import { user } from '../@amplitude/user'
 import { analytics } from '../@amplitude/analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
@@ -54,6 +54,10 @@ amplitude.user.setUserId('u-id')
 
 user.setUserProperties({
   requiredProp: "untyped"
+});
+user.setGroup('framework', 'awesome');
+user.setGroupProperties('framework', 'awesome', {
+  version: 'latest'
 });
 
 experiment.fetch();

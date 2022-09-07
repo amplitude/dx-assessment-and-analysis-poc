@@ -1,4 +1,4 @@
-import { User as UserCore } from "../@amplitude/user-browser";
+import { User as UserCore } from "../@amplitude/user";
 import { AnalyticsEvent } from "../@amplitude/analytics/core";
 import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytics/core";
 import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";

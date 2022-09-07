@@ -1,5 +1,5 @@
 import { Config } from "../core/config";
-import { User } from "../../user-browser";
+import { User } from "../../user";
 import { AmplitudePluginBase } from "../core/plugin";
 
 export interface BrowserPluginConfig extends Config {

@@ -1,7 +1,7 @@
 import { amplitude } from "../@amplitude/amplitude/browser";
 import { analytics } from "../@amplitude/analytics/browser";
 import { experiment } from "../@amplitude/experiment/browser";
-import { analytics as segmentAnalytics } from "../@amplitude/segment-analytics-browser";
+import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
 
 /**
  * 1. Register plugins with Amplitude

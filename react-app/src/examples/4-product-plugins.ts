@@ -17,7 +17,7 @@
  */
 import { amplitude, AmplitudePluginBase, AmplitudePluginCategory } from '../@amplitude/amplitude/browser'
 import { analytics } from '../@amplitude/analytics/browser'
-import { analytics as segmentAnalytics } from '../@amplitude/segment-analytics-browser'
+import { analytics as segmentAnalytics } from '../@amplitude/plugin-segment-analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
 /**

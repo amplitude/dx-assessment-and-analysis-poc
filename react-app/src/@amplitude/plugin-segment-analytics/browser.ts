@@ -1,8 +1,8 @@
-import { AmplitudePluginCategory } from "./amplitude/browser";
-import { IAnalytics, AnalyticsEvent } from "./analytics/browser";
-import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "./amplitude/browser/plugin";
-import { analyticsMessage } from "./amplitude/core/bus";
-import { jsons } from "../util";
+import { AmplitudePluginCategory } from "../amplitude/browser";
+import { IAnalytics, AnalyticsEvent } from "../analytics/browser";
+import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
+import { analyticsMessage } from "../amplitude/core/bus";
+import { jsons } from "../../util";
 
 export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = "ANALYTICS";

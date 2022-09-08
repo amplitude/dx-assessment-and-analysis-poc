@@ -30,7 +30,6 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
   }
 
   track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
-    // TODO: Share with SegmentAnalytics somehow
     const event = (typeof eventType === 'string')
       ? { event_type: eventType, event_properties: eventProperties }
       : eventType;

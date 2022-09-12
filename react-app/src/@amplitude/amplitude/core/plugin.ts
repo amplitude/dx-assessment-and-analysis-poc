@@ -1,5 +1,5 @@
 import { Config } from "../core/config";
-import { AmplitudeMessage } from "./bus";
+import { AmplitudeMessage } from "./hub";
 
 export interface PluginConfig extends Config {
 }

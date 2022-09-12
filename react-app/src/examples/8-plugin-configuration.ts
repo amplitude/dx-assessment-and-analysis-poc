@@ -4,7 +4,7 @@ import { experiment } from "../@amplitude/experiment/browser";
 import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
 
 /**
- * 1. Register plugins with Amplitude
+ * 1. Register plugins with Amplitude during load()
  */
 amplitude.load({
   apiKey: 'a-key',
@@ -28,18 +28,9 @@ amplitude.load({
   },
 })
 
-// TODO: Support addPlugin with config
-// amplitude.addPlugin(segmentAnalytics, {
-//   flushInterval: 5000,
-// });
-
-// amplitude.load({
-//   apiKey: 'a-key',
-//   plugins: [
-//     analytics.configure(),
-//     experiment.configure({
-//       flushInterval: 200,
-//     }),
-//     segmentAnalytics
-//   ]
-// })
+/**
+ * 2. Add plugins dynamically after load()
+ */
+amplitude.addPlugin(segmentAnalytics, {
+  flushInterval: 5000,
+});

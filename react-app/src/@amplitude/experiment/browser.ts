@@ -2,7 +2,7 @@ import { AmplitudePlugin, AmplitudePluginCategory } from "../amplitude/browser";
 import { User } from "../user";
 import { BrowserAmplitudePluginBase } from "../amplitude/browser/plugin";
 import { IExperimentClient } from "./core";
-import { analyticsMessage } from "../amplitude/core/bus";
+import { newTrackMessage } from "../analytics/messages";
 
 export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 
@@ -31,18 +31,13 @@ export class Experiment extends BrowserAmplitudePluginBase implements IExperimen
      *
      * If analytics plugins are load()'ed then they will pick up on the event
      */
-    this.config.bus?.publish(analyticsMessage({
-      category: 'ANALYTICS',
-      method: 'TRACK',
-      sender: { name: this.name, version: this.version },
-      event: {
+    this.config.hub?.analytics.publish(newTrackMessage(this, {
         event_type: 'Exposure',
         user_id: this.config.user.userId,
         device_id: this.config.user.deviceId,
         event_properties: {
           someExperimentProperty: true,
         }
-      }
     }));
   }
 }

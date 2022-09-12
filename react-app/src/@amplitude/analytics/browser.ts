@@ -2,7 +2,7 @@ import { AnalyticsEvent, IAnalyticsClient, AnalyticsPluginConfig as AnalyticsPlu
 import { AmplitudePlugin, AmplitudePluginCategory } from "../amplitude/browser";
 import { jsons } from "../../util";
 import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
-import { analyticsMessage } from "../amplitude/core/bus";
+import { trackMessage, newTrackMessage } from "./messages";
 
 export type { AnalyticsEvent };
 
@@ -22,7 +22,7 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
   load(config: AnalyticsPluginConfig) {
     super.load(config);
 
-    config.bus?.subscribe(analyticsMessage, message => {
+    config.hub?.analytics.subscribe(trackMessage, message => {
       this.onAcceptableMessage(message.payload, ({event}) => {
         this._track(event);
       })
@@ -42,12 +42,7 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
     this._track(event);
 
     // Publish event on bus to send to other listeners
-    this.config.bus?.publish(analyticsMessage({
-      category: 'ANALYTICS',
-      method: 'TRACK',
-      sender: { name: this.name, version: this.version },
-      event,
-    }));
+    this.config.hub?.analytics.publish(newTrackMessage(this, event));
   }
 
   protected _track(event: AnalyticsEvent) {

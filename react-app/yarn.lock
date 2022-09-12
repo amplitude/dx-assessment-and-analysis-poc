@@ -8341,6 +8341,11 @@ ts-bus@^2.3.1:
   dependencies:
     eventemitter2 "^5.0.1"
 
+ts-event-bus@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/ts-event-bus/-/ts-event-bus-4.1.1.tgz#4f9766b95ccd2a37089de1577a3174a1ca4849aa"
+  integrity sha512-24kwhE74F4j0gurGEigJJQ4K+UIdGWuT3IY0sI+cZ2yVKjGhl1m7PcmgH+Xao/Mh4rRv1TUbLZsR3YYoj8OWiQ==
+
 tsconfig-paths@^3.14.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.14.1.tgz#ba0734599e8ea36c862798e920bcf163277b137a"

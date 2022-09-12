@@ -1,9 +1,9 @@
 import { Logger } from "./logger";
-import { EventBus } from "./bus";
+import { MessageHub } from "./hub";
 
 export interface Config {
   apiKey: string;
   logger: Logger;
-  bus?: EventBus;
+  hub?: MessageHub;
   disabled: boolean;
 }

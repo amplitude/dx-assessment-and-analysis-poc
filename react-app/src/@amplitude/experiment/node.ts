@@ -3,7 +3,7 @@ import { IUser, User } from "../user";
 import { UserClient } from "../amplitude/node/client";
 import { Config } from "../amplitude/core/config";
 import { IExperimentClient } from "./core";
-import { analyticsMessage } from "../amplitude/core/bus";
+import { newTrackMessage } from "../analytics/messages";
 
 export interface IExperiment extends AmplitudePlugin, UserClient<IExperimentClient> {}
 
@@ -28,18 +28,13 @@ export class ExperimentClient implements IExperimentClient {
   }
 
   exposure() {
-    this.config.bus?.publish(analyticsMessage({
-      category: 'ANALYTICS',
-      method: 'TRACK',
-      sender: { name: this.plugin.name, version: this.plugin.version },
-      event: {
+    this.config.hub?.analytics.publish(newTrackMessage(this.plugin, {
         event_type: 'Exposure',
         user_id: this.user.userId,
         device_id: this.user.deviceId,
         event_properties: {
           someExperimentProperty: true,
         }
-      }
     }));
   }
 }

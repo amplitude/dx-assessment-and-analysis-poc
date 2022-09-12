@@ -5,7 +5,7 @@ import { IUser } from "../amplitude/core/user";
 import { Config } from "../amplitude/core/config";
 import { User } from "../../amplitude/core";
 import { UserClient } from "../amplitude/node/client";
-import { analyticsMessage } from "../amplitude/core/bus";
+import { trackMessage } from "./messages";
 
 export type { AnalyticsEvent };
 
@@ -42,7 +42,7 @@ export class Analytics extends AmplitudePluginBase implements IAnalytics {
   user(user: IUser): IAnalyticsClient {
     const client = new AnalyticsClient(user, this.config);
 
-    this.config.bus?.subscribe(analyticsMessage, message => {
+    this.config.hub?.analytics.subscribe(trackMessage, message => {
       this.onAcceptableMessage(message.payload, ({event}) => {
         client.track(event)
       })

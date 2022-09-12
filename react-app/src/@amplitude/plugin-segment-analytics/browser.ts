@@ -1,7 +1,7 @@
 import { AmplitudePluginCategory } from "../amplitude/browser";
 import { IAnalytics, AnalyticsEvent } from "../analytics/browser";
 import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
-import { analyticsMessage } from "../amplitude/core/bus";
+import { trackMessage } from "../analytics/messages";
 import { jsons } from "../../util";
 
 export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAnalytics {
@@ -14,7 +14,7 @@ export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAna
     super.load(config);
 
     // Hook into the event bus and forward analytics events to Segment
-    config.bus?.subscribe(analyticsMessage, message => {
+    config.hub?.analytics.subscribe(trackMessage, message => {
       this.onAcceptableMessage(message.payload, ({ event }) => {
         this.track(event);
       });

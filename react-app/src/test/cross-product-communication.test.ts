@@ -32,7 +32,7 @@ test('experiment.exposure() should send a track message on hub.analytics', () =>
   expect(wasHubMessageReceived).toBe(true);
 });
 
-test('analytics plugin should track() on experiment.exposure()', () => {
+test('analytics plugin automatically track() on experiment.exposure()', () => {
   const amplitude = new Amplitude();
   const hub = new MessageHub();
 
@@ -52,7 +52,7 @@ test('analytics plugin should track() on experiment.exposure()', () => {
   expect(trackSpy.mock.calls.length).toBe(1);
 });
 
-test('multiple analytics plugins should track() on experiment.exposure()', () => {
+test('multiple analytics plugins automatically track() on experiment.exposure()', () => {
   const amplitude = new Amplitude();
   const hub = new MessageHub();
 

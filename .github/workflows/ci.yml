@@ -34,11 +34,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
+        working-directory: ./react-app
         run: |
           yarn install --frozen-lockfile
       - name: Build
+        working-directory: ./react-app
         run: |
           yarn build
       - name: Test
+        working-directory: ./react-app
         run: |
           yarn test

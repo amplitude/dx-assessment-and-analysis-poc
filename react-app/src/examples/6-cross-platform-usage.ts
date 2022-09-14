@@ -16,16 +16,16 @@ import { Logger } from "../@amplitude/amplitude/core/logger";
 /**
  * Client
  */
-amplitudeBrowser.data.load({ logger: new Logger() })
-if (experimentBrowser.data.aMultiVariateExperiment()) {
+amplitudeBrowser.typed.load({ logger: new Logger() })
+if (experimentBrowser.typed.aMultiVariateExperiment()) {
   analyticsBrowser.track('Client side event')
 }
 
 /**
  * Server
  */
-amplitudeNode.data.load({ logger: new Logger() })
-if (experimentNode.deviceId('device').data.flagCodegenEnabled()) {
+amplitudeNode.typed.load({ logger: new Logger() })
+if (experimentNode.deviceId('device').typed.flagCodegenEnabled()) {
   analyticsNode.userId('user').track('Server side event')
 }
 
@@ -34,8 +34,8 @@ if (experimentNode.deviceId('device').data.flagCodegenEnabled()) {
  * Shared context
  */
 function sharedContext(analytics: IAnalyticsClient, experiment: IExperimentClient) {
-  if (experiment.data.flagCodegenEnabled())
-  analytics.data.userSignedUp();
+  if (experiment.typed.flagCodegenEnabled())
+  analytics.typed.userSignedUp();
   analytics.track(new UserLoggedIn());
 }
 

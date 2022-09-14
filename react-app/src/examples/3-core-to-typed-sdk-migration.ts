@@ -14,7 +14,7 @@ import { Logger } from "../@amplitude/amplitude/core/logger";
  *
  * Migrating to the [Typed] SDK is as easy as changing your imports to the following
  */
-// import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
+// import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from '../amplitude/browser'
 
 /**
  * [Untyped] Load
@@ -45,7 +45,7 @@ amplitude.load({
  *
  * Plugins are added automatically based on
  */
-// amplitude.data.load({ environment: 'production'})
+// amplitude.typed.load({ environment: 'production'})
 
 /**
  * [Untyped] usage
@@ -77,11 +77,11 @@ if (experiment.variant('flag-codegen-on')) {
  * Notice: Switching the imports ADDS new functionality AND is backward COMPATIBLE with the original untyped usage
  */
 // all codegen methods are available on 'data' objects per product
-// user.data.setUserProperties({
+// user.typed.setUserProperties({
 //   requiredProp: "strongly typed",
 // });
 //
-// if (experiment.data.flagCodegenEnabled()) {
-//   analytics.data.userLoggedIn();
+// if (experiment.typed.flagCodegenEnabled()) {
+//   analytics.typed.userLoggedIn();
 //   analytics.track(new UserLoggedIn());
 // }

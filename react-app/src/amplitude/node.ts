@@ -31,7 +31,7 @@ export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanM
  * AMPLITUDE
  */
 export class Amplitude extends AmplitudeNode {
-  get data() {
+  get typed() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
@@ -55,7 +55,7 @@ export const amplitude = new Amplitude();
  * ANALYTICS
  */
 export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
-  get data() {
+  get typed() {
     const core = this;
     return {
       userSignedUp() { core.track('User Signed Up') },
@@ -89,7 +89,7 @@ export const analytics = new Analytics();
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
 export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
-  get data() {
+  get typed() {
     const core = this;
     return {
       flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },

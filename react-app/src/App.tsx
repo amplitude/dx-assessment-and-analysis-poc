@@ -8,7 +8,7 @@ import './App.css';
  */
 import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from '../src/amplitude/browser';
 
-amplitude.data.load({
+amplitude.typed.load({
   environment: 'production',
   logger: new Logger(),
   plugins: [
@@ -32,9 +32,9 @@ function App() {
           </div>
           <div className="section">
             <span>Analytics</span>
-            <button onClick={() => analytics.data.userLoggedIn()}>Login (with Event method)</button>
+            <button onClick={() => analytics.typed.userLoggedIn()}>Login (with Event method)</button>
             <button onClick={() => analytics.track(new UserLoggedIn())}>Login (with Event class)</button>
-            <button onClick={() => analytics.data.userSignedUp()}>Sign Up</button>
+            <button onClick={() => analytics.typed.userSignedUp()}>Sign Up</button>
           </div>
           <div className="section">
             <span>User</span>

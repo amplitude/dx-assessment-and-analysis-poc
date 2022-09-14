@@ -12,7 +12,7 @@ export type { AnalyticsEvent };
  * GENERAL INTERFACES
  */
 export interface Typed<T> {
-  get data(): T;
+  get typed(): T;
 }
 
 /**
@@ -41,7 +41,7 @@ interface TypedUserMethods {
 }
 
 export class User extends UserCore implements Typed<TypedUserMethods> {
-  get data(): TypedUserMethods {
+  get typed(): TypedUserMethods {
     const core = this;
     return {
       setUserProperties(properties) {

@@ -41,7 +41,7 @@
 import { amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient } from '../amplitude/node'
 import { Logger } from "../@amplitude/amplitude/core/logger";
 
-amplitude.data.load({ logger: new Logger() })
+amplitude.typed.load({ logger: new Logger() })
 
 /**
  * 1. Track with `userId`
@@ -51,16 +51,16 @@ analytics.userId('node-user').track(new UserLoggedIn());
 /**
  * 2. Track with `deviceId`
  */
-analytics.deviceId('node-device').data.userSignedUp();
+analytics.deviceId('node-device').typed.userSignedUp();
 
 /**
  * 3. Track with `userProperties`
  */
 const user = new User('node-user-2');
-user.data.setUserProperties({
+user.typed.setUserProperties({
   requiredProp: 'strongly typed'
 })
-analytics.user(user).data.checkout();
+analytics.user(user).typed.checkout();
 
 /**
  * 4. Create Request scoped clients
@@ -94,7 +94,7 @@ app.use((req) => {
   const analytics: AnalyticsClient = req.analytics;
   const experiment: ExperimentClient = req.experiment;
 
-  if (experiment.data.flagCodegenEnabled()) {
-    analytics.data.userSignedUp()
+  if (experiment.typed.flagCodegenEnabled()) {
+    analytics.typed.userSignedUp()
   }
 })

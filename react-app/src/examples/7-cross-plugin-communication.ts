@@ -29,7 +29,7 @@ amplitude.load({
  * User
  */
 user.setUserId('u-id')
-user.data.setUserProperties({
+user.typed.setUserProperties({
   requiredProp: "strongly typed"
 });
 

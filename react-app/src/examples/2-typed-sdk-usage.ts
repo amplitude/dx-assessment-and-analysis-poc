@@ -10,7 +10,7 @@ import { Logger } from "../@amplitude/amplitude/core/logger";
  * - logLevel
  * - disabled ( testing)
  */
-amplitude.data.load({
+amplitude.typed.load({
   environment: 'production',
   logger: new Logger()
 })
@@ -32,7 +32,7 @@ amplitude.user.setUserId('u-id')
  *
  * For User, we can require specific properties based on the Data Plan
  */
-user.data.setUserProperties({
+user.typed.setUserProperties({
   requiredProp: "strongly typed",
 });
 
@@ -41,10 +41,10 @@ user.data.setUserProperties({
  */
 experiment.fetch();
 experiment.exposure();
-if (experiment.data.flagCodegenEnabled()) {
+if (experiment.typed.flagCodegenEnabled()) {
   /**
    * For Analytics, we get strong types for Events and Properties.
    */
-  analytics.data.userLoggedIn();
+  analytics.typed.userLoggedIn();
   analytics.track(new UserLoggedIn());
 }

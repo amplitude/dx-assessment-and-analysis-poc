@@ -1,5 +1,5 @@
 import { Logger } from "./logger";
-import { MessageHub } from "./hub";
+import { MessageHub } from "../../hub";
 
 export interface Config {
   apiKey: string;

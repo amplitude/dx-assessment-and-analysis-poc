@@ -19,12 +19,14 @@ import { amplitude, AmplitudePluginBase, AmplitudePluginCategory } from '../@amp
 import { analytics } from '../@amplitude/analytics/browser'
 import { analytics as segmentAnalytics } from '../@amplitude/plugin-segment-analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * 1. Register plugins with Amplitude
  */
 amplitude.load({
   apiKey: 'a-key',
+  logger: new Logger(),
   plugins: [
     analytics,
     experiment,

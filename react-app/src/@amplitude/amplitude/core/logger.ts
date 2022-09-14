@@ -11,3 +11,9 @@ export class Logger {
 }
 
 export const systemLogger = new Logger();
+
+export class NoLogger {
+  log(message: string) {}
+  warn(message: string) {}
+  error(message: string) {}
+}

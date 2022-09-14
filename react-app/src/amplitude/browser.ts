@@ -1,6 +1,7 @@
 import { Amplitude as AmplitudeBrowser } from "../@amplitude/amplitude/browser";
 import { Analytics as AnalyticsBrowser } from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
+import { MessageHub, hub } from "../@amplitude/hub";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,
@@ -15,7 +16,7 @@ import {
   ApiKey,
 } from "./core";
 
-export { User, user, UserLoggedIn };
+export { User, user, UserLoggedIn, MessageHub, hub };
 export type {
   AmplitudeLoadOptions,
   AnalyticsEvent,

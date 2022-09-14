@@ -1,9 +1,9 @@
 import { PluginConfig } from "./plugin";
 import { Config } from "./config";
-import { Logger, systemLogger } from "./logger";
+import { NoLogger, systemLogger } from "./logger";
 import { AmplitudePlugin, Timeline } from "./plugin";
 import { AtLeast } from "../../../util";
-import { hub } from "./hub";
+import { hub } from "../../hub";
 
 export type AmplitudeLoadOptions = AtLeast<AmplitudeConfig, 'apiKey'>;
 
@@ -13,7 +13,7 @@ export interface AmplitudeConfig extends Config {
 }
 
 export const getDefaultAmplitudeConfig = (): Omit<AmplitudeConfig, 'apiKey'> => ({
-  logger: new Logger(),
+  logger: new NoLogger(),
   hub,
   disabled: false,
 });

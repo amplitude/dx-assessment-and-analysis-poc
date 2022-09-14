@@ -11,11 +11,12 @@ import {
   analytics as analyticsBrowser,
   experiment as experimentBrowser,
 } from '../amplitude/browser'
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * Client
  */
-amplitudeBrowser.data.load({ environment: 'production' })
+amplitudeBrowser.data.load({ logger: new Logger() })
 if (experimentBrowser.data.aMultiVariateExperiment()) {
   analyticsBrowser.track('Client side event')
 }
@@ -23,7 +24,7 @@ if (experimentBrowser.data.aMultiVariateExperiment()) {
 /**
  * Server
  */
-amplitudeNode.data.load({ environment: 'production' })
+amplitudeNode.data.load({ logger: new Logger() })
 if (experimentNode.deviceId('device').data.flagCodegenEnabled()) {
   analyticsNode.userId('user').track('Server side event')
 }

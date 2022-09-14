@@ -39,8 +39,9 @@
  * the client and the server context. The shared interface makes this easy.
  */
 import { amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient } from '../amplitude/node'
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
-amplitude.data.load({ environment: 'production' })
+amplitude.data.load({ logger: new Logger() })
 
 /**
  * 1. Track with `userId`

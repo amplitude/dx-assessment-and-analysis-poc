@@ -10,9 +10,11 @@
  */
 import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
 import { amplitude, analytics, experiment, user } from "../amplitude/browser";
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',
+  logger: new Logger(),
   plugins: [
     experiment,
     analytics,

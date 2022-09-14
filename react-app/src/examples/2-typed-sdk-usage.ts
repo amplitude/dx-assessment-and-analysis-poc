@@ -2,6 +2,7 @@
  * Strongly typed SDK usage
  */
 import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitude/browser'
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * Code generated SDK can set sensible defaults based on environment including
@@ -11,6 +12,7 @@ import { amplitude, user, analytics, experiment, UserLoggedIn } from '../amplitu
  */
 amplitude.data.load({
   environment: 'production',
+  logger: new Logger()
 })
 
 /**

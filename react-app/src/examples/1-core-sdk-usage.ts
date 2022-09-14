@@ -6,6 +6,7 @@ import { amplitude } from '../@amplitude/amplitude/browser'
 import { user } from '../@amplitude/user'
 import { analytics } from '../@amplitude/analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
+import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * With a scoped source key we could reduce to a single API key to rule all sub-products
@@ -15,6 +16,7 @@ import { experiment } from '../@amplitude/experiment/browser'
  */
 amplitude.load({
   apiKey: 'scoped-source-write-key',
+  logger: new Logger(),
   /**
    * Plugins can be registered at load time
    */

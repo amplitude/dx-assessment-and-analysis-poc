@@ -14,9 +14,11 @@ import {
   UserLoggedIn,
   AmplitudeLoadOptions,
   ApiKey,
+  Logger,
+  NoLogger,
 } from "./core";
 
-export { User, user, UserLoggedIn, MessageHub, hub };
+export { User, user, UserLoggedIn, MessageHub, hub, Logger, NoLogger };
 export type {
   AmplitudeLoadOptions,
   AnalyticsEvent,

@@ -18,11 +18,13 @@ import {
   VariantMethods,
   AnalyticsEvent,
   AmplitudeLoadOptions,
-  ApiKey
+  ApiKey,
+  Logger,
+  NoLogger,
 } from "./core";
 import { IUser } from "../@amplitude/amplitude/core/user";
 
-export { User, UserLoggedIn };
+export { User, UserLoggedIn, Logger, NoLogger };
 export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
 
 /**

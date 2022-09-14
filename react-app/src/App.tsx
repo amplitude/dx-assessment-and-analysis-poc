@@ -1,20 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
+import logo from './assets/amplitude_logo.png';
 import './App.css';
 
 /**
- * Usage Examples
- *
- * Uncomment the individual examples to see output in console
+ * Import strongly typed SDKs for convenience
  */
-// import './examples/1-core-sdk-usage';
-// import './examples/2-typed-sdk-usage';
-// import './examples/3-core-to-typed-sdk';
-// import './examples/4-product-plugins';
-// import './examples/5-multiple-users-on-a-server';
-// import './examples/6-cross-platform-usage';
-import './examples/7-cross-plugin-communication';
-// import './examples/8-plugin-configuration';
+import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from '../src/amplitude/browser';
+
+amplitude.data.load({
+  environment: 'production',
+  logger: new Logger(),
+  plugins: [
+    analytics,
+    experiment
+  ]
+})
 
 function App() {
   return (
@@ -22,8 +23,24 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Amplitude SDK Unification - Proof of Concept
+          Unified SDK - Proof of Concept
         </p>
+        <div className="section-group">
+          <div className="section">
+            <span>Experiment</span>
+            <button onClick={() => experiment.exposure()}>experiment.exposure()</button>
+          </div>
+          <div className="section">
+            <span>Analytics</span>
+            <button onClick={() => analytics.data.userLoggedIn()}>Login (with Event method)</button>
+            <button onClick={() => analytics.track(new UserLoggedIn())}>Login (with Event class)</button>
+            <button onClick={() => analytics.data.userSignedUp()}>Sign Up</button>
+          </div>
+          <div className="section">
+            <span>User</span>
+            <button onClick={() => user.setUserId('user-id')}>Set User Id</button>
+          </div>
+        </div>
       </header>
     </div>
   );

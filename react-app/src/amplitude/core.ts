@@ -4,6 +4,8 @@ import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytic
 import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore } from "../@amplitude/amplitude/core/client";
 
+export { Logger, NoLogger } from "../@amplitude/amplitude/core/logger";
+
 export type { AnalyticsEvent };
 
 /**

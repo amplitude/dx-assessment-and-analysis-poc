@@ -9,6 +9,6 @@ beforeEach(() => {
 test('renders learn react link', () => {
   console.log = jest.fn()
   render(<App />);
-  const linkElement = screen.getByText(/Amplitude SDK Unification/i);
+  const linkElement = screen.getByText(/Unified SDK/i);
   expect(linkElement).toBeInTheDocument();
 });

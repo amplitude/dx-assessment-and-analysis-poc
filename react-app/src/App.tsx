@@ -1,16 +1,18 @@
 import React from 'react';
-// import logo from './logo.svg';
 import logo from './assets/amplitude_logo.png';
 import './App.css';
 
 /**
  * Import strongly typed SDKs for convenience
  */
-import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from '../src/amplitude/browser';
+import { amplitude, user, analytics, experiment, UserLoggedIn, Logger, NoLogger } from '../src/amplitude/browser';
+
+const { REACT_APP_LOGGING_DISABLED } = process.env;
+const useLogger = REACT_APP_LOGGING_DISABLED !== 'true';
 
 amplitude.typed.load({
   environment: 'production',
-  logger: new Logger(),
+  logger: useLogger ? new Logger() : new NoLogger(),
   plugins: [
     analytics,
     experiment

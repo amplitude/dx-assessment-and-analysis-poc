@@ -31,6 +31,9 @@ export class Amplitude {
       ...getDefaultAmplitudeConfig(),
       ...config
     };
+    if (this._config.logger === undefined) {
+      this._config.logger = new NoLogger();
+    }
     this.config.plugins?.forEach(plugin => {
       this.timeline.add(plugin, this.getPluginConfig(plugin.name))
     })

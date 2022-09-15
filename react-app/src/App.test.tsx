@@ -28,15 +28,17 @@ test('validate events sequence in from UI actions', () => {
 
   render(<App />);
 
-  // get element refs
-  const experimentExposure = screen.getByText(SELECTOR_EXPERIMENT_EXPOSURE_BUTTON);
-  const analyticsUserLoggedIn = screen.getByText(SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON);
-  const analyticsUserSignedUp = screen.getByText(SELECTOR_ANALYTICS_USER_SIGNED_UP_BUTTON);
+  // get UI element refs
+  const experimentExposureButton = screen.getByText(SELECTOR_EXPERIMENT_EXPOSURE_BUTTON);
+  const analyticsUserLoggedInButton = screen.getByText(SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON);
+  const analyticsUserSignedUpButton = screen.getByText(SELECTOR_ANALYTICS_USER_SIGNED_UP_BUTTON);
 
-  userEvent.click(experimentExposure);
-  userEvent.click(analyticsUserSignedUp);
-  userEvent.click(analyticsUserLoggedIn);
+  // interact with UI
+  userEvent.click(experimentExposureButton);
+  userEvent.click(analyticsUserSignedUpButton);
+  userEvent.click(analyticsUserLoggedInButton);
 
+  // Validate analytics events were tracked as expected
   expect(events.length).toBe(3);
 
   const exposureEvent = events[0];

@@ -32,8 +32,8 @@ export type {
  * AMPLITUDE
  */
 export class Amplitude extends AmplitudeBrowser {
-  constructor() {
-    super(user)
+  constructor(_user?: User) {
+    super(_user ?? user)
   }
 
   get typed() {

@@ -1,6 +1,7 @@
 import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
-import { Amplitude, experiment, analytics, user, MessageHub } from "../amplitude/browser";
-import { trackMessage } from "../@amplitude/analytics/messages";
+import { Amplitude, experiment, analytics, user, MessageHub, User, Logger } from "../amplitude/browser";
+import { trackMessage, MessageTypes as AnalyticsMessageTypes } from "../@amplitude/analytics/messages";
+import { userUpdatedMessage, MessageTypes as UserMessageTypes } from "../@amplitude/user/messages";
 
 const apiKey = 'test-api-key';
 const userId = 'test-user-id';
@@ -9,7 +10,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-test('experiment.exposure() should send a track message on hub.analytics', () => {
+test('experiment.exposure() sends a track message on hub.analytics', () => {
   const amplitude = new Amplitude();
   const hub = new MessageHub();
 
@@ -17,7 +18,7 @@ test('experiment.exposure() should send a track message on hub.analytics', () =>
   hub.analytics.subscribe(trackMessage, (message) => {
     wasHubMessageReceived = true;
     const { event, sender } = message.payload;
-    expect(message.type).toBe('track');
+    expect(message.type).toBe(AnalyticsMessageTypes.Track);
     expect(event.event_type).toBe('Exposure');
     expect(event.user_id).toBe(userId);
     expect(sender.name).toBe(experiment.name);
@@ -32,7 +33,7 @@ test('experiment.exposure() should send a track message on hub.analytics', () =>
   expect(wasHubMessageReceived).toBe(true);
 });
 
-test('analytics plugin automatically track() on experiment.exposure()', () => {
+test('analytics plugin automatically calls track() on experiment.exposure()', () => {
   const amplitude = new Amplitude();
   const hub = new MessageHub();
 
@@ -46,13 +47,12 @@ test('analytics plugin automatically track() on experiment.exposure()', () => {
     plugins: [ experiment, analytics ]
   })
 
-  user.setUserId(userId)
   experiment.exposure();
 
   expect(trackSpy.mock.calls.length).toBe(1);
 });
 
-test('multiple analytics plugins automatically track() on experiment.exposure()', () => {
+test('multiple analytics plugins automatically call track() on experiment.exposure()', () => {
   const amplitude = new Amplitude();
   const hub = new MessageHub();
 
@@ -66,9 +66,31 @@ test('multiple analytics plugins automatically track() on experiment.exposure()'
     plugins: [ experiment, analytics, segmentAnalytics ]
   })
 
-  user.setUserId(userId)
   experiment.exposure();
 
   expect(trackSpy.mock.calls.length).toBe(1);
   expect(segmentTrackSpy.mock.calls.length).toBe(1);
+});
+
+test('user updates should send messages on hub.user', () => {
+  const testUser = new User();
+  const amplitude = new Amplitude(testUser);
+  const hub = new MessageHub();
+
+  let wasHubMessageReceived = false;
+  hub.user.subscribe(userUpdatedMessage, (message) => {
+    wasHubMessageReceived = true;
+    const { user: messageUser, sender } = message.payload;
+    expect(message.type).toBe(UserMessageTypes.UserUpdated);
+    expect(messageUser.userId).toBe(userId);
+    expect(messageUser.deviceId).toBe(undefined);
+    expect(sender.name).toBe(user.name);
+    expect(sender.version).toBe(user.version);
+  })
+
+  amplitude.load({ apiKey, hub })
+
+  testUser.setUserId(userId)
+
+  expect(wasHubMessageReceived).toBe(true);
 });

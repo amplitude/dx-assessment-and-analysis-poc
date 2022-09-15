@@ -59,3 +59,4 @@ jobs:
           yarn example-6
           yarn example-7
           yarn example-8
+          yarn example-9

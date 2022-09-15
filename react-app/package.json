@@ -31,6 +31,7 @@
     "example-6": "npx ts-node src/examples/6-cross-platform-usage.ts",
     "example-7": "npx ts-node src/examples/7-cross-plugin-communication.ts",
     "example-8": "npx ts-node src/examples/8-plugin-configuration.ts",
+    "example-9": "npx ts-node src/examples/9-hooks.ts",
     "test": "REACT_APP_LOGGING_DISABLED=true react-scripts test --verbose --watchAll=false",
     "eject": "react-scripts eject"
   },

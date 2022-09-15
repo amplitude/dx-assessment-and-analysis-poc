@@ -43,6 +43,7 @@ This POC demonstrates a new architecture for our SDKs.
   * [6-cross-platform-usage.ts](src/examples/6-cross-platform-usage.ts) - Client/server hybrid applications
   * [7-cross-plugin-communication.ts](src/examples/7-cross-plugin-communication.ts) - Centralized event bus for decoupled hooks
   * [8-plugin-configuration.ts](src/examples/8-plugin-configuration.ts) - Configuring plugins
+  * [9-hooks.ts](src/examples/9-hooks.ts) - Hook into updates from different products via the message hub
 
 ## Setup
 To run locally

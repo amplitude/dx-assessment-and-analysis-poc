@@ -51,12 +51,4 @@ jobs:
       - name: Run examples
         working-directory: ./react-app
         run: |
-          yarn example-1
-          yarn example-2
-          yarn example-3
-          yarn example-4
-          yarn example-5
-          yarn example-6
-          yarn example-7
-          yarn example-8
-          yarn example-9
+          yarn example-all

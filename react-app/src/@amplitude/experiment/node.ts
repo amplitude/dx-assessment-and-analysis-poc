@@ -45,7 +45,9 @@ export class Experiment extends AmplitudePluginBase implements IExperiment {
   name = 'experiment';
   version = 0;
 
-  user(user: IUser): IExperimentClient {
+  user(user: User): IExperimentClient {
+    user.load(this.config)
+
     return new ExperimentClient(user, this.config, this);
   }
 

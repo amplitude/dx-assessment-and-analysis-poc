@@ -3,9 +3,8 @@ import { experiment } from "../@amplitude/experiment/browser";
 import { analytics } from "../@amplitude/analytics/browser";
 import { trackMessage } from "../@amplitude/analytics/messages";
 import { hub } from "../@amplitude/hub";
-import { IUser, user } from "../@amplitude/user";
+import { user } from "../@amplitude/user";
 import { userUpdatedMessage } from "../@amplitude/user/messages";
-import { jsons } from "../util";
 
 const logger = new Logger();
 

@@ -22,7 +22,6 @@ import {
   Logger,
   NoLogger,
 } from "./core";
-import { IUser } from "../@amplitude/amplitude/core/user";
 
 export { User, UserLoggedIn, Logger, NoLogger };
 export type { AnalyticsEvent, IAnalyticsClient, IExperimentClient, TrackingPlanMethods, VariantMethods };
@@ -67,7 +66,7 @@ export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsCl
 }
 
 export class Analytics extends AnalyticsNode {
-  user(user: IUser): AnalyticsClient {
+  user(user: User): AnalyticsClient {
     return new AnalyticsClient(user, this.config);
   }
 
@@ -99,7 +98,7 @@ export class ExperimentClient extends ExperimentClientNode implements Typed<Vari
 }
 
 export class Experiment extends ExperimentNode {
-  user(user: IUser): ExperimentClient {
+  user(user: User): ExperimentClient {
     return new ExperimentClient(user, this.config, this);
   }
 

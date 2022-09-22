@@ -17,8 +17,8 @@
  */
 import { amplitude, AmplitudePluginBase, AmplitudePluginCategory } from '../@amplitude/amplitude/browser'
 import { analytics } from '../@amplitude/analytics/browser'
-import { analytics as segmentAnalytics } from '../@amplitude/plugin-segment-analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
+import { user } from '../@amplitude/user'
 import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
@@ -30,9 +30,14 @@ amplitude.load({
   plugins: [
     analytics,
     experiment,
-    segmentAnalytics
-  ]
+  ],
 })
+
+/**
+ * Notice that since there is always a single user in client SDKs like Browser
+ * the `user` module is automatically loaded for you.
+ */
+user.setUserId('user-id');
 
 /**
  * 2. Use product plugins directly

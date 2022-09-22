@@ -35,13 +35,25 @@ export class Amplitude {
       this._config.logger = new NoLogger();
     }
     this.config.plugins?.forEach(plugin => {
-      this.timeline.add(plugin, this.getPluginConfig(plugin.name))
+      this.timeline.add(plugin, this.getPluginConfig(), this.getPluginSpecificConfig(plugin.name))
     })
   }
 
   addPlugin(plugin: AmplitudePlugin, pluginConfig?: any) {
     if (this.assertIsInitialized()) {
-      this.timeline.add(plugin, this.getPluginConfig(plugin.name, pluginConfig));
+      this.timeline.add(plugin, this.getPluginConfig(), {
+        ...this.getPluginSpecificConfig(plugin.name),
+        ...pluginConfig,
+      });
+    }
+  }
+
+  addPluginTyped<T>(plugin: AmplitudePlugin, pluginConfig: T) {
+    if (this.assertIsInitialized()) {
+      this.timeline.add(plugin, this.getPluginConfig(), {
+        ...this.getPluginSpecificConfig(plugin.name),
+        ...pluginConfig,
+      });
     }
   }
 
@@ -60,12 +72,13 @@ export class Amplitude {
     return false;
   }
 
-  protected getPluginConfig(pluginName: string, pluginConfig?: any): PluginConfig {
+  protected getPluginConfig(): PluginConfig {
     const { configuration, plugins, ...otherConfig } = this.config;
-    return {
-      ...otherConfig,
-      ...configuration?.[pluginName],
-      ...pluginConfig,
-    };
+
+    return otherConfig;
+  };
+
+  protected getPluginSpecificConfig(pluginName: string): any {
+    return this.config.configuration?.[pluginName];
   };
 }

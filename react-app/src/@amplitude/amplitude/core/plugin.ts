@@ -1,7 +1,8 @@
-import { Config } from "./config";
+import { Config as AmplitudeConfig } from "./config";
 import { AmplitudeMessage } from "../../hub";
+import { jsons } from "../../../util";
 
-export interface PluginConfig extends Config {
+export interface PluginConfig extends AmplitudeConfig {
 }
 
 export type AmplitudePluginCategory = 'ANALYTICS' | 'EXPERIMENT' | 'USER' | 'CUSTOM';
@@ -11,9 +12,10 @@ export interface AmplitudePlugin {
   id: string;
   name: string;
   version: number;
-  load(config: PluginConfig): void;
+  load(config: PluginConfig, pluginConfig?: any): void;
 }
 
+// export abstract class AmplitudePluginBase<PluginConfigType> implements AmplitudePlugin {
 export abstract class AmplitudePluginBase implements AmplitudePlugin {
   abstract category: AmplitudePluginCategory;
   abstract id: string;
@@ -21,13 +23,17 @@ export abstract class AmplitudePluginBase implements AmplitudePlugin {
   abstract version: number;
 
   protected _config: PluginConfig | undefined;
+  protected _pluginConfig: any | undefined;
 
-  load(config: PluginConfig) {
+  load(config: PluginConfig, pluginConfig?: any) {
     this._config = config;
-    config.logger.log(`[${this.name}] load()`)
+    this._pluginConfig = pluginConfig;
+    config.logger.log(`[${this.name}.load] pluginConfig=${jsons(pluginConfig)}`)
   }
 
   protected get config() { return this._config! };
+
+  protected getPluginConfig<T>(): T { return this._pluginConfig! as T };
 
   protected get logger() { return this.config.logger };
 
@@ -49,7 +55,7 @@ export class Timeline {
     private plugins: AmplitudePlugin[] = []
   ) {}
 
-  add(plugin: AmplitudePlugin, config: PluginConfig) {
+  add(plugin: AmplitudePlugin, config: PluginConfig, pluginConfig?: any) {
     config.logger.log(`[Timeline.add] ${plugin.category}`); // eslint-disable-line no-console
 
     if (this.plugins.some(p => p.id === plugin.id)) {
@@ -58,6 +64,6 @@ export class Timeline {
     }
 
     this.plugins.push(plugin)
-    plugin.load(config);
+    plugin.load(config, pluginConfig);
   }
 }

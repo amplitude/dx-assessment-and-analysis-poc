@@ -4,7 +4,7 @@ import { jsons } from "../../util";
 import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
 import { trackMessage, newTrackMessage } from "./messages";
 
-export type { AnalyticsEvent };
+export type { AnalyticsEvent, IAnalyticsClient };
 
 export interface AnalyticsPluginConfig extends BrowserPluginConfig, AnalyticsPluginConfigCore {
 

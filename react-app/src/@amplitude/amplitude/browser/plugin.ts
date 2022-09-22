@@ -7,8 +7,8 @@ export interface BrowserPluginConfig extends Config {
 }
 
 export abstract class BrowserAmplitudePluginBase extends AmplitudePluginBase {
-  load(config: BrowserPluginConfig) {
-    super.load(config);
+  load(config: BrowserPluginConfig, pluginConfig?: any) {
+    super.load(config, pluginConfig);
   }
 
   protected get config(): BrowserPluginConfig { return this._config! as BrowserPluginConfig};

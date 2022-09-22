@@ -1,7 +1,7 @@
 import { amplitude } from "../@amplitude/amplitude/browser";
 import { analytics } from "../@amplitude/analytics/browser";
 import { experiment } from "../@amplitude/experiment/browser";
-import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
+import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "../@amplitude/plugin-segment-analytics/browser";
 import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
@@ -22,9 +22,6 @@ amplitude.load({
     },
     experiment: {
       flushIntervalMs: 100,
-    },
-    segment: {
-
     }
   },
 })
@@ -32,6 +29,9 @@ amplitude.load({
 /**
  * 2. Add plugins dynamically after load()
  */
-amplitude.addPlugin(segmentAnalytics, {
+amplitude.addPluginTyped<SegmentAnalyticsConfig>(segmentAnalytics, {
+  writeKey: 'my-segment-write-key',
   flushInterval: 5000,
 });
+
+segmentAnalytics.track('My Event');

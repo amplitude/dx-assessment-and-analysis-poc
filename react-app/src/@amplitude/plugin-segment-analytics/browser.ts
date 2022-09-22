@@ -4,14 +4,24 @@ import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/br
 import { trackMessage } from "../analytics/messages";
 import { jsons } from "../../util";
 
+export interface SegmentAnalyticsConfig {
+  writeKey: string;
+  flushInterval?: number;
+}
+
 export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAnalytics {
   category: AmplitudePluginCategory = "ANALYTICS";
   id = 'com.segment.analytics.browser';
   name = 'segment';
   version = 0;
 
-  load(config: BrowserPluginConfig) {
-    super.load(config);
+  load(config: BrowserPluginConfig, segmentConfig: SegmentAnalyticsConfig) {
+    super.load(config, segmentConfig);
+
+    if (!segmentConfig || !segmentConfig.writeKey) {
+      this.config.logger.error(`Unable to load ${this.name}. Additional configuration required.`);
+      return;
+    }
 
     // Hook into the event bus and forward analytics events to Segment
     config.hub?.analytics.subscribe(trackMessage, message => {

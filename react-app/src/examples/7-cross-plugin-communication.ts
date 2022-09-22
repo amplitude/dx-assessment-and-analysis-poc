@@ -8,8 +8,9 @@
  * - Add Messages to core packages with minimal interfaces `analyticsMessage({ event: AnalyticsEvent, method: 'track' })
  * - Core products forward messages on bus that can be listened to by other Plugins
  */
-import { analytics as segmentAnalytics } from "../@amplitude/plugin-segment-analytics/browser";
-import { amplitude, analytics, experiment, user } from "../amplitude/browser";
+import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "../@amplitude/plugin-segment-analytics/browser";
+import { experiment as launchDarkly, LaunchDarklyConfig } from "../@amplitude/plugin-launch-darkly-experiment/browser";
+import { amplitude, analytics, experiment, TrackingPlanClient, user, UserLoggedIn } from "../amplitude/browser";
 import { Logger } from "../@amplitude/amplitude/core/logger";
 
 amplitude.load({
@@ -17,12 +18,22 @@ amplitude.load({
   logger: new Logger(),
   plugins: [
     experiment,
+    launchDarkly,
     analytics,
     /**
      * This Segment analytics plugin listens to events on the central bus and forwards them to Segment
      */
     segmentAnalytics
-  ]
+  ],
+  configuration: {
+    launchdarkly: {
+      apiKey: 'my-ld-api-key',
+      userKey: 'my-ld-user-key'
+    } as LaunchDarklyConfig,
+    segment: {
+      writeKey: 'my-segment-write-key'
+    } as SegmentAnalyticsConfig,
+  }
 })
 
 /**
@@ -43,6 +54,8 @@ experiment.fetch();
  */
 experiment.exposure();
 
+launchDarkly.exposure();
+
 /**
  * Analytics (and listeners)
  */
@@ -52,3 +65,11 @@ analytics.track('Amplitude Analytics SDK Event')
  * Segment Analytics
  */
 segmentAnalytics.track('Segment Only Event')
+
+/**
+ * [Typed] Segment Analytics
+ */
+segmentAnalytics.track(new UserLoggedIn());
+
+const typedSegment = new TrackingPlanClient(segmentAnalytics);
+typedSegment.userSignedUp();

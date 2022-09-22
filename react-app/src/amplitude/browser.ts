@@ -1,5 +1,10 @@
-import { Amplitude as AmplitudeBrowser } from "../@amplitude/amplitude/browser";
-import { Analytics as AnalyticsBrowser } from "../@amplitude/analytics/browser";
+import {
+  Amplitude as AmplitudeBrowser,
+} from "../@amplitude/amplitude/browser";
+import {
+  Analytics as AnalyticsBrowser,
+  IAnalyticsClient as IAnalyticsClientBrowser,
+} from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
 import { MessageHub, hub } from "../@amplitude/hub";
 import {
@@ -62,20 +67,22 @@ export const amplitude = new Amplitude();
 /**
  * ANALYTICS
  */
+export class TrackingPlanClient implements TrackingPlanMethods {
+  constructor(private analytics: IAnalyticsClientBrowser) {}
+  userSignedUp() { this.analytics.track('User Signed Up') }
+  userLoggedIn() { this.analytics.track('User Logged In') }
+  addToCart() { this.analytics.track('Add To Cart') }
+  checkout() { this.analytics.track('Checkout') }
+}
+
 export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed() {
-    const core = this;
-    return {
-      userSignedUp() { core.track('User Signed Up') },
-      userLoggedIn() { core.track('User Logged In') },
-      addToCart() { core.track('Add To Cart') },
-      checkout() { core.track('Checkout') },
-    };
+  get typed(): TrackingPlanMethods {
+    return new TrackingPlanClient(this);
   }
 }
 
 export const analytics = new Analytics();
-
+export const typedAnalytics = analytics.typed;
 /**
  * EXPERIMENT
  */

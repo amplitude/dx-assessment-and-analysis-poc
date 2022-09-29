@@ -1,12 +1,12 @@
 import {
   Amplitude as AmplitudeBrowser,
-} from "../@amplitude/amplitude/browser";
+} from "@amplitude/amplitude-browser";
+import { MessageHub, hub } from "@amplitude/hub";
 import {
   Analytics as AnalyticsBrowser,
   IAnalyticsClient as IAnalyticsClientBrowser,
 } from "../@amplitude/analytics/browser";
 import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
-import { MessageHub, hub } from "../@amplitude/hub";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,

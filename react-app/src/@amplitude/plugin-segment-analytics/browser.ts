@@ -1,8 +1,7 @@
-import { AmplitudePluginCategory } from "../amplitude/browser";
+import { AmplitudePluginCategory, BrowserAmplitudePluginBase, BrowserPluginConfig } from "@amplitude/amplitude-browser";
 import { IAnalytics, AnalyticsEvent } from "../analytics/browser";
-import { BrowserAmplitudePluginBase, BrowserPluginConfig } from "../amplitude/browser/plugin";
 import { trackMessage } from "../analytics/messages";
-import { jsons } from "../../util";
+import { jsons } from "@amplitude/util";
 
 export interface SegmentAnalyticsConfig {
   writeKey: string;

@@ -1,6 +1,9 @@
 # IDE
 .idea
 
+packages/*/lib
+examples/*/lib
+
 # Logs
 logs
 *.log

@@ -4,11 +4,10 @@
  * Separate out Group functionality into its own Plugin
  */
 
-import { AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/browser";
-import { IUser } from "../amplitude/core/user";
-import { isEmpty, jsons } from "../../util";
+import { AmplitudePluginBase, AmplitudePluginCategory, IUser } from "@amplitude/amplitude-browser";
+import { isEmpty, jsons } from "@amplitude/util";
 
-export type { IUser } from '../amplitude/core/user'
+export type { IUser };
 
 export interface IGroup {
   setGroupName(groupName: string): void;

@@ -1,9 +1,9 @@
 import { AnalyticsEvent, IAnalyticsClient } from "./core";
-import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/browser";
-import { jsons } from "../../util";
-import { Config } from "../amplitude/core/config";
-import { User } from "../../amplitude/core";
-import { UserClient } from "../amplitude/node/client";
+import {
+  AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory, UserClient, Config,
+} from "@amplitude/amplitude-node";
+import { User } from "@amplitude/user";
+import { jsons } from "@amplitude/util";
 import { trackMessage } from "./messages";
 
 export type { AnalyticsEvent };

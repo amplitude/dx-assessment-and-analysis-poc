@@ -1,7 +1,7 @@
-import { AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory } from "../amplitude/node";
-import { IUser, User } from "../user";
-import { UserClient } from "../amplitude/node/client";
-import { Config } from "../amplitude/core/config";
+import {
+  AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory, UserClient, Config,
+} from "@amplitude/amplitude-node";
+import { IUser, User } from "@amplitude/user";
 import { IExperimentClient } from "./core";
 import { newTrackMessage } from "../analytics/messages";
 

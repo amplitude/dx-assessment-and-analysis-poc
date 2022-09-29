@@ -1,8 +1,7 @@
 // Define Event
-import { AmplitudeMessage } from "../hub";
+import { AmplitudeMessage, createEventDefinition } from "@amplitude/hub";
 import { AnalyticsEvent } from "./core";
-import { createEventDefinition } from "ts-bus";
-import { AmplitudePlugin } from "../amplitude/core/plugin";
+import { AmplitudePlugin } from "@amplitude/amplitude-core";
 
 export type { AnalyticsEvent };
 

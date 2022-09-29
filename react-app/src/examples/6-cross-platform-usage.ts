@@ -5,13 +5,13 @@ import {
   UserLoggedIn,
   IAnalyticsClient,
   IExperimentClient,
+  Logger,
 } from '../amplitude/node'
 import {
   amplitude as amplitudeBrowser,
   analytics as analyticsBrowser,
   experiment as experimentBrowser,
 } from '../amplitude/browser'
-import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * Client

@@ -38,8 +38,9 @@
  * This can be especially helpful in cross-platform applications such as NextJS were some code may be run on both
  * the client and the server context. The shared interface makes this easy.
  */
-import { amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient } from '../amplitude/node'
-import { Logger } from "../@amplitude/amplitude/core/logger";
+import {
+  amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient, Logger,
+} from '../amplitude/node'
 
 amplitude.typed.load({ logger: new Logger() })
 

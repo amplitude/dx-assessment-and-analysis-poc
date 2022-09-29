@@ -1,0 +1,24 @@
+{
+  "name": "@amplitude/hub",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "justin.fiedler <justin.fiedler@amplitude.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/hub.js",
+  "types": "lib/hub.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "ts-bus": "^2.3.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "test": "jest"
+  }
+}

@@ -3,11 +3,10 @@
  *
  * These imports of the static core SDKs provide standard "untyped" usage
  */
-import { amplitude } from '../@amplitude/amplitude/browser'
-import { user } from '../@amplitude/user'
+import { amplitude, Logger } from '@amplitude/amplitude-browser'
+import { user } from '@amplitude/user'
 import { analytics } from '../@amplitude/analytics/browser'
 import { experiment } from '../@amplitude/experiment/browser'
-import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * [Typed] Imports

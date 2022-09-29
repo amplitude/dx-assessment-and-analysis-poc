@@ -1,6 +1,5 @@
-import { AmplitudePlugin, AmplitudePluginCategory } from "../amplitude/browser";
-import { User } from "../user";
-import { BrowserAmplitudePluginBase } from "../amplitude/browser/plugin";
+import { AmplitudePlugin, AmplitudePluginCategory, BrowserAmplitudePluginBase } from "@amplitude/amplitude-browser";
+import { User } from "@amplitude/user";
 import { IExperimentClient } from "./core";
 import { newTrackMessage } from "../analytics/messages";
 

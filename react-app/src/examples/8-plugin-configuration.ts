@@ -1,8 +1,7 @@
-import { amplitude } from "../@amplitude/amplitude/browser";
+import { amplitude, Logger } from "@amplitude/amplitude-browser";
 import { analytics } from "../@amplitude/analytics/browser";
 import { experiment } from "../@amplitude/experiment/browser";
 import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "../@amplitude/plugin-segment-analytics/browser";
-import { Logger } from "../@amplitude/amplitude/core/logger";
 
 /**
  * 1. Register plugins with Amplitude during load()
@@ -17,11 +16,10 @@ amplitude.load({
   ],
   configuration: {
     analytics: {
-      flushIntervalMs: 1000,
-      logLevel: 'none',
+      apiKey: ''
     },
     experiment: {
-      flushIntervalMs: 100,
+      apiKey: ''
     }
   },
 })

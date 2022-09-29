@@ -1,12 +1,11 @@
-import { User as UserCore } from "../@amplitude/user";
+import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
+import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent } from "../@amplitude/analytics/core";
 import { IAnalyticsClient as IAnalyticsClientCore } from "../@amplitude/analytics/core";
 import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
-import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore } from "../@amplitude/amplitude/core/client";
-
-export { Logger, NoLogger } from "../@amplitude/amplitude/core/logger";
 
 export type { AnalyticsEvent };
+export { Logger, NoLogger };
 
 /**
  * GENERAL INTERFACES

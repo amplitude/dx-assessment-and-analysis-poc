@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
-import { hub } from "./@amplitude/hub";
+import { hub } from "@amplitude/hub";
 import { trackMessage, AnalyticsEvent } from "./@amplitude/analytics/messages";
 
 const SELECTOR_EXPERIMENT_EXPOSURE_BUTTON = /experiment.exposure/i

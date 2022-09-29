@@ -1,6 +1,6 @@
 import { AmplitudePlugin, AmplitudePluginCategory, BrowserAmplitudePluginBase } from "@amplitude/amplitude-browser";
 import { User } from "@amplitude/user";
-import { IExperimentClient } from "./core";
+import { IExperimentClient } from "@amplitude/experiment-core";
 import { newTrackMessage } from "@amplitude/analytics-messages";
 
 export interface IExperiment extends AmplitudePlugin, IExperimentClient {}

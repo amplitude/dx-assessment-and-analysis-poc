@@ -17,7 +17,7 @@
  */
 import { amplitude, AmplitudePluginBase, AmplitudePluginCategory, Logger } from '@amplitude/amplitude-browser'
 import { analytics } from '@amplitude/analytics-browser'
-import { experiment } from '../@amplitude/experiment/browser'
+import { experiment } from '@amplitude/experiment-browser'
 import { user } from '@amplitude/user'
 
 /**

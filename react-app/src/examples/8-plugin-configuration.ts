@@ -1,6 +1,6 @@
 import { amplitude, Logger } from "@amplitude/amplitude-browser";
 import { analytics } from "@amplitude/analytics-browser";
-import { experiment } from "../@amplitude/experiment/browser";
+import { experiment } from "@amplitude/experiment-browser";
 import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "../@amplitude/plugin-segment-analytics/browser";
 
 /**

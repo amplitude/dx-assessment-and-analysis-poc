@@ -6,7 +6,7 @@ import {
   Analytics as AnalyticsBrowser,
   IAnalyticsClient as IAnalyticsClientBrowser,
 } from "@amplitude/analytics-browser";
-import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
+import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,

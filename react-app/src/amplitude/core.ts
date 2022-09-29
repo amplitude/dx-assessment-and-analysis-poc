@@ -1,7 +1,7 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "../@amplitude/experiment/core";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 
 export type { AnalyticsEvent };
 export { Logger, NoLogger };

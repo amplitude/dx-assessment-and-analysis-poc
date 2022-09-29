@@ -6,7 +6,7 @@ import {
 import {
   Experiment as ExperimentNode,
   ExperimentClient as ExperimentClientNode
-} from "../@amplitude/experiment/node";
+} from "@amplitude/experiment-node";
 import {
   AMultiVariateExperiment,
   IAnalyticsClient,

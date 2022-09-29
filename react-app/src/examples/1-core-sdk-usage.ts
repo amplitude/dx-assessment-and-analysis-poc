@@ -5,7 +5,7 @@
 import { amplitude, Logger } from '@amplitude/amplitude-browser'
 import { user } from '@amplitude/user'
 import { analytics } from '@amplitude/analytics-browser'
-import { experiment } from '../@amplitude/experiment/browser'
+import { experiment } from '@amplitude/experiment-browser'
 
 /**
  * With a scoped source key we could reduce to a single API key to rule all sub-products

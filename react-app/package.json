@@ -18,6 +18,8 @@
     "@amplitude/experiment-browser": "^0.0.0",
     "@amplitude/experiment-core": "^0.0.0",
     "@amplitude/experiment-node": "^0.0.0",
+    "@amplitude/plugin-segment-analytics-browser": "^0.0.0",
+    "@amplitude/plugin-launch-darkly-experiment-browser": "^0.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",

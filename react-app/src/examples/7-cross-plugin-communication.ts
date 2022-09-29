@@ -8,8 +8,8 @@
  * - Add Messages to core packages with minimal interfaces `analyticsMessage({ event: AnalyticsEvent, method: 'track' })
  * - Core products forward messages on bus that can be listened to by other Plugins
  */
-import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "../@amplitude/plugin-segment-analytics/browser";
-import { experiment as launchDarkly, LaunchDarklyConfig } from "../@amplitude/plugin-launch-darkly-experiment/browser";
+import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "@amplitude/plugin-segment-analytics-browser";
+import { experiment as launchDarkly, LaunchDarklyConfig } from "@amplitude/plugin-launch-darkly-experiment-browser";
 import { amplitude, analytics, experiment, TrackingPlanClient, user, UserLoggedIn, Logger } from "../amplitude/browser";
 
 amplitude.load({

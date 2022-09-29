@@ -1,5 +1,5 @@
 /**
- * WIP - Audiences
+ * WIP - Groups
  *
  * Separate out Group functionality into its own Plugin
  */

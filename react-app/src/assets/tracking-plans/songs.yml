@@ -1,0 +1,43 @@
+environments:
+  development:
+    experiment:
+      apiKey: my-deployment-key
+    analytics:
+      apiKey: my-api-key
+
+  production:
+    experiment:
+      apiKey: my-deployment-key
+    analytics:
+      apiKey: my-api-key
+
+experiments:
+  - title: Mac Users Experiment
+    variants:
+      'on': true
+      'off': false
+
+events:
+  - title: Product Event
+    description: A product from Acme's catalog
+    type: object
+    required: [ productId ]
+    properties:
+      price:
+        description: The products name
+        type: string
+      productId:
+        description: The unique identifier for a product
+        type: integer
+
+  - title: Song Played
+    description: A song was played
+    type: object
+    required: [ songId ]
+    properties:
+      songId:
+        description: The song unique identifier
+        type: string
+      songFavorited:
+        description: If the song is favorited
+        type: boolean

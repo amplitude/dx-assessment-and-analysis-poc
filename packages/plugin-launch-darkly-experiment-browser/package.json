@@ -1,0 +1,30 @@
+{
+  "name": "@amplitude/plugin-launch-darkly-experiment-browser",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "justin.fiedler <justin.fiedler@amplitude.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/plugin-launch-darkly-experiment-browser.js",
+  "types": "lib/plugin-launch-darkly-experiment-browser.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@amplitude/amplitude-browser": "^0.0.0",
+    "@amplitude/experiment-core": "^0.0.0",
+    "@amplitude/analytics-messages": "^0.0.0",
+    "@amplitude/hub": "^0.0.0",
+    "@amplitude/user": "^0.0.0",
+    "@amplitude/user-messages": "^0.0.0",
+    "@amplitude/util": "^0.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "test": "jest"
+  }
+}

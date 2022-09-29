@@ -3,7 +3,7 @@ import {
 } from "@amplitude/amplitude-node";
 import { IUser, User } from "@amplitude/user";
 import { IExperimentClient } from "./core";
-import { newTrackMessage } from "../analytics/messages";
+import { newTrackMessage } from "@amplitude/analytics-messages";
 
 export interface IExperiment extends AmplitudePlugin, UserClient<IExperimentClient> {}
 

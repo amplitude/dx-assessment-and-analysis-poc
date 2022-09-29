@@ -4,7 +4,7 @@
 
 import { amplitude, Logger } from '@amplitude/amplitude-browser'
 import { user } from '@amplitude/user'
-import { analytics } from '../@amplitude/analytics/browser'
+import { analytics } from '@amplitude/analytics-browser'
 import { experiment } from '../@amplitude/experiment/browser'
 
 /**

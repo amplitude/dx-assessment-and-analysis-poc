@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import { hub } from "@amplitude/hub";
-import { trackMessage, AnalyticsEvent } from "./@amplitude/analytics/messages";
+import { trackMessage, AnalyticsEvent } from "@amplitude/analytics-messages";
 
 const SELECTOR_EXPERIMENT_EXPOSURE_BUTTON = /experiment.exposure/i
 const SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON = /login \(with event method/i

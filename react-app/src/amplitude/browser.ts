@@ -5,7 +5,7 @@ import { MessageHub, hub } from "@amplitude/hub";
 import {
   Analytics as AnalyticsBrowser,
   IAnalyticsClient as IAnalyticsClientBrowser,
-} from "../@amplitude/analytics/browser";
+} from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "../@amplitude/experiment/browser";
 import {
   AMultiVariateExperiment,

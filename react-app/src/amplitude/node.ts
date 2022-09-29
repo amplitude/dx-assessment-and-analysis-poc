@@ -2,7 +2,7 @@ import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
   AnalyticsClient as AnalyticsClientNode
-} from "../@amplitude/analytics/node";
+} from "@amplitude/analytics-node";
 import {
   Experiment as ExperimentNode,
   ExperimentClient as ExperimentClientNode

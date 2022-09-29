@@ -1,0 +1,27 @@
+{
+  "name": "@amplitude/analytics-browser",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "justin.fiedler <justin.fiedler@amplitude.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/analytics-browser.js",
+  "types": "lib/analytics-browser.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@amplitude/amplitude-browser": "^0.0.0",
+    "@amplitude/analytics-core": "^0.0.0",
+    "@amplitude/hub": "^0.0.0",
+    "@amplitude/util": "^0.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "test": "jest"
+  }
+}

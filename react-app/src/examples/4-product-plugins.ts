@@ -16,7 +16,7 @@
  *  2. Access the product SDK using the Plugin instance e.g. `analytics.track(..)`, `experiment.fetch()`
  */
 import { amplitude, AmplitudePluginBase, AmplitudePluginCategory, Logger } from '@amplitude/amplitude-browser'
-import { analytics } from '../@amplitude/analytics/browser'
+import { analytics } from '@amplitude/analytics-browser'
 import { experiment } from '../@amplitude/experiment/browser'
 import { user } from '@amplitude/user'
 

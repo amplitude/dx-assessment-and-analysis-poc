@@ -1,6 +1,6 @@
 import { AmplitudePluginCategory, BrowserAmplitudePluginBase, BrowserPluginConfig } from "@amplitude/amplitude-browser";
-import { IAnalytics, AnalyticsEvent } from "../analytics/browser";
-import { trackMessage } from "../analytics/messages";
+import { IAnalytics, AnalyticsEvent } from "@amplitude/analytics-browser";
+import { trackMessage } from "@amplitude/analytics-messages";
 import { jsons } from "@amplitude/util";
 
 export interface SegmentAnalyticsConfig {

@@ -1,5 +1,7 @@
 import { parse } from 'yaml';
 
+export type Product = 'experiment' | 'analytics';
+
 export type Platform = 'Node' | 'Browser';
 
 export const allPlatforms: Set<Platform> = new Set<Platform>(['Node', 'Browser']);
@@ -14,19 +16,36 @@ export interface Settings {
   outputFileName?: string;
 }
 
+export interface ProductEnvironment {
+  apiKey: string;
+}
+
+export interface Environment {
+  analytics?: ProductEnvironment;
+  experiment?: ProductEnvironment;
+}
+
 export interface Config {
   settings: Settings;
+  environments: Record<string, Environment>;
 }
 
 export function parseFromYaml(yaml: string): Config {
   const config: Config = parse(yaml);
-  return config;
+  return config ?? {} as Config;
 }
 
 export interface ConfigValidation {
   valid: boolean;
   errors?: string[];
 }
+
+export const ErrorMessages = Object.freeze({
+  MissingSettings: `Missing 'settings' in configuration YML'.`,
+  MissingPlatform: `Missing 'settings.platform' in configuration YML'.`,
+  MissingOutputPath: `Missing 'settings.output' in configuration YML'.`,
+  InvalidPlatform: (platform: string) => `Invalid 'settings.platform'="${platform}".`,
+});
 
 export function isValid(config: Config): ConfigValidation {
   let valid = true;
@@ -36,21 +55,21 @@ export function isValid(config: Config): ConfigValidation {
 
   if (!hasSettings) {
     valid = false;
-    errors.push(`Missing 'settings' in configuration YML'.`)
+    errors.push(ErrorMessages.MissingSettings)
   } else {
     let hasOutputPath = !!(config.settings.output);
     if (!hasOutputPath) {
-      errors.push(`Missing 'settings.output' in configuration YML'.`)
+      errors.push(ErrorMessages.MissingOutputPath)
     }
     let hasPlatform = !!(config.settings.platform);
     if (!hasPlatform) {
-      errors.push(`Missing 'settings.platform' in configuration YML'.`)
+      errors.push(ErrorMessages.MissingPlatform)
     } else {
       const { platform } = config.settings;
       let hasValidPlatform = allPlatforms.has(platform);
       if (!hasValidPlatform) {
         valid = false;
-        errors.push(`Invalid 'settings.platform'="${platform}".`);
+        errors.push(ErrorMessages.InvalidPlatform(platform));
       }
     }
     valid = valid && hasOutputPath && hasPlatform;
@@ -61,4 +80,3 @@ export function isValid(config: Config): ConfigValidation {
     errors: errors.length > 0 ? errors : undefined,
   };
 }
-

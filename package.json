@@ -34,6 +34,7 @@
     "build": "lerna run build",
     "clean": "lerna run clean && rimraf node_modules",
     "test": "lerna run test",
+    "cli": "ts-node packages/cli/src/cli.ts",
     "deploy:version": "lerna version",
     "example-7": "npx ts-node react-app/src/examples/7-cross-plugin-communication.ts"
   }

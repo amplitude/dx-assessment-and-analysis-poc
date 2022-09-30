@@ -5,7 +5,7 @@ import './App.css';
 /**
  * Import strongly typed SDKs for convenience
  */
-import { amplitude, user, analytics, experiment, UserLoggedIn, Logger, NoLogger } from '../src/amplitude/browser';
+import { amplitude, user, analytics, experiment, UserLoggedIn, Logger, NoLogger } from './amplitude/index';
 
 const { REACT_APP_LOGGING_DISABLED } = process.env;
 const useLogger = REACT_APP_LOGGING_DISABLED !== 'true';

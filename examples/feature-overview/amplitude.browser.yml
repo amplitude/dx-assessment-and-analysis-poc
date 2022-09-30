@@ -1,3 +1,10 @@
+settings:
+  platform: Browser
+  language: TypeScript
+  sdk: "@amplitude/amplitude-browser"
+  output: ./amplitude
+  outputFileName: browser
+
 environments:
   development:
     experiment:

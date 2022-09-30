@@ -1,8 +1,9 @@
 settings:
-  platform: Browser
+  platform: Node
   language: TypeScript
-  sdk: "@amplitude/amplitude-browser"
-  output: ./src/amplitude
+  sdk: "@amplitude/amplitude-node"
+  output: ./amplitude
+  outputFileName: node
 
 environments:
   development:
@@ -10,7 +11,6 @@ environments:
       apiKey: my-deployment-key
     analytics:
       apiKey: my-api-key
-
   production:
     experiment:
       apiKey: my-deployment-key

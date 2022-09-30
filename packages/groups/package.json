@@ -14,7 +14,8 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-core": "^0.0.0"
+    "@amplitude/amplitude-core": "^0.0.0",
+    "@amplitude/util": "^0.0.0"
   },
   "scripts": {
     "build": "tsc",

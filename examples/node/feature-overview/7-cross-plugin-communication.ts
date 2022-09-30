@@ -10,7 +10,7 @@
  */
 import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "@amplitude/plugin-segment-analytics-browser";
 import { experiment as launchDarkly, LaunchDarklyConfig } from "@amplitude/plugin-launch-darkly-experiment-browser";
-import { amplitude, analytics, experiment, TrackingPlanClient, user, UserLoggedIn, Logger } from "../amplitude/browser";
+import { amplitude, analytics, experiment, TrackingPlanClient, user, UserLoggedIn, Logger } from "./amplitude/browser";
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',

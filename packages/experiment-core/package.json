@@ -20,6 +20,6 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",
-    "test": "jest"
+    "test": ""
   }
 }

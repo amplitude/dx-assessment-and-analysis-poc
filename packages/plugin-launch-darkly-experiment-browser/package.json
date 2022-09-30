@@ -15,8 +15,8 @@
   ],
   "dependencies": {
     "@amplitude/amplitude-browser": "^0.0.0",
-    "@amplitude/experiment-core": "^0.0.0",
     "@amplitude/analytics-messages": "^0.0.0",
+    "@amplitude/experiment-core": "^0.0.0",
     "@amplitude/hub": "^0.0.0",
     "@amplitude/user": "^0.0.0",
     "@amplitude/user-messages": "^0.0.0",
@@ -25,6 +25,6 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",
-    "test": "jest"
+    "test": ""
   }
 }

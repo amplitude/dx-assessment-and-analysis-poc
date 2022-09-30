@@ -15,13 +15,13 @@
   ],
   "dependencies": {
     "@amplitude/amplitude-core": "^0.0.0",
-    "@amplitude/user": "^0.0.0",
     "@amplitude/hub": "^0.0.0",
+    "@amplitude/user": "^0.0.0",
     "@amplitude/util": "^0.0.0"
   },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf lib/*",
-    "test": "jest"
+    "test": ""
   }
 }

@@ -6,12 +6,12 @@ import {
   IAnalyticsClient,
   IExperimentClient,
   Logger,
-} from '../amplitude/node'
+} from './amplitude/node'
 import {
   amplitude as amplitudeBrowser,
   analytics as analyticsBrowser,
   experiment as experimentBrowser,
-} from '../amplitude/browser'
+} from './amplitude/browser'
 
 /**
  * Client

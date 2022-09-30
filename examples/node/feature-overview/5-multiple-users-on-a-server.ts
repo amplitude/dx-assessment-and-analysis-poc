@@ -40,7 +40,7 @@
  */
 import {
   amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient, Logger,
-} from '../amplitude/node'
+} from './amplitude/node'
 
 amplitude.typed.load({ logger: new Logger() })
 

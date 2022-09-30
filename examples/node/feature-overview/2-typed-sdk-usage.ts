@@ -1,7 +1,7 @@
 /**
  * Strongly typed SDK usage
  */
-import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from '../amplitude/browser'
+import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from './amplitude/browser'
 
 /**
  * Code generated SDK can set sensible defaults based on environment including

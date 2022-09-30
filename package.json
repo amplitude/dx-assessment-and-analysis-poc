@@ -3,8 +3,7 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "examples/*",
-    "react-app"
+    "examples/*"
   ],
   "devDependencies": {
     "@nrwl/eslint-plugin-nx": "14.7.17",

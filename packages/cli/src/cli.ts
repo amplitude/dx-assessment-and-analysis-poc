@@ -1,8 +1,9 @@
 import { program } from 'commander';
 import * as fs from "fs";
 import * as path from "path";
-import { parse } from 'yaml';
+
 import { AmplitudeGeneratorBrowser, AmplitudeGeneratorNode, CodeGenerator } from "./generators/generators";
+import { isValid, parseFromYaml } from "./config";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')
@@ -22,10 +23,10 @@ program.command('build')
     try {
       const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
 
-      const config = parse(ymlConfig);
-
-      if (!config.settings || !config.settings.platform || !config.settings.output) {
-        console.error(`Missing required 'settings'. 'settings.platform' and 'settings.output' are required.`);
+      const config = parseFromYaml(ymlConfig);
+      const configValidation = isValid(config);
+      if (!configValidation.valid) {
+        console.error(`Error loading configuration from ${configPath}.`, configValidation.errors);
         return;
       }
 

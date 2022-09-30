@@ -78,6 +78,14 @@ export interface TrackingPlanMethods{
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
+export class TrackingPlanClient implements TrackingPlanMethods {
+  constructor(private analytics: IAnalyticsClientCore) {}
+  userSignedUp() { this.analytics.track('User Signed Up') }
+  userLoggedIn() { this.analytics.track('User Logged In') }
+  addToCart() { this.analytics.track('Add To Cart') }
+  checkout() { this.analytics.track('Checkout') }
+}
+
 /**
  * EXPERIMENT
  */
@@ -120,13 +128,7 @@ export const amplitude = new Amplitude();
  */
 export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
   get typed() {
-    const core = this;
-    return {
-      userSignedUp() { core.track('User Signed Up') },
-      userLoggedIn() { core.track(new UserLoggedIn()) },
-      addToCart() { core.track('Add To Cart') },
-      checkout() { core.track('Checkout') },
-    };
+    return new TrackingPlanClient(this);;
   }
 }
 

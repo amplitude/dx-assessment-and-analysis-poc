@@ -3,13 +3,8 @@ import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 
-import {
-  Amplitude as AmplitudeBrowser,
-} from "@amplitude/amplitude-browser";
-import {
-  Analytics as AnalyticsBrowser,
-  IAnalyticsClient as IAnalyticsClientBrowser,
-} from "@amplitude/analytics-browser";
+import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
+import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
 
 export type { AnalyticsEvent };
@@ -79,6 +74,14 @@ export interface TrackingPlanMethods{
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
+export class TrackingPlanClient implements TrackingPlanMethods {
+  constructor(private analytics: IAnalyticsClientCore) {}
+  userSignedUp() { this.analytics.track('User Signed Up') }
+  userLoggedIn() { this.analytics.track('User Logged In') }
+  addToCart() { this.analytics.track('Add To Cart') }
+  checkout() { this.analytics.track('Checkout') }
+}
+
 /**
  * EXPERIMENT
  */
@@ -126,14 +129,6 @@ export const amplitude = new Amplitude();
 /**
  * ANALYTICS
  */
-export class TrackingPlanClient implements TrackingPlanMethods {
-  constructor(private analytics: IAnalyticsClientBrowser) {}
-  userSignedUp() { this.analytics.track('User Signed Up') }
-  userLoggedIn() { this.analytics.track('User Logged In') }
-  addToCart() { this.analytics.track('Add To Cart') }
-  checkout() { this.analytics.track('Checkout') }
-}
-
 export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
   get typed(): TrackingPlanMethods {
     return new TrackingPlanClient(this);

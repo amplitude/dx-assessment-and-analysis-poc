@@ -128,6 +128,14 @@ export interface TrackingPlanMethods{
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
+export class TrackingPlanClient implements TrackingPlanMethods {
+  constructor(private analytics: IAnalyticsClientCore) {}
+  userSignedUp() { this.analytics.track('User Signed Up') }
+  userLoggedIn() { this.analytics.track('User Logged In') }
+  addToCart() { this.analytics.track('Add To Cart') }
+  checkout() { this.analytics.track('Checkout') }
+}
+
 /**
  * EXPERIMENT
  */
@@ -145,13 +153,8 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
 
 const amplitudeBrowserCode: CodeBlock = {
   imports: [`\
-import {
-  Amplitude as AmplitudeBrowser,
-} from "@amplitude/amplitude-browser";
-import {
-  Analytics as AnalyticsBrowser,
-  IAnalyticsClient as IAnalyticsClientBrowser,
-} from "@amplitude/analytics-browser";
+import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
+import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";`],
   exports: [`export { MessageHub, hub } from "@amplitude/hub";`],
   codeBlocks: [`\
@@ -189,14 +192,6 @@ export const amplitude = new Amplitude();
 /**
  * ANALYTICS
  */
-export class TrackingPlanClient implements TrackingPlanMethods {
-  constructor(private analytics: IAnalyticsClientBrowser) {}
-  userSignedUp() { this.analytics.track('User Signed Up') }
-  userLoggedIn() { this.analytics.track('User Logged In') }
-  addToCart() { this.analytics.track('Add To Cart') }
-  checkout() { this.analytics.track('Checkout') }
-}
-
 export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
   get typed(): TrackingPlanMethods {
     return new TrackingPlanClient(this);
@@ -278,13 +273,7 @@ export const amplitude = new Amplitude();
  */
 export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
   get typed() {
-    const core = this;
-    return {
-      userSignedUp() { core.track('User Signed Up') },
-      userLoggedIn() { core.track(new UserLoggedIn()) },
-      addToCart() { core.track('Add To Cart') },
-      checkout() { core.track('Checkout') },
-    };
+    return new TrackingPlanClient(this);;
   }
 }
 

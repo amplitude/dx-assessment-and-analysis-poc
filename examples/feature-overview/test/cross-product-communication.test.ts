@@ -39,7 +39,6 @@ test('analytics plugin automatically calls track() on experiment.exposure()', ()
 
   // @ts-ignore
   let trackSpy = jest.spyOn(analytics, '_track');
-  // let trackSpy = jest.spyOn(Analytics.prototype, '_track');
 
   amplitude.load({
     apiKey,
@@ -63,7 +62,12 @@ test('multiple analytics plugins automatically call track() on experiment.exposu
   amplitude.load({
     apiKey,
     hub,
-    plugins: [ experiment, analytics, segmentAnalytics ]
+    plugins: [ experiment, analytics, segmentAnalytics ],
+    configuration: {
+      segment: {
+        writeKey: 'segment-write-key'
+      }
+    }
   })
 
   experiment.exposure();

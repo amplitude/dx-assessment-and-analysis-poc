@@ -186,6 +186,9 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
+        
+        // FIXME: properly read API keys
+        // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
@@ -265,6 +268,7 @@ export class Amplitude extends AmplitudeNode {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
         // FIXME: properly read API keys
+        // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({

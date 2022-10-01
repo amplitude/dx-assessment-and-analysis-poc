@@ -3,14 +3,18 @@ import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 
-import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
-import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
-import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
+import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
+import {
+  Analytics as AnalyticsNode,
+  AnalyticsClient as AnalyticsClientNode
+} from "@amplitude/analytics-node";
+import {
+  Experiment as ExperimentNode,
+  ExperimentClient as ExperimentClientNode
+} from "@amplitude/experiment-node";
 
 export type { AnalyticsEvent };
 export { Logger, NoLogger };
-
-export { MessageHub, hub } from "@amplitude/hub";
 
 /**
  * GENERAL INTERFACES
@@ -101,17 +105,12 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
 /**
  * AMPLITUDE
  */
-export class Amplitude extends AmplitudeBrowser {
-  constructor(_user?: User) {
-    super(_user ?? user)
-  }
-
+export class Amplitude extends AmplitudeNode {
   get typed() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-        
         // FIXME: properly read API keys
         // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
@@ -123,10 +122,7 @@ export class Amplitude extends AmplitudeBrowser {
         core.addPlugin(analytics);
         core.addPlugin(experiment);
       },
-      get user(): User {
-        return core.user as User;
-      }
-    }
+    };
   }
 }
 
@@ -135,26 +131,55 @@ export const amplitude = new Amplitude();
 /**
  * ANALYTICS
  */
-export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed(): TrackingPlanMethods {
-    return new TrackingPlanClient(this);
+export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
+  get typed() {
+    return new TrackingPlanClient(this);;
+  }
+}
+
+export class Analytics extends AnalyticsNode {
+  user(user: User): AnalyticsClient {
+    return new AnalyticsClient(user, this.config);
+  }
+
+  userId(userId: string): AnalyticsClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): AnalyticsClient {
+    return this.user(new User(undefined, deviceId));
   }
 }
 
 export const analytics = new Analytics();
-export const typedAnalytics = analytics.typed;
+
 /**
  * EXPERIMENT
  */
+
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
-export class Experiment extends ExperimentBrowser implements IExperimentClient {
+export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
   get typed() {
     const core = this;
     return {
       flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
       aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
     };
+  }
+}
+
+export class Experiment extends ExperimentNode {
+  user(user: User): ExperimentClient {
+    return new ExperimentClient(user, this.config, this);
+  }
+
+  userId(userId: string): ExperimentClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): ExperimentClient {
+    return this.user(new User(undefined, deviceId));
   }
 }
 

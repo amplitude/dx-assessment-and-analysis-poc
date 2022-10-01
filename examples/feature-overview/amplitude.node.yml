@@ -1,0 +1,6 @@
+settings:
+  platform: Node
+  language: TypeScript
+  sdk: "@amplitude/amplitude-node"
+  output: ./amplitude
+  outputFileName: node

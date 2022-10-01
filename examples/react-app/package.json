@@ -1,0 +1,71 @@
+{
+  "name": "react-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@amplitude/hub": "^0.0.0",
+    "@amplitude/user": "^0.0.0",
+    "@amplitude/user-messages": "^0.0.0",
+    "@amplitude/amplitude-core": "^0.0.0",
+    "@amplitude/amplitude-browser": "^0.0.0",
+    "@amplitude/amplitude-node": "^0.0.0",
+    "@amplitude/analytics-browser": "^0.0.0",
+    "@amplitude/analytics-core": "^0.0.0",
+    "@amplitude/analytics-node": "^0.0.0",
+    "@amplitude/analytics-messages": "^0.0.0",
+    "@amplitude/analytics-browser-legacy": "npm:@amplitude/analytics-browser@^1.2.1",
+    "@amplitude/experiment-js-client": "^1.5.5",
+    "@amplitude/experiment-browser": "^0.0.0",
+    "@amplitude/experiment-core": "^0.0.0",
+    "@amplitude/experiment-node": "^0.0.0",
+    "@amplitude/plugin-segment-analytics-browser": "^0.0.0",
+    "@amplitude/plugin-launch-darkly-experiment-browser": "^0.0.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^18.7.18",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "launchdarkly-js-client-sdk": "^2.22.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "ts-bus": "^2.3.1",
+    "ts-event-bus": "^4.1.1",
+    "typescript": "^4.8.3",
+    "web-vitals": "^2.1.4",
+    "yaml": "^2.1.1"
+  },
+  "scripts": {
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "clean": "rimraf node_modules build",
+    "cli": "ts-node ../../packages/cli/src/cli.ts",
+    "pull": "yarn cli build",
+    "test": "REACT_APP_LOGGING_DISABLED=true react-scripts test --verbose --watchAll=false",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@amplitude/empty",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "justin.fiedler <justin.fiedler@amplitude.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "test": ""
+  }
+}

@@ -1,0 +1,4 @@
+# `@amplitude/cli`
+
+## Usage
+

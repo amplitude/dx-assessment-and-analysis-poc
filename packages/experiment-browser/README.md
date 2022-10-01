@@ -1,0 +1,4 @@
+# `@amplitude/experiment-browser`
+
+## Usage
+

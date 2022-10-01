@@ -1,0 +1,27 @@
+{
+  "name": "@amplitude/plugin-segment-analytics-browser",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "justin.fiedler <justin.fiedler@amplitude.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/plugin-segment-analytics-browser.js",
+  "types": "lib/plugin-segment-analytics-browser.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "@amplitude/amplitude-browser": "^0.0.0",
+    "@amplitude/analytics-browser": "^0.0.0",
+    "@amplitude/analytics-messages": "^0.0.0",
+    "@amplitude/util": "^0.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "test": ""
+  }
+}

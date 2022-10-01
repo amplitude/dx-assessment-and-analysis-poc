@@ -1,0 +1,37 @@
+{
+  "name": "dx-assessment-and-analysis-poc",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "devDependencies": {
+    "@types/jest": "28.1.1",
+    "@types/node": "16.11.7",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
+    "eslint": "~8.15.0",
+    "eslint-config-prettier": "8.1.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-config-react-app": "^7.0.1",
+    "jest": "28.1.1",
+    "jest-environment-jsdom": "28.1.1",
+    "lerna": "^5.5.2",
+    "nx": "14.7.17",
+    "rimraf": "^3.0.2",
+    "ts-jest": "28.0.5",
+    "ts-node": "10.9.1"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "scripts": {
+    "build": "lerna run build",
+    "clean": "lerna run clean && rimraf node_modules",
+    "test": "lerna run test",
+    "pull": "lerna run pull",
+    "cli": "ts-node packages/cli/src/cli.ts",
+    "deploy:version": "lerna version",
+    "example-7": "npx ts-node react-app/src/examples/7-cross-plugin-communication.ts"
+  }
+}

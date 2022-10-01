@@ -1,0 +1,4 @@
+# `@amplitude/amplitude-browser`
+
+## Usage
+

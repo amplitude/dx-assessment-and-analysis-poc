@@ -113,7 +113,7 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-        const apiKey = config.apiKey ?? ApiKey[environment];
+        const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
           ...config,

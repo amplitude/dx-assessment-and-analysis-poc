@@ -1,30 +1,57 @@
+import { Config } from "../config";
+import { getEnvironmentCode } from "./typescript/environment";
+
 export interface CodeFile {
   path: string;
   code: string;
 }
 
-export interface CodeBlock {
-  imports: string[];
-  codeBlocks: string[];
-  exports: string[];
+export interface CodeBlockModel {
+  code: string;
+  tag?: number;
 }
 
-export class CodeBlockUtil {
-  merge(codeBlocks: CodeBlock[]): CodeBlock {
-    return {
-      imports: codeBlocks.map(c => c.imports).reduce((acc, cur) =>  acc.concat(cur), []),
-      exports: codeBlocks.map(c => c.exports).reduce((acc, cur) =>  acc.concat(cur), []),
-      codeBlocks: codeBlocks.map(c => c.codeBlocks).reduce((acc, cur) =>  acc.concat(cur), []),
-    }
+export const CodeBlockTag = {
+  None: 0,
+  Export: 1,
+  Import: 2,
+};
+
+function sortByCodeBlockTag(a: CodeBlockModel, b: CodeBlockModel) {
+  return b.tag - a.tag;
+}
+
+export class CodeBlock {
+  protected blocks: CodeBlockModel[];
+
+  constructor(code?: string, tag = CodeBlockTag.None) {
+    this.blocks = code ? [{ tag, code }] : [];
   }
 
-  toString(a: CodeBlock) {
-    return a.imports.concat(...a.exports, ...a.codeBlocks).join(`\n\n`);
+  add(code: string, tag = CodeBlockTag.None): CodeBlock {
+    this.blocks.push({tag, code});
+    return this;
+  }
+
+  addAs(tag: number, code: string): CodeBlock {
+    this.blocks.push({tag, code});
+    return this;
+  }
+
+  merge(blocks: CodeBlock[]): CodeBlock {
+    blocks.forEach(b => {
+      this.blocks.push(...b.blocks);
+    });
+    return this;
+  }
+
+  toString() {
+    return this.blocks.sort(sortByCodeBlockTag).map(b => b.code).join(`\n\n`);
   }
 }
 
 export interface CodeGenerator {
-  generate(): CodeFile[];
+  generate(config: Config): CodeFile[];
 }
 
 // const coreAnalyticsCode: CodeBlock = {
@@ -53,37 +80,25 @@ export interface CodeGenerator {
 // }
 
 
-const amplitudeCoreCode: CodeBlock = {
-  imports: [`\
+function getAmplitudeCoreCode(config: Config): CodeBlock {
+  return new CodeBlock()
+    .addAs(CodeBlockTag.Import,`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`
-  ],
-  exports: [`\
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`)
+    .addAs(CodeBlockTag.Export, `\
 export type { AnalyticsEvent };
-export { Logger, NoLogger };`
-  ],
-  codeBlocks: [
-    `\
+export { Logger, NoLogger };`)
+    .add(`\
 /**
  * GENERAL INTERFACES
  */
 export interface Typed<T> {
   get typed(): T;
-}
-
-/**
- * ENVIRONMENT
- */
-export type Environment = 'development' | 'production' | 'test';
-
-export const ApiKey: Record<Environment, string> = {
-  development: 'dev-api-key',
-  production: 'prod-api-key',
-  test: 'test-api-key'
-};
-
+}`)
+    .merge([getEnvironmentCode(config)])
+    .add(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
   environment?: Environment,
 }
@@ -147,17 +162,17 @@ export interface VariantMethods {
 }
 
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-`
-  ],
+`);
 }
 
-const amplitudeBrowserCode: CodeBlock = {
-  imports: [`\
+function getAmplitudeBrowserCode(config: Config): CodeBlock {
+  return new CodeBlock()
+    .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
-import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";`],
-  exports: [`export { MessageHub, hub } from "@amplitude/hub";`],
-  codeBlocks: [`\
+import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";`)
+    .addAs(CodeBlockTag.Export, `export { MessageHub, hub } from "@amplitude/hub";`)
+    .add(`\
 /**
  * AMPLITUDE
  */
@@ -215,23 +230,21 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
   }
 }
 
-export const experiment = new Experiment();`],
+export const experiment = new Experiment();`);
 }
 
 export class AmplitudeGeneratorBrowser implements CodeGenerator {
-  generate(): CodeFile[] {
-    const cb = new CodeBlockUtil();
-    const mergedCode = cb.merge([amplitudeCoreCode, amplitudeBrowserCode]);
-
+  generate(config: Config): CodeFile[] {
     return [{
       path: 'index.ts',
-      code: cb.toString(mergedCode),
+      code: getAmplitudeCoreCode(config).merge([getAmplitudeBrowserCode(config)]).toString(),
     }];
   }
 }
 
-const amplitudeNodeCode: CodeBlock = {
-  imports: [`\
+function getAmplitudeNodeCode(): CodeBlock {
+  return new CodeBlock()
+    .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
@@ -240,10 +253,8 @@ import {
 import {
   Experiment as ExperimentNode,
   ExperimentClient as ExperimentClientNode
-} from "@amplitude/experiment-node";`
-  ],
-  exports: [],
-  codeBlocks: [`\
+} from "@amplitude/experiment-node";`)
+    .add(`\
 /**
  * AMPLITUDE
  */
@@ -323,17 +334,14 @@ export class Experiment extends ExperimentNode {
   }
 }
 
-export const experiment = new Experiment();`],
+export const experiment = new Experiment();`);
 }
 
 export class AmplitudeGeneratorNode implements CodeGenerator {
-  generate(): CodeFile[] {
-    const cb = new CodeBlockUtil();
-    const mergedCode = cb.merge([amplitudeCoreCode, amplitudeNodeCode]);
-
+  generate(config: Config): CodeFile[] {
     return [{
       path: 'index.ts',
-      code: cb.toString(mergedCode),
+      code: getAmplitudeCoreCode(config).merge([getAmplitudeNodeCode()]).toString(),
     }];
   }
 }

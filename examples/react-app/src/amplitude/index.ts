@@ -22,12 +22,17 @@ export interface Typed<T> {
 /**
  * ENVIRONMENT
  */
-export type Environment = 'development' | 'production' | 'test';
+export type Environment = 'development' | 'production';
 
-export const ApiKey: Record<Environment, string> = {
-  development: 'dev-api-key',
-  production: 'prod-api-key',
-  test: 'test-api-key'
+export const ApiKey: Record<string, Record<Environment, string>> = {
+  analytics: {
+    development: 'my-api-key',
+    production: 'my-api-key'
+  },
+  experiment: {
+    development: 'my-deployment-key',
+    production: 'my-deployment-key'
+  }
 };
 
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {

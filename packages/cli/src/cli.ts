@@ -45,7 +45,7 @@ program.command('build')
           return;
       }
 
-      const outputFiles = generator.generate();
+      const outputFiles = generator.generate(config);
       outputFiles.forEach(file => {
         let fileName = file.path;
         if (outputFileName && fileName.startsWith('index')) {

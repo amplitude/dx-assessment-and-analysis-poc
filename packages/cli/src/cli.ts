@@ -2,7 +2,12 @@ import { program } from 'commander';
 import * as fs from "fs";
 import * as path from "path";
 
-import { AmplitudeGeneratorBrowser, AmplitudeGeneratorNode, CodeGenerator } from "./generators/generators";
+import {
+  AmplitudeGeneratorBrowser,
+  AmplitudeGeneratorNode,
+  CodeGenerator,
+  TypeScriptExporter
+} from "./generators/generators";
 import { isValid, parseFromYaml } from "./config";
 
 program.name('Amplitude CLI')
@@ -32,7 +37,7 @@ program.command('build')
 
       const { platform, output: outputPath, outputFileName }  = config.settings;
 
-      let generator: CodeGenerator;
+      let generator: CodeGenerator<any>;
       switch (platform) {
         case 'Browser':
           generator = new AmplitudeGeneratorBrowser();
@@ -45,7 +50,8 @@ program.command('build')
           return;
       }
 
-      const outputFiles = generator.generate(config);
+      let exporter = new TypeScriptExporter();
+      const outputFiles = exporter.export(generator.generate(config));
       outputFiles.forEach(file => {
         let fileName = file.path;
         if (outputFileName && fileName.startsWith('index')) {

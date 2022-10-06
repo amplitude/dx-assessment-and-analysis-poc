@@ -1,5 +1,6 @@
-import { Config } from "../config";
+import { AmplitudeConfigModel } from "../config";
 import { getEnvironmentCode } from "./typescript/environment";
+import { getUserCode } from "./typescript/user";
 
 export interface CodeFile {
   path: string;
@@ -46,12 +47,28 @@ export class CodeBlock {
   }
 
   toString() {
-    return this.blocks.sort(sortByCodeBlockTag).map(b => b.code).join(`\n\n`);
+    const sortedBlocks = this.blocks.sort(sortByCodeBlockTag);
+    const importCode: string[] = [];
+    const otherCode: string[] = [];
+
+    sortedBlocks.forEach(b => {
+      if (b.tag === CodeBlockTag.Import) {
+        importCode.push(b.code);
+      } else {
+        otherCode.push(b.code);
+      }
+    })
+
+    return importCode.join('\n').concat(otherCode.join(`\n\n`));
   }
 }
 
-export interface CodeGenerator {
-  generate(config: Config): CodeFile[];
+export interface CodeGenerator<C> {
+  generate(config: C): CodeBlock;
+}
+
+export interface CodeExporter {
+  export(codeBlock: CodeBlock): CodeFile[];
 }
 
 // const coreAnalyticsCode: CodeBlock = {
@@ -80,11 +97,10 @@ export interface CodeGenerator {
 // }
 
 
-function getAmplitudeCoreCode(config: Config): CodeBlock {
+function getAmplitudeCoreCode(config: AmplitudeConfigModel): CodeBlock {
   return new CodeBlock()
     .addAs(CodeBlockTag.Import,`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
-import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`)
     .addAs(CodeBlockTag.Export, `\
@@ -98,34 +114,11 @@ export interface Typed<T> {
   get typed(): T;
 }`)
     .merge([getEnvironmentCode(config)])
+    .merge([getUserCode(config)])
     .add(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
   environment?: Environment,
 }
-
-/**
- * USER
- */
-interface UserProperties {
-  requiredProp: 'strongly typed';
-}
-interface TypedUserMethods {
-  setUserProperties(properties: UserProperties): TypedUserMethods;
-}
-
-export class User extends UserCore implements Typed<TypedUserMethods> {
-  get typed(): TypedUserMethods {
-    const core = this;
-    return {
-      setUserProperties(properties) {
-        core.setUserProperties(properties);
-        return this;
-      },
-    };
-  }
-}
-
-export const user = new User();
 
 /**
  * ANALYTICS
@@ -165,7 +158,7 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
 `);
 }
 
-function getAmplitudeBrowserCode(config: Config): CodeBlock {
+function getAmplitudeBrowserCode(config: AmplitudeConfigModel): CodeBlock {
   return new CodeBlock()
     .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
@@ -236,12 +229,9 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
 export const experiment = new Experiment();`);
 }
 
-export class AmplitudeGeneratorBrowser implements CodeGenerator {
-  generate(config: Config): CodeFile[] {
-    return [{
-      path: 'index.ts',
-      code: getAmplitudeCoreCode(config).merge([getAmplitudeBrowserCode(config)]).toString(),
-    }];
+export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigModel> {
+  generate(config: AmplitudeConfigModel): CodeBlock {
+    return getAmplitudeCoreCode(config).merge([getAmplitudeBrowserCode(config)]);
   }
 }
 
@@ -342,11 +332,17 @@ export class Experiment extends ExperimentNode {
 export const experiment = new Experiment();`);
 }
 
-export class AmplitudeGeneratorNode implements CodeGenerator {
-  generate(config: Config): CodeFile[] {
+export class AmplitudeGeneratorNode implements CodeGenerator<AmplitudeConfigModel> {
+  generate(config: AmplitudeConfigModel): CodeBlock {
+    return getAmplitudeCoreCode(config).merge([getAmplitudeNodeCode()]);
+  }
+}
+
+export class TypeScriptExporter implements CodeExporter {
+  export(codeBlock: CodeBlock): CodeFile[] {
     return [{
       path: 'index.ts',
-      code: getAmplitudeCoreCode(config).merge([getAmplitudeNodeCode()]).toString(),
+      code: codeBlock.toString(),
     }];
   }
 }

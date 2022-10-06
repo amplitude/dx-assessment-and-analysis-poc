@@ -41,6 +41,10 @@ function App() {
           <div className="section">
             <span>User</span>
             <button onClick={() => user.setUserId('user-id')}>Set User Id</button>
+            <button onClick={() => user.typed.setUserProperties({
+              favoriteSongCount: 1,
+              referralSource: 'twitter'
+            })}>Set User Properties</button>
           </div>
         </div>
       </header>

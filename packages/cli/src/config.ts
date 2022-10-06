@@ -1,4 +1,5 @@
 import { parse } from 'yaml';
+import { JsonSchemaPropertyModel } from "./json-schema";
 
 export type Product = 'experiment' | 'analytics';
 
@@ -25,14 +26,31 @@ export interface Environment {
   experiment?: ProductEnvironment;
 }
 
-export interface Config {
-  settings: Settings;
-  environments: Record<string, Environment>;
+export interface PropertyConfigModel extends JsonSchemaPropertyModel {
+  // property config is just JsonSchema for now
 }
 
-export function parseFromYaml(yaml: string): Config {
-  const config: Config = parse(yaml);
-  return config ?? {} as Config;
+export interface EventConfigModel {
+  description?: string;
+  properties?: Record<string, PropertyConfigModel>;
+  required?: string[];
+}
+
+export interface UserConfigModel {
+  properties?: Record<string, PropertyConfigModel>;
+  required?: string[];
+}
+
+export interface AmplitudeConfigModel {
+  settings: Settings;
+  environments: Record<string, Environment>;
+  user: UserConfigModel;
+  events?: EventConfigModel[];
+}
+
+export function parseFromYaml(yaml: string): AmplitudeConfigModel {
+  const config: AmplitudeConfigModel = parse(yaml);
+  return config ?? {} as AmplitudeConfigModel;
 }
 
 export interface ConfigValidation {
@@ -47,7 +65,7 @@ export const ErrorMessages = Object.freeze({
   InvalidPlatform: (platform: string) => `Invalid 'settings.platform'="${platform}".`,
 });
 
-export function isValid(config: Config): ConfigValidation {
+export function isValid(config: AmplitudeConfigModel): ConfigValidation {
   let valid = true;
   const errors: string[] = [];
 

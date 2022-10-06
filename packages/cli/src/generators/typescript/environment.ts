@@ -1,7 +1,7 @@
 import { CodeBlock } from "../generators";
-import { Config } from "../../config";
+import { AmplitudeConfigModel } from "../../config";
 
-export function getEnvironmentCode(config: Config): CodeBlock {
+export function getEnvironmentCode(config: AmplitudeConfigModel): CodeBlock {
   const { environments = { production: {} } } = config;
   const environmentNames = Object.keys(environments);
   const products = ['analytics', 'experiment'];

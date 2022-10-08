@@ -38,6 +38,10 @@ export function getPropertiesArray(schema: JsonSchemaPropertyModel): JsonSchemaP
   }));
 }
 
+export function hasRequiredProperties(schema: JsonSchemaPropertyModel) {
+  return getPropertiesArray(schema).some((p) => p.required);
+}
+
 export function isConstProperty(schema: JsonSchemaPropertyModel): boolean {
   return schema.const !== undefined;
 }
@@ -86,19 +90,12 @@ export class JsonSchema {
     return Object.keys(this.schema.properties).length > 0;
   }
 
-  hasRequiredProperties() {
-    return this.properties().some((p) => p.required);
-  }
+  hasRequiredProperties = () => hasRequiredProperties(this.schema);
 
   isConstProperty = () => isConstProperty(this.schema);
 
-  getConstProperties() {
-    return this.properties().filter(isConstProperty);
-  }
-
-  hasConstProperties(): boolean {
-    return this.getConstProperties().length > 0;
-  }
+  getConstProperties = () => getConstProperties(this.schema);
+  hasConstProperties = () => hasConstProperties(this.schema);
 
   getNonConstProperties = () => getNonConstProperties(this.schema);
   hasNonConstProperties = () => hasNonConstProperties(this.schema);

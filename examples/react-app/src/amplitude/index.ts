@@ -1,12 +1,13 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
-import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 import { User as UserCore } from "@amplitude/user";
+import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
-import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";export type { AnalyticsEvent };
-export { Logger, NoLogger };
+import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
 
+export { Logger, NoLogger };
+export type { AnalyticsEvent };
 export { MessageHub, hub } from "@amplitude/hub";
 
 /**
@@ -35,10 +36,21 @@ export const ApiKey: Record<string, Record<Environment, string>> = {
 /**
  * USER
  */
-interface UserProperties {
-    referralSource: any,
-    favoriteSongCount: number
+
+/**
+ * Collection of user properties
+ */
+export interface UserProperties {
+  /**
+   * How the user was brought to the app
+   */
+  referralSource: "facebook" | "twitter" | "other";
+  /**
+   * Total number of favorited songs
+   */
+  favoriteSongCount?: number;
 }
+
 
 interface TypedUserMethods {
   setUserProperties(properties: UserProperties): TypedUserMethods;
@@ -58,32 +70,124 @@ export class User extends UserCore implements Typed<TypedUserMethods> {
 
 export const user = new User();
 
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
-}
-
 /**
  * ANALYTICS
  */
+
+/**
+ * The user logged in
+ */
+export interface UserLoggedInProperties {
+  /**
+   * The song unique identifier
+   */
+  method: "email" | "facebook" | "google";
+}
+
+
+/**
+ * A song was played
+ */
+export interface SongPlayedProperties {
+  /**
+   * The song unique identifier
+   */
+  songId: string;
+  /**
+   * If the song is a favorite
+   */
+  songFavorited?: boolean;
+}
+
+
+/**
+ * A song was added to a user's favorites
+ */
+export interface SongFavoritedProperties {
+  /**
+   * The unique identifier for a song
+   */
+  songId: number;
+}
+
+
+export class UserSignedUp implements AnalyticsEvent {
+  event_type = 'User Signed Up';
+}
+
+
 export class UserLoggedIn implements AnalyticsEvent {
   event_type = 'User Logged In';
+  constructor(public event_properties: UserLoggedInProperties) {}
 }
+
+
+export class SongPlayed implements AnalyticsEvent {
+  event_type = 'Song Played';
+  constructor(public event_properties: SongPlayedProperties) {}
+}
+
+
+export class SongFavorited implements AnalyticsEvent {
+  event_type = 'Song Favorited';
+  constructor(public event_properties: SongFavoritedProperties) {}
+}
+
+
+export class AddToCart implements AnalyticsEvent {
+  event_type = 'Add To Cart';
+}
+
+
+export class Checkout implements AnalyticsEvent {
+  event_type = 'Checkout';
+}
+
+
+export class EventWithConst implements AnalyticsEvent {
+  event_type = 'Event With Const';
+}
+
 
 export interface TrackingPlanMethods{
   userSignedUp(): void;
-  userLoggedIn(): void;
+  userLoggedIn(properties: UserLoggedInProperties): void;
+  songPlayed(properties: SongPlayedProperties): void;
+  songFavorited(properties: SongFavoritedProperties): void;
   addToCart(): void;
   checkout(): void;
+  eventWithConst(): void;
 }
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
-  userSignedUp() { this.analytics.track('User Signed Up') }
-  userLoggedIn() { this.analytics.track('User Logged In') }
-  addToCart() { this.analytics.track('Add To Cart') }
-  checkout() { this.analytics.track('Checkout') }
+  userSignedUp() {
+    this.analytics.track(new UserSignedUp())
+  }
+  userLoggedIn(properties: UserLoggedInProperties) {
+    this.analytics.track(new UserLoggedIn(properties))
+  }
+  songPlayed(properties: SongPlayedProperties) {
+    this.analytics.track(new SongPlayed(properties))
+  }
+  songFavorited(properties: SongFavoritedProperties) {
+    this.analytics.track(new SongFavorited(properties))
+  }
+  addToCart() {
+    this.analytics.track(new AddToCart())
+  }
+  checkout() {
+    this.analytics.track(new Checkout())
+  }
+  eventWithConst() {
+    this.analytics.track(new EventWithConst())
+  }
+}
+
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
 }
 
 /**

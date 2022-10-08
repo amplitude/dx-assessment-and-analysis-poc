@@ -5,10 +5,10 @@ import * as path from "path";
 import {
   AmplitudeGeneratorBrowser,
   AmplitudeGeneratorNode,
-  CodeGenerator,
   TypeScriptExporter
 } from "./generators/generators";
 import { isValid, parseFromYaml } from "./config";
+import { CodeGenerator } from "./generators/code-generator";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')
@@ -21,7 +21,7 @@ program.command('build')
     "Amplitude configuration file",
     "amplitude.yml",
   )
-  .action((options) => {
+  .action(async (options) => {
     const { config: configPath } = options;
 
     console.log(`Config Path:`, configPath);
@@ -51,7 +51,7 @@ program.command('build')
       }
 
       let exporter = new TypeScriptExporter();
-      const outputFiles = exporter.export(generator.generate(config));
+      const outputFiles = await exporter.export(await generator.generate(config));
       outputFiles.forEach(file => {
         let fileName = file.path;
         if (outputFileName && fileName.startsWith('index')) {

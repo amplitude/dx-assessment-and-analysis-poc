@@ -1,4 +1,4 @@
-import { CodeBlock } from "../generators";
+import { CodeBlock } from "../code-generator";
 import { AmplitudeConfigModel } from "../../config";
 
 export function getEnvironmentCode(config: AmplitudeConfigModel): CodeBlock {

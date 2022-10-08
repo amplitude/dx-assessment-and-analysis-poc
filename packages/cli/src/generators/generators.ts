@@ -1,111 +1,15 @@
 import { AmplitudeConfigModel } from "../config";
 import { getEnvironmentCode } from "./typescript/environment";
-import { getUserCode } from "./typescript/user";
+import { UserCodeGenerator } from "./typescript/user";
+import { AnalyticsCoreCodeGenerator } from "./typescript/analytics";
+import { CodeBlock, CodeBlockTag, CodeExporter, CodeFile, CodeGenerator } from "./code-generator";
 
-export interface CodeFile {
-  path: string;
-  code: string;
-}
-
-export interface CodeBlockModel {
-  code: string;
-  tag?: number;
-}
-
-export const CodeBlockTag = {
-  None: 0,
-  Export: 1,
-  Import: 2,
-};
-
-function sortByCodeBlockTag(a: CodeBlockModel, b: CodeBlockModel) {
-  return b.tag - a.tag;
-}
-
-export class CodeBlock {
-  protected blocks: CodeBlockModel[];
-
-  constructor(code?: string, tag = CodeBlockTag.None) {
-    this.blocks = code ? [{ tag, code }] : [];
-  }
-
-  add(code: string, tag = CodeBlockTag.None): CodeBlock {
-    this.blocks.push({tag, code});
-    return this;
-  }
-
-  addAs(tag: number, code: string): CodeBlock {
-    this.blocks.push({tag, code});
-    return this;
-  }
-
-  merge(blocks: CodeBlock[]): CodeBlock {
-    blocks.forEach(b => {
-      this.blocks.push(...b.blocks);
-    });
-    return this;
-  }
-
-  toString() {
-    const sortedBlocks = this.blocks.sort(sortByCodeBlockTag);
-    const importCode: string[] = [];
-    const otherCode: string[] = [];
-
-    sortedBlocks.forEach(b => {
-      if (b.tag === CodeBlockTag.Import) {
-        importCode.push(b.code);
-      } else {
-        otherCode.push(b.code);
-      }
-    })
-
-    return importCode.join('\n').concat(otherCode.join(`\n\n`));
-  }
-}
-
-export interface CodeGenerator<C> {
-  generate(config: C): CodeBlock;
-}
-
-export interface CodeExporter {
-  export(codeBlock: CodeBlock): CodeFile[];
-}
-
-// const coreAnalyticsCode: CodeBlock = {
-//   imports: [
-//     `import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";`
-//   ],
-//   exports: [`export type { AnalyticsEvent };`],
-//   codeBlocks: [
-//     `\
-// /**
-//  * ANALYTICS
-//  */
-// export class UserLoggedIn implements AnalyticsEvent {
-//   event_type = 'User Logged In';
-// }
-//
-// export interface TrackingPlanMethods{
-//   userSignedUp(): void;
-//   userLoggedIn(): void;
-//   addToCart(): void;
-//   checkout(): void;
-// }
-//
-// export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}`
-//   ],
-// }
-
-
-function getAmplitudeCoreCode(config: AmplitudeConfigModel): CodeBlock {
+async function getAmplitudeCoreCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
   return new CodeBlock()
     .addAs(CodeBlockTag.Import,`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
-import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`)
-    .addAs(CodeBlockTag.Export, `\
-export type { AnalyticsEvent };
-export { Logger, NoLogger };`)
+    .addAs(CodeBlockTag.Export, `export { Logger, NoLogger };`)
     .add(`\
 /**
  * GENERAL INTERFACES
@@ -113,35 +17,14 @@ export { Logger, NoLogger };`)
 export interface Typed<T> {
   get typed(): T;
 }`)
-    .merge([getEnvironmentCode(config)])
-    .merge([getUserCode(config)])
+    .merge(
+      getEnvironmentCode(config),
+      await (new UserCodeGenerator(config.user).generate()),
+      await (new AnalyticsCoreCodeGenerator(config.analytics).generate()),
+    )
     .add(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
   environment?: Environment,
-}
-
-/**
- * ANALYTICS
- */
-export class UserLoggedIn implements AnalyticsEvent {
-  event_type = 'User Logged In';
-}
-
-export interface TrackingPlanMethods{
-  userSignedUp(): void;
-  userLoggedIn(): void;
-  addToCart(): void;
-  checkout(): void;
-}
-
-export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
-
-export class TrackingPlanClient implements TrackingPlanMethods {
-  constructor(private analytics: IAnalyticsClientCore) {}
-  userSignedUp() { this.analytics.track('User Signed Up') }
-  userLoggedIn() { this.analytics.track('User Logged In') }
-  addToCart() { this.analytics.track('Add To Cart') }
-  checkout() { this.analytics.track('Checkout') }
 }
 
 /**
@@ -158,7 +41,7 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
 `);
 }
 
-function getAmplitudeBrowserCode(config: AmplitudeConfigModel): CodeBlock {
+async function getAmplitudeBrowserCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
   return new CodeBlock()
     .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
@@ -230,8 +113,8 @@ export const experiment = new Experiment();`);
 }
 
 export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigModel> {
-  generate(config: AmplitudeConfigModel): CodeBlock {
-    return getAmplitudeCoreCode(config).merge([getAmplitudeBrowserCode(config)]);
+  async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
+    return (await getAmplitudeCoreCode(config)).merge(await getAmplitudeBrowserCode(config));
   }
 }
 
@@ -333,13 +216,13 @@ export const experiment = new Experiment();`);
 }
 
 export class AmplitudeGeneratorNode implements CodeGenerator<AmplitudeConfigModel> {
-  generate(config: AmplitudeConfigModel): CodeBlock {
-    return getAmplitudeCoreCode(config).merge([getAmplitudeNodeCode()]);
+  async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
+    return (await getAmplitudeCoreCode(config)).merge(await getAmplitudeNodeCode());
   }
 }
 
 export class TypeScriptExporter implements CodeExporter {
-  export(codeBlock: CodeBlock): CodeFile[] {
+  async export(codeBlock: CodeBlock): Promise<CodeFile[]> {
     return [{
       path: 'index.ts',
       code: codeBlock.toString(),

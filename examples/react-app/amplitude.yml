@@ -19,7 +19,7 @@ environments:
 
 user:
   description: Collection of user properties
-  required: []
+  required: [referralSource]
   properties:
     referralSource:
       description: How the user was brought to the app
@@ -28,7 +28,7 @@ user:
       description: Total number of favorited songs
       type: integer
 
-events:
+analytics:
   User Signed Up:
     description: A user signed up
 
@@ -52,12 +52,26 @@ events:
         type: boolean
 
   Song Favorited:
-    description: A product from Acme's catalog
+    description: A song was added to a user's favorites
     required: [ songId ]
     properties:
       songId:
-        description: The unique identifier for a product
+        description: The unique identifier for a song
         type: integer
+
+  Add To Cart:
+    description: An item was added to the cart
+
+  Checkout:
+    description: The user completed their purchase
+
+  Event With Const:
+    description: An Event with only Const props
+    required: [ constProp ]
+    properties:
+      constProp:
+        description: Constant value shouldn't be settable
+        const: true
 
 experiments:
   Mac Users Experiment:

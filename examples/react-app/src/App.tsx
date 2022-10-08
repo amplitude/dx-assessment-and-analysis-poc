@@ -34,8 +34,12 @@ function App() {
           </div>
           <div className="section">
             <span>Analytics</span>
-            <button onClick={() => analytics.typed.userLoggedIn()}>Login (with Event method)</button>
-            <button onClick={() => analytics.track(new UserLoggedIn())}>Login (with Event class)</button>
+            <button onClick={() => analytics.typed.userLoggedIn({
+              method: 'email'
+            })}>Login (with Event method)</button>
+            <button onClick={() => analytics.track(new UserLoggedIn({
+              method: 'google'
+            }))}>Login (with Event class)</button>
             <button onClick={() => analytics.typed.userSignedUp()}>Sign Up</button>
           </div>
           <div className="section">

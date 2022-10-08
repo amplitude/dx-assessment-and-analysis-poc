@@ -15,6 +15,7 @@ export interface Settings {
   // sdk: string;
   output: string;
   outputFileName?: string;
+  typedAnchorName?: string;
 }
 
 export interface ProductEnvironment {
@@ -36,6 +37,10 @@ export interface EventConfigModel {
   required?: string[];
 }
 
+export interface AnalyticsConfigModel {
+  [eventName: string]: EventConfigModel;
+}
+
 export interface UserConfigModel {
   properties?: Record<string, PropertyConfigModel>;
   required?: string[];
@@ -45,7 +50,7 @@ export interface AmplitudeConfigModel {
   settings: Settings;
   environments: Record<string, Environment>;
   user: UserConfigModel;
-  events?: EventConfigModel[];
+  analytics?: AnalyticsConfigModel;
 }
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {

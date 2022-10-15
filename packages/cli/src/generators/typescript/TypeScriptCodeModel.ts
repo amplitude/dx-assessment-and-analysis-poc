@@ -22,6 +22,14 @@ export interface CodeLanguage {
   getPropertyType(propertySchema: PropertyConfigModel): string;
 }
 
+export interface CodeParameter {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  defaultValue?: string;
+}
+
 export class TypeScriptCodeLanguage implements CodeLanguage {
   getClassName(name: string): string {
     return upperCamelCase(name);
@@ -36,6 +44,7 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
   }
 
   tab = createTab(2);
+  tabExceptFirstLine = createTab(2, false);
 
   getPropertyType(schema: JsonSchemaPropertyModel): string {
     switch(schema.type) {
@@ -59,5 +68,13 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
 
     // default to 'any' for unsupported types
     return 'any';
+  }
+
+  getFunctionParameter(parameter: CodeParameter): string {
+    if (parameter.required || !parameter.defaultValue) {
+      return `${parameter.name}${parameter.required ? '' : '?'}: ${parameter.type}`;
+    }
+
+    return `${parameter.name}: ${parameter.type} = ${parameter.defaultValue}`;
   }
 }

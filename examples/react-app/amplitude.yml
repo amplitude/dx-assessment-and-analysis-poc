@@ -58,6 +58,12 @@ analytics:
       songId:
         description: The unique identifier for a song
         type: integer
+      optionalProp:
+        description: An optional value
+        type: string
+      aConstant:
+        description: Constant value shouldn't be settable
+        const: true
 
   Add To Cart:
     description: An item was added to the cart

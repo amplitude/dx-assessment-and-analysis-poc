@@ -29,6 +29,8 @@ export interface JsonSchemaModel extends JsonSchemaPropertyModel {
   $schema: string;
 }
 
+export type JsonSchemaPropertyFilter = (property: JsonSchemaPropertyModel) => boolean;
+
 export function getPropertiesArray(schema: JsonSchemaPropertyModel): JsonSchemaPropertyModel[] {
   const keys = Object.keys(schema.properties ?? {});
 
@@ -38,8 +40,22 @@ export function getPropertiesArray(schema: JsonSchemaPropertyModel): JsonSchemaP
   }));
 }
 
-export function hasRequiredProperties(schema: JsonSchemaPropertyModel) {
-  return getPropertiesArray(schema).some((p) => p.required);
+export function getPropertyNames(schema: JsonSchemaPropertyModel): string[] {
+  return schema.properties ? Object.keys(schema.properties) : [];
+}
+
+export function hasProperties(schema: JsonSchemaPropertyModel): boolean {
+  return getPropertyNames(schema).length > 0;
+}
+
+export function hasRequiredProperties(
+  schema: JsonSchemaPropertyModel,
+  filter: JsonSchemaPropertyFilter = () => true,
+): boolean {
+  const filteredNames = filter
+    ? getPropertiesArray(schema).filter(filter).map(p => p.name)
+    : [];
+  return !!schema.required && schema.required.filter(name => filteredNames.includes(name)).length > 0;
 }
 
 export function isConstProperty(schema: JsonSchemaPropertyModel): boolean {
@@ -82,15 +98,10 @@ export class JsonSchema {
     return getPropertiesArray(this.schema);
   }
 
-  getPropertyNames(): string[] {
-    return Object.keys(this.schema.properties);
-  }
+  hasProperties = () => hasProperties(this.schema);
+  getPropertyNames = () => getPropertyNames(this.schema);
 
-  hasProperties(): boolean {
-    return Object.keys(this.schema.properties).length > 0;
-  }
-
-  hasRequiredProperties = () => hasRequiredProperties(this.schema);
+  hasRequiredProperties = (filter?: JsonSchemaPropertyFilter) => hasRequiredProperties(this.schema, filter);
 
   isConstProperty = () => isConstProperty(this.schema);
 

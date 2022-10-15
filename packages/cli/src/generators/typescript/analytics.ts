@@ -1,8 +1,15 @@
 import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
 import { AnalyticsConfigModel } from "../../config";
-import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
-import { hasNonConstProperties, JsonSchemaPropertyModel, removeConstProperties } from "../../json-schema";
+import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
+import {
+  hasNonConstProperties,
+  isConstProperty,
+  JsonSchema,
+  JsonSchemaPropertyModel,
+  removeConstProperties
+} from "../../json-schema";
 import { jsonSchemaToTypeScript } from "./jsonSchemaToTypeScript";
+import { cloneDeep } from "lodash";
 
 export class AnalyticsConfig {
   constructor(private model: AnalyticsConfigModel) {}
@@ -20,7 +27,7 @@ export class AnalyticsConfig {
       type: 'object',
       title: name,
       additionalProperties: false,
-      ...this.model[name],
+      ...cloneDeep(this.model[name]),
     }));
   }
 }
@@ -48,8 +55,72 @@ export class AnalyticsCoreCodeGenerator implements CodeGenerator<AnalyticsConfig
     return CodeBlock.from(CodeBlockTag.Default, ...eventPropertiesTypes);
   }
 
-  generateEventClasses(): CodeBlock {
-    const { getClassName } = this.lang;
+  protected generatePropertiesLiteralWithConsts(
+    schema: JsonSchemaPropertyModel,
+    defaultValue: string,
+    propertiesName = 'event_properties',
+  ): string {
+    const { tab } = this.lang;
+    const s = new JsonSchema(schema);
+    const constProperties = s.getConstProperties();
+    const hasProps = s.hasNonConstProperties();
+
+    const constFields = constProperties
+      .map((p) => `'${p.name}': ${JSON.stringify(p.const)},`)
+      .join('\n');
+
+    if (hasProps && constProperties.length > 0) {
+      return `\
+{
+  ...${propertiesName},
+${tab(1, constFields)}
+}`;
+    }
+
+    if (constProperties.length > 0) {
+      return `{
+${tab(1, constFields)}
+}`;
+    }
+
+    if (hasProps) {
+      return propertiesName;
+    }
+
+    return defaultValue;
+  }
+
+  protected generatePropertyConstsType(schema: JsonSchemaPropertyModel): string {
+    const event = new JsonSchema(schema);
+    const constProperties = event.getConstProperties();
+    if (constProperties.length === 0) {
+      return '{}';
+    }
+
+    const constFields = constProperties
+      .map((p) => `'${p.name}': ${JSON.stringify(p.const)};`)
+      .join('\n');
+
+    return `{
+${this.lang.tab(1, constFields)}
+}`;
+  }
+
+  protected generateFunctionParameters(parameters: CodeParameter[], tabs = 2,): string {
+    const { tab } = this.lang;
+
+    if (parameters.length < 1) {
+      return '';
+    }
+    const result = `\n${parameters
+      .map((p) => tab(tabs, `${this.lang.getFunctionParameter(p)},`))
+      .join('\n')}\n${tab(tabs - 1, '|')}`;
+
+    return result.substr(0, result.length - 1);
+  }
+
+  generateEventClassesLegacy(): CodeBlock {
+    const { getClassName, tab } = this.lang;
     const getEventProperties = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
       ? `\n  constructor(public event_properties: ${getClassName(event.title)}Properties) {}`
       : '';
@@ -57,8 +128,70 @@ export class AnalyticsCoreCodeGenerator implements CodeGenerator<AnalyticsConfig
     return CodeBlock.from(CodeBlockTag.Default, ...this.config.getEventSchemas().map(event => `\
 export class ${getClassName(event.title)} implements AnalyticsEvent {
   event_type = '${event.title}';${getEventProperties(event)}
+${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
 }
 `));
+  }
+
+  generateEventClasses(): CodeBlock {
+    const classes = this.config.getEventSchemas().map(schema => {
+      const { getClassName, tab, tabExceptFirstLine } = this.lang;
+      const event = new JsonSchema(schema);
+      const propertiesClassName = `${getClassName(schema.title)}Properties`;
+      const propertiesField= 'event_properties';
+      const eventTypeField = 'event_type';
+      const baseEventType = 'AnalyticsEvent';
+
+      const hasConstProperties = event.hasConstProperties();
+      const hasNonConstProperties = event.hasNonConstProperties();
+      const hasRequiredProperties = event.hasRequiredProperties(p => !isConstProperty(p));
+
+      const constructorParameters: CodeParameter[] = [];
+      if (hasNonConstProperties) {
+        constructorParameters.push({
+          name: hasConstProperties ? propertiesField : `public ${propertiesField}`,
+          type: propertiesClassName,
+          required: hasRequiredProperties,
+        });
+      }
+
+      const propertiesDeclaration = !hasConstProperties
+        ? ''
+        : `
+  ${propertiesField}${hasNonConstProperties ? `: ${propertiesClassName} & ` : ' = '
+          }${tabExceptFirstLine(
+            1,
+            hasNonConstProperties
+              ? this.generatePropertyConstsType(schema)
+              : this.generatePropertiesLiteralWithConsts(schema, '', propertiesField),
+          )};`;
+
+        let constructorBody = '';
+        if (constructorParameters.length > 0) {
+          constructorBody = !hasConstProperties
+            ? `constructor(${this.generateFunctionParameters(
+              constructorParameters, 1,
+            )}) ${hasNonConstProperties ? `{
+  this.${propertiesField} = ${propertiesField};
+}` : {}}`
+            : `\
+constructor(${this.generateFunctionParameters(constructorParameters, 1)}) {
+  this.${propertiesField} = ${tabExceptFirstLine(
+    1, this.generatePropertiesLiteralWithConsts(schema, '{}', propertiesField,
+  ))};
+}`;
+          constructorBody = `\n\n${tab(1, constructorBody)}`;
+      }
+
+      return `
+export class ${getClassName(schema.title)} implements ${baseEventType} {
+  ${eventTypeField} = '${schema.title}';${propertiesDeclaration}${constructorBody}
+}`;
+    })
+    .join('\n')
+    .trim();
+
+    return new CodeBlock(classes.length ? `\n${classes}\n` : '');
   }
 
   async generate(): Promise<CodeBlock> {

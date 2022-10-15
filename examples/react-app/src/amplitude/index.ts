@@ -108,44 +108,67 @@ export interface SongFavoritedProperties {
    * The unique identifier for a song
    */
   songId: number;
+  /**
+   * An optional value
+   */
+  optionalProp?: string;
 }
+
 
 
 export class UserSignedUp implements AnalyticsEvent {
   event_type = 'User Signed Up';
 }
 
-
 export class UserLoggedIn implements AnalyticsEvent {
   event_type = 'User Logged In';
-  constructor(public event_properties: UserLoggedInProperties) {}
-}
 
+  constructor(
+    public event_properties: UserLoggedInProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
+}
 
 export class SongPlayed implements AnalyticsEvent {
   event_type = 'Song Played';
-  constructor(public event_properties: SongPlayedProperties) {}
-}
 
+  constructor(
+    public event_properties: SongPlayedProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
+}
 
 export class SongFavorited implements AnalyticsEvent {
   event_type = 'Song Favorited';
-  constructor(public event_properties: SongFavoritedProperties) {}
-}
+  event_properties: SongFavoritedProperties & {
+    'aConstant': true;
+  };
 
+  constructor(
+    event_properties: SongFavoritedProperties,
+  ) {
+    this.event_properties = {
+      ...event_properties,
+      'aConstant': true,
+    };
+  }
+}
 
 export class AddToCart implements AnalyticsEvent {
   event_type = 'Add To Cart';
 }
 
-
 export class Checkout implements AnalyticsEvent {
   event_type = 'Checkout';
 }
 
-
 export class EventWithConst implements AnalyticsEvent {
   event_type = 'Event With Const';
+  event_properties = {
+    'constProp': true,
+  };
 }
 
 

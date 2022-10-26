@@ -3,6 +3,7 @@ import { AnalyticsConfigModel } from "../../config";
 import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
   hasNonConstProperties,
+  hasNonConstRequiredProperties,
   isConstProperty,
   JsonSchema,
   JsonSchemaPropertyModel,
@@ -198,7 +199,7 @@ export class ${getClassName(schema.title)} implements ${baseEventType} {
     const { tab, getMethodName, getClassName } = this.lang;
     const eventSchemas = this.config.getEventSchemas();
     const getEventParams = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
-      ? `properties: ${getClassName(event.title)}Properties`
+      ? `properties${hasNonConstRequiredProperties(event) ? '' : '?'}: ${getClassName(event.title)}Properties`
       : '';
     const getPassThruParams = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
       ? `properties`

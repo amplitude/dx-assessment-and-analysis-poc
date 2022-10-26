@@ -58,6 +58,10 @@ export function hasRequiredProperties(
   return !!schema.required && schema.required.filter(name => filteredNames.includes(name)).length > 0;
 }
 
+export function hasNonConstRequiredProperties(schema: JsonSchemaPropertyModel): boolean {
+  return hasRequiredProperties(schema, p => !isConstProperty(p));
+}
+
 export function isConstProperty(schema: JsonSchemaPropertyModel): boolean {
   return schema.const !== undefined;
 }
@@ -102,6 +106,7 @@ export class JsonSchema {
   getPropertyNames = () => getPropertyNames(this.schema);
 
   hasRequiredProperties = (filter?: JsonSchemaPropertyFilter) => hasRequiredProperties(this.schema, filter);
+  hasNonConstRequiredProperties = () => hasNonConstRequiredProperties(this.schema);
 
   isConstProperty = () => isConstProperty(this.schema);
 

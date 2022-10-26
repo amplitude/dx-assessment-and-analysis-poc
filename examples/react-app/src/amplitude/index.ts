@@ -115,6 +115,17 @@ export interface SongFavoritedProperties {
 }
 
 
+/**
+ * An Event with Array props
+ */
+export interface EventWithArrayProperties {
+  /**
+   * An array of strings
+   */
+  arrayProp?: string[];
+}
+
+
 
 export class UserSignedUp implements AnalyticsEvent {
   event_type = 'User Signed Up';
@@ -171,6 +182,16 @@ export class EventWithConst implements AnalyticsEvent {
   };
 }
 
+export class EventWithArray implements AnalyticsEvent {
+  event_type = 'Event With Array';
+
+  constructor(
+    public event_properties?: EventWithArrayProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
+}
+
 
 export interface TrackingPlanMethods{
   userSignedUp(): void;
@@ -180,6 +201,7 @@ export interface TrackingPlanMethods{
   addToCart(): void;
   checkout(): void;
   eventWithConst(): void;
+  eventWithArray(properties?: EventWithArrayProperties): void;
 }
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
@@ -206,6 +228,9 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
   eventWithConst() {
     this.analytics.track(new EventWithConst())
+  }
+  eventWithArray(properties?: EventWithArrayProperties) {
+    this.analytics.track(new EventWithArray(properties))
   }
 }
 

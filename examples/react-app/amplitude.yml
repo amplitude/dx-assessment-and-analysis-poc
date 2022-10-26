@@ -79,8 +79,24 @@ analytics:
         description: Constant value shouldn't be settable
         const: true
 
+  Event With Array:
+    description: An Event with Array props
+    properties:
+      arrayProp:
+        description: An array of strings
+        type: array
+        items:
+          type: string
+
 experiments:
-  Mac Users Experiment:
+  Mac Users Flag:
     variants:
-      'on': true
-      'off': false
+      on:
+  Windows Users Experiment:
+    variants:
+      control:
+        payload:
+          type: string
+      treatment:
+        payload:
+          type: number

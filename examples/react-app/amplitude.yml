@@ -17,13 +17,16 @@ environments:
     analytics:
       apiKey: my-api-key
 
+definitions:
+  referralSource: &referralSource
+    description: How the user was brought to the app
+    enum: [ "facebook", "twitter", "other" ]
+
 user:
   description: Collection of user properties
   required: [referralSource]
   properties:
-    referralSource:
-      description: How the user was brought to the app
-      enum: ["facebook", "twitter", "other"]
+    referralSource: *referralSource
     favoriteSongCount:
       description: Total number of favorited songs
       type: integer
@@ -31,6 +34,8 @@ user:
 analytics:
   User Signed Up:
     description: A user signed up
+    properties:
+      referralSource: *referralSource
 
   User Logged In:
     description: The user logged in

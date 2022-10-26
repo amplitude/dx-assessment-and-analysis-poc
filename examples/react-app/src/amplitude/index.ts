@@ -75,6 +75,17 @@ export const user = new User();
  */
 
 /**
+ * A user signed up
+ */
+export interface UserSignedUpProperties {
+  /**
+   * How the user was brought to the app
+   */
+  referralSource?: "facebook" | "twitter" | "other";
+}
+
+
+/**
  * The user logged in
  */
 export interface UserLoggedInProperties {
@@ -129,6 +140,12 @@ export interface EventWithArrayProperties {
 
 export class UserSignedUp implements AnalyticsEvent {
   event_type = 'User Signed Up';
+
+  constructor(
+    public event_properties?: UserSignedUpProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
 }
 
 export class UserLoggedIn implements AnalyticsEvent {
@@ -194,7 +211,7 @@ export class EventWithArray implements AnalyticsEvent {
 
 
 export interface TrackingPlanMethods{
-  userSignedUp(): void;
+  userSignedUp(properties?: UserSignedUpProperties): void;
   userLoggedIn(properties: UserLoggedInProperties): void;
   songPlayed(properties: SongPlayedProperties): void;
   songFavorited(properties: SongFavoritedProperties): void;
@@ -208,8 +225,8 @@ export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPl
 
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
-  userSignedUp() {
-    this.analytics.track(new UserSignedUp())
+  userSignedUp(properties?: UserSignedUpProperties) {
+    this.analytics.track(new UserSignedUp(properties))
   }
   userLoggedIn(properties: UserLoggedInProperties) {
     this.analytics.track(new UserLoggedIn(properties))

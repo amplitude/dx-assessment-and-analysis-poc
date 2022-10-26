@@ -116,9 +116,9 @@ export interface SongPlayedProperties {
  */
 export interface SongFavoritedProperties {
   /**
-   * The unique identifier for a song
+   * The song unique identifier
    */
-  songId: number;
+  songId: string;
   /**
    * An optional value
    */

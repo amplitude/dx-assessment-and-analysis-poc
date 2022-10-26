@@ -21,6 +21,9 @@ definitions:
   referralSource: &referralSource
     description: How the user was brought to the app
     enum: [ "facebook", "twitter", "other" ]
+  songId: &songId
+    description: The song unique identifier
+    type: string
 
 user:
   description: Collection of user properties
@@ -49,9 +52,7 @@ analytics:
     description: A song was played
     required: [ songId ]
     properties:
-      songId:
-        description: The song unique identifier
-        type: string
+      songId: *songId
       songFavorited:
         description: If the song is a favorite
         type: boolean
@@ -60,9 +61,7 @@ analytics:
     description: A song was added to a user's favorites
     required: [ songId ]
     properties:
-      songId:
-        description: The unique identifier for a song
-        type: integer
+      songId: *songId
       optionalProp:
         description: An optional value
         type: string

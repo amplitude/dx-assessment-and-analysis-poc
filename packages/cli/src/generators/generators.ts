@@ -3,6 +3,7 @@ import { getEnvironmentCode } from "./typescript/environment";
 import { UserCodeGenerator } from "./typescript/user";
 import { AnalyticsCoreCodeGenerator } from "./typescript/analytics";
 import { CodeBlock, CodeBlockTag, CodeExporter, CodeFile, CodeGenerator } from "./code-generator";
+import { ExperimentCoreCodeGenerator } from "./typescript/experiment";
 
 async function getAmplitudeCoreCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
   const codegenSettings = new CodeGenerationSettings(config.settings);
@@ -23,6 +24,7 @@ export interface Typed<T> {
       getEnvironmentCode(config),
       await (new UserCodeGenerator(config.user, config.settings).generate()),
       await (new AnalyticsCoreCodeGenerator(config.analytics).generate()),
+      await (new ExperimentCoreCodeGenerator(config.experiments).generate()),
     )
     .add(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {

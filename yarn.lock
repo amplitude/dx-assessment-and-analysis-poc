@@ -35,6 +35,13 @@
   dependencies:
     "@amplitude/ua-parser-js" "0.7.31"
 
+"@amplitude/analytics-connector@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-connector/-/analytics-connector-1.4.6.tgz#60a66eaf0bcdcd17db4f414ff340c69e63116a72"
+  integrity sha512-6jD2pOosRD4y8DT8StUCz7yTd5ZDkdOU9/AWnlWKM5qk90Mz7sdZrdZ9H7sA/L3yOJEpQOYZgQplQdWWUzyWug==
+  dependencies:
+    "@amplitude/ua-parser-js" "0.7.31"
+
 "@amplitude/analytics-core@^0.9.4":
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.9.4.tgz#b7f8e0a558291d8347cd7fbe5b19660b1421ceed"
@@ -54,6 +61,15 @@
   integrity sha512-usaz0ul62DUTsDRcMIX8ZzamBwz2kUUbffQvIJdCSAiCz2i3v56cONIKGvUHOA40/uFIYcHB/KcTJ6IZ7tWFeQ==
   dependencies:
     "@amplitude/analytics-connector" "1.4.5"
+    base64-js "1.5.1"
+    unfetch "4.1.0"
+
+"@amplitude/experiment-js-client@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/experiment-js-client/-/experiment-js-client-1.6.0.tgz#d75fa9d48739eecd61e395d0c8094dd6810d5a42"
+  integrity sha512-LhNLYXLljZp38JeXheXyJUJQyBsQQJp8m9i2sBfAFE+wnEGVqZYJxNbbPVUqDmVcWV1clnJpTZhJWa+KdtYWZA==
+  dependencies:
+    "@amplitude/analytics-connector" "^1.4.6"
     base64-js "1.5.1"
     unfetch "4.1.0"
 

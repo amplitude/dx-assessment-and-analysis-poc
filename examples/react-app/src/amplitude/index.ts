@@ -261,8 +261,10 @@ export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> 
 export type AMultiVariateExperiment = { control?: any, treatment?: any };
 
 export interface VariantMethods {
-  flagCodegenEnabled(): boolean;
-  aMultiVariateExperiment(): AMultiVariateExperiment
+  codegenArrayExperiment(): CodegenArrayExperiment;
+  codegenBooleanExperiment(): CodegenBooleanExperiment;
+  codegenStringExperiment(): CodegenStringExperiment;
+  codegenExperiment(): CodegenExperiment;
 }
 
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
@@ -281,7 +283,7 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-        
+
         // FIXME: properly read API keys
         // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
@@ -316,14 +318,176 @@ export const typedAnalytics = analytics.typed;
 /**
  * EXPERIMENT
  */
+
+export type BaseExperiment = {
+  key: string;
+  name: string;
+}
+
+/* Codegen Array Experiment */
+export namespace CodegenArrayExperimentVariants {
+  export type Generic = { key: 'generic', payload: string[] };
+  export type Ampli = { key: 'ampli', payload: string[] };
+
+  export enum Keys {
+    Generic = 'generic',
+    Ampli = 'ampli'
+  }
+}
+export type CodegenArrayExperimentType = BaseExperiment & {
+  generic?: CodegenArrayExperimentVariants.Generic;
+  ampli?: CodegenArrayExperimentVariants.Ampli;
+}
+export class CodegenArrayExperiment implements CodegenArrayExperimentType {
+  key = 'codegen-array-experiment';
+  name = "Codegen Array Experiment";
+  variant: CodegenArrayExperimentVariants.Generic |CodegenArrayExperimentVariants.Ampli | undefined;
+
+  constructor(
+    public generic?: CodegenArrayExperimentVariants.Generic,
+    public ampli?: CodegenArrayExperimentVariants.Ampli,
+  ) {}
+}
+export namespace CodegenArrayExperiment {
+  export const Key = 'codegen-array-experiment';
+  export const Name = "Codegen Array Experiment";
+
+  export enum Variants {
+    Generic = 'generic',
+    Ampli = 'ampli'
+  }
+}
+
+/* Codegen Boolean Experiment */
+export namespace CodegenBooleanExperimentVariants {
+  export type On = { key: 'on', payload: boolean };
+
+  export enum Keys {
+    On = 'on'
+  }
+}
+export type CodegenBooleanExperimentType = BaseExperiment & {
+  on?: CodegenBooleanExperimentVariants.On;
+}
+export class CodegenBooleanExperiment implements CodegenBooleanExperimentType {
+  key = 'codegen-boolean-experiment';
+  name = "Codegen Boolean Experiment";
+  variant: CodegenBooleanExperimentVariants.On | undefined;
+
+  constructor(
+    public on?: CodegenBooleanExperimentVariants.On,
+  ) {}
+}
+export namespace CodegenBooleanExperiment {
+  export const Key = 'codegen-boolean-experiment';
+  export const Name = "Codegen Boolean Experiment";
+
+  export enum Variants {
+    On = 'on'
+  }
+}
+
+/* Codegen String Experiment */
+export namespace CodegenStringExperimentVariants {
+  export type Control = { key: 'control', payload: string };
+  export type Treatment = { key: 'treatment', payload: string };
+
+  export enum Keys {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export type CodegenStringExperimentType = BaseExperiment & {
+  control?: CodegenStringExperimentVariants.Control;
+  treatment?: CodegenStringExperimentVariants.Treatment;
+}
+export class CodegenStringExperiment implements CodegenStringExperimentType {
+  key = 'codegen-string-experiment';
+  name = "Codegen String Experiment";
+  variant: CodegenStringExperimentVariants.Control |CodegenStringExperimentVariants.Treatment | undefined;
+
+  constructor(
+    public control?: CodegenStringExperimentVariants.Control,
+    public treatment?: CodegenStringExperimentVariants.Treatment,
+  ) {}
+}
+export namespace CodegenStringExperiment {
+  export const Key = 'codegen-string-experiment';
+  export const Name = "Codegen String Experiment";
+
+  export enum Variants {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+
+/* Codegen Experiment */
+export namespace CodegenExperimentVariants {
+  export type Control = { key: 'control', payload: any };
+  export type Treatment = { key: 'treatment', payload: any };
+
+  export enum Keys {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export type CodegenExperimentType = BaseExperiment & {
+  control?: CodegenExperimentVariants.Control;
+  treatment?: CodegenExperimentVariants.Treatment;
+}
+export class CodegenExperiment implements CodegenExperimentType {
+  key = 'codegen-experiment';
+  name = "Codegen Experiment";
+  variant: CodegenExperimentVariants.Control |CodegenExperimentVariants.Treatment | undefined;
+
+  constructor(
+    public control?: CodegenExperimentVariants.Control,
+    public treatment?: CodegenExperimentVariants.Treatment,
+  ) {}
+}
+export namespace CodegenExperiment {
+  export const Key = 'codegen-experiment';
+  export const Name = "Codegen Experiment";
+
+  export enum Variants {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
+  private getTypedVariant<T extends BaseExperiment>(exp: T) {
+    const variant = this.variant(exp.key);
+    if (typeof variant === 'string') {
+        // FIXME: how to handle string responses?
+        // (exp as any)[variant.value] = { payload: variant.payload };
+        // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+    } else {
+      if (variant.value) {
+        (exp as any)[variant.value] = { payload: variant.payload };
+        (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+      }
+    }
+    return exp;
+  }
+
   get typed() {
     const core = this;
-    return {
-      flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
-      aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
+      return {
+        codegenArrayExperiment(): CodegenArrayExperiment {
+          return core.getTypedVariant(new CodegenArrayExperiment());
+        },
+        codegenBooleanExperiment(): CodegenBooleanExperiment {
+          return core.getTypedVariant(new CodegenBooleanExperiment());
+        },
+        codegenStringExperiment(): CodegenStringExperiment {
+          return core.getTypedVariant(new CodegenStringExperiment());
+        },
+        codegenExperiment(): CodegenExperiment {
+          return core.getTypedVariant(new CodegenExperiment());
+        },
     };
   }
 }

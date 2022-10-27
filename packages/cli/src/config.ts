@@ -9,13 +9,21 @@ export const allPlatforms: Set<Platform> = new Set<Platform>(['Node', 'Browser']
 
 export type Language = 'TypeScript';
 
-export interface Settings {
+export interface CodeGenerationSettingsModel {
   platform: Platform;
   // language: string;
   // sdk: string;
   output: string;
   outputFileName?: string;
   typedAnchorName?: string;
+}
+
+export class CodeGenerationSettings {
+  constructor(public model: CodeGenerationSettingsModel) {}
+
+  getTypedAnchorName(): string {
+    return this.model.typedAnchorName || "typed";
+  }
 }
 
 export interface ProductEnvironment {
@@ -41,16 +49,33 @@ export interface AnalyticsConfigModel {
   [eventName: string]: EventConfigModel;
 }
 
+export interface VariantModel {
+  description?: string;
+  key?: string;
+  payload?: Record<string, JsonSchemaPropertyModel>;
+}
+
+export interface ExperimentConfigModel {
+  description?: string;
+  key?: string;
+  variants?: Record<string, VariantModel>;
+}
+
+export interface ExperimentsConfigModel {
+  [experimentName: string]: ExperimentConfigModel;
+}
+
 export interface UserConfigModel {
   properties?: Record<string, PropertyConfigModel>;
   required?: string[];
 }
 
 export interface AmplitudeConfigModel {
-  settings: Settings;
+  settings: CodeGenerationSettingsModel;
   environments: Record<string, Environment>;
   user: UserConfigModel;
   analytics?: AnalyticsConfigModel;
+  experiments?: ExperimentsConfigModel;
 }
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {

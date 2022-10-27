@@ -1,10 +1,12 @@
-import { AmplitudeConfigModel } from "../config";
+import { AmplitudeConfigModel, CodeGenerationSettings, CodeGenerationSettingsModel } from "../config";
 import { getEnvironmentCode } from "./typescript/environment";
 import { UserCodeGenerator } from "./typescript/user";
 import { AnalyticsCoreCodeGenerator } from "./typescript/analytics";
 import { CodeBlock, CodeBlockTag, CodeExporter, CodeFile, CodeGenerator } from "./code-generator";
 
 async function getAmplitudeCoreCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
+  const codegenSettings = new CodeGenerationSettings(config.settings);
+
   return new CodeBlock()
     .addAs(CodeBlockTag.Import,`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
@@ -15,11 +17,11 @@ import { IExperimentClient as IExperimentClientCore } from "@amplitude/experimen
  * GENERAL INTERFACES
  */
 export interface Typed<T> {
-  get typed(): T;
+  get ${codegenSettings.getTypedAnchorName()}(): T;
 }`)
     .merge(
       getEnvironmentCode(config),
-      await (new UserCodeGenerator(config.user).generate()),
+      await (new UserCodeGenerator(config.user, config.settings).generate()),
       await (new AnalyticsCoreCodeGenerator(config.analytics).generate()),
     )
     .add(`\
@@ -38,10 +40,13 @@ export interface VariantMethods {
 }
 
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-`);
+`
+    );
 }
 
 async function getAmplitudeBrowserCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
+  const codegenSettings = new CodeGenerationSettings(config.settings);
+
   return new CodeBlock()
     .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
@@ -57,7 +62,7 @@ export class Amplitude extends AmplitudeBrowser {
     super(_user ?? user)
   }
 
-  get typed() {
+  get ${codegenSettings.getTypedAnchorName()}() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
@@ -87,20 +92,20 @@ export const amplitude = new Amplitude();
  * ANALYTICS
  */
 export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed(): TrackingPlanMethods {
+  get ${codegenSettings.getTypedAnchorName()}(): TrackingPlanMethods {
     return new TrackingPlanClient(this);
   }
 }
 
 export const analytics = new Analytics();
-export const typedAnalytics = analytics.typed;
+export const typedAnalytics = analytics.${config.settings.typedAnchorName || 'typed'};
 /**
  * EXPERIMENT
  */
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
-  get typed() {
+  get ${codegenSettings.getTypedAnchorName()}() {
     const core = this;
     return {
       flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
@@ -118,7 +123,9 @@ export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigM
   }
 }
 
-function getAmplitudeNodeCode(): CodeBlock {
+function getAmplitudeNodeCode(settings: CodeGenerationSettingsModel): CodeBlock {
+  const codegenSettings = new CodeGenerationSettings(settings);
+
   return new CodeBlock()
     .addAs(CodeBlockTag.Import, `\
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
@@ -135,7 +142,7 @@ import {
  * AMPLITUDE
  */
 export class Amplitude extends AmplitudeNode {
-  get typed() {
+  get ${codegenSettings.getTypedAnchorName()}() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
@@ -161,7 +168,7 @@ export const amplitude = new Amplitude();
  * ANALYTICS
  */
 export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
-  get typed() {
+  get ${codegenSettings.getTypedAnchorName()}() {
     return new TrackingPlanClient(this);;
   }
 }
@@ -189,7 +196,7 @@ export const analytics = new Analytics();
 // Example of experiment codegen
 // https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
 export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
-  get typed() {
+  get ${codegenSettings.getTypedAnchorName()}() {
     const core = this;
     return {
       flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
@@ -217,7 +224,7 @@ export const experiment = new Experiment();`);
 
 export class AmplitudeGeneratorNode implements CodeGenerator<AmplitudeConfigModel> {
   async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
-    return (await getAmplitudeCoreCode(config)).merge(await getAmplitudeNodeCode());
+    return (await getAmplitudeCoreCode(config)).merge(await getAmplitudeNodeCode(config.settings));
   }
 }
 

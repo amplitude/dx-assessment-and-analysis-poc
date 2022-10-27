@@ -1,16 +1,14 @@
-import { camelCase, isEmpty, upperFirst } from 'lodash';
+import { camelCase, isEmpty } from 'lodash';
 import { PropertyConfigModel } from "../../config";
 import createTab from "../util/createTab";
+import { upperCamelCase } from "../util/string";
 import { JsonSchemaPropertyModel } from "../../json-schema";
 
-function upperCamelCase(str: string) {
-  return upperFirst(camelCase(str));
-}
-
 export interface CodeLanguage {
-  getVariableName(name: string): string;
   getClassName(name:string): string;
   getMethodName(name:string): string;
+  getPropertyName(name:string): string;
+  getVariableName(name: string): string;
 
   /**
    * e.g.
@@ -40,6 +38,10 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
   }
 
   getVariableName(name: string): string {
+    return camelCase(name);
+  }
+
+  getPropertyName(name: string): string {
     return camelCase(name);
   }
 

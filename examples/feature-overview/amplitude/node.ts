@@ -230,9 +230,11 @@ export interface VariantMethods {
 
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
 
-export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
+export class VariantMethodsClient implements VariantMethods {
+  constructor(private client: IExperimentClientCore) {}
+
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
-    const variant = this.variant(exp.key);
+    const variant = this.client.variant(exp.key);
     if (typeof variant === 'string') {
       // FIXME: how to handle string responses?
       // (exp as any)[variant.value] = { payload: variant.payload };
@@ -246,16 +248,18 @@ export class ExperimentClient extends ExperimentClientNode implements Typed<Vari
     return exp;
   }
 
+  aMultiVariateExperiment(): AMultiVariateExperiment {
+    return this.getTypedVariant(new AMultiVariateExperiment());
+  }
+
+  flagCodegenEnabled(): FlagCodegenEnabled {
+    return this.getTypedVariant(new FlagCodegenEnabled());
+  }
+}
+
+export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
   get typed() {
-    const core = this;
-    return {
-      aMultiVariateExperiment(): AMultiVariateExperiment {
-        return core.getTypedVariant(new AMultiVariateExperiment());
-      },
-      flagCodegenEnabled(): FlagCodegenEnabled {
-        return core.getTypedVariant(new FlagCodegenEnabled());
-      }
-    };
+    return new VariantMethodsClient(this);
   }
 }
 

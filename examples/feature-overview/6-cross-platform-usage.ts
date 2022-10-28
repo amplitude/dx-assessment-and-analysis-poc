@@ -17,7 +17,7 @@ import {
  * Client
  */
 amplitudeBrowser.typed.load({ logger: new Logger() })
-if (experimentBrowser.typed.aMultiVariateExperiment()) {
+if (experimentBrowser.typed.aMultiVariateExperiment().generic) {
   analyticsBrowser.track('Client side event')
 }
 
@@ -36,7 +36,7 @@ if (experimentNode.deviceId('device').typed.flagCodegenEnabled()) {
 function sharedContext(analytics: IAnalyticsClient, experiment: IExperimentClient) {
   if (experiment.typed.flagCodegenEnabled())
   analytics.typed.userSignedUp();
-  analytics.track(new UserLoggedIn());
+  analytics.track(new UserLoggedIn({ method: "email" }));
 }
 
 sharedContext(analyticsBrowser, experimentBrowser);

@@ -47,7 +47,9 @@ amplitude.typed.load({ logger: new Logger() })
 /**
  * 1. Track with `userId`
  */
-analytics.userId('node-user').track(new UserLoggedIn());
+analytics.userId('node-user').track(new UserLoggedIn({
+  method: "email"
+}));
 
 /**
  * 2. Track with `deviceId`
@@ -59,7 +61,7 @@ analytics.deviceId('node-device').typed.userSignedUp();
  */
 const user = new User('node-user-2');
 user.typed.setUserProperties({
-  requiredProp: 'strongly typed'
+  referralSource: 'other'
 })
 analytics.user(user).typed.checkout();
 

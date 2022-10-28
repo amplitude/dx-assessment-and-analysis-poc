@@ -12,6 +12,8 @@ import {
   ExperimentClient as ExperimentClientLegacy,
 } from "@amplitude/experiment-js-client";
 
+export type { Variant };
+
 export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 
 export class Experiment extends BrowserAmplitudePluginBase implements IExperiment {

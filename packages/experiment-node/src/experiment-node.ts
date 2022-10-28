@@ -2,8 +2,10 @@ import {
   AmplitudePlugin, AmplitudePluginBase, AmplitudePluginCategory, UserClient, Config,
 } from "@amplitude/amplitude-node";
 import { IUser, User } from "@amplitude/user";
-import { IExperimentClient } from "@amplitude/experiment-core";
+import { IExperimentClient, Variant } from "@amplitude/experiment-core";
 import { newTrackMessage } from "@amplitude/analytics-messages";
+
+export type { Variant };
 
 export interface IExperiment extends AmplitudePlugin, UserClient<IExperimentClient> {}
 
@@ -21,10 +23,12 @@ export class ExperimentClient implements IExperimentClient {
     this.config.logger.log(`[Experiment.fetch] user=${u}`)
   }
 
-  variant(key: string): boolean {
+  variant(key: string, fallback?: string): Variant | string {
     this.config.logger.log(`[Experiment.variant] ${key}`)
 
-    return key === 'flag-codegen-enabled';
+    // this.client.variant(key, fallback);
+
+    return fallback || 'flag-codegen-enabled';
   }
 
   exposure() {

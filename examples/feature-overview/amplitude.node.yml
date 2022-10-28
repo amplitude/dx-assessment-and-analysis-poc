@@ -4,3 +4,73 @@ settings:
   sdk: "@amplitude/amplitude-node"
   output: ./amplitude
   outputFileName: node
+  typedAnchorName: typed
+
+environments:
+  development:
+    experiment:
+      apiKey: my-deployment-key
+    analytics:
+      apiKey: my-api-key
+
+  production:
+    experiment:
+      apiKey: my-deployment-key
+    analytics:
+      apiKey: my-api-key
+
+x-analytics-definitions:
+  referralSource: &referralSource
+    description: How the user was brought to the app
+    enum: [ "facebook", "twitter", "other" ]
+  songId: &songId
+    description: The song unique identifier
+    type: string
+
+x-experiment-definitions:
+  payload: &arrayOfStringsPayload
+    description: An array of strings
+    type: array
+    items:
+      type: string
+
+user:
+  description: Collection of user properties
+  required: [referralSource]
+  properties:
+    referralSource: *referralSource
+    favoriteSongCount:
+      description: Total number of favorited songs
+      type: integer
+
+analytics:
+  User Signed Up:
+    description: A user signed up
+    properties:
+      referralSource: *referralSource
+
+  User Logged In:
+    description: The user logged in
+    required: [ method ]
+    properties:
+      method:
+        description: The song unique identifier
+        enum: [ "email", "facebook", "google" ]
+
+  Add To Cart:
+    description: An item was added to the cart
+
+  Checkout:
+    description: The user completed their purchase
+
+experiments:
+  Flag Codegen Enabled:
+    variants:
+      on:
+
+  A Multi Variate Experiment:
+    variants:
+      generic:
+        payload: *arrayOfStringsPayload
+      ampli:
+        payload: *arrayOfStringsPayload

@@ -53,7 +53,7 @@ user.setGroupProperties('framework', 'awesome', {
  */
 experiment.fetch();
 experiment.exposure();
-if (experiment.variant('flag-codegen-on')) {
+if (experiment.variant('flag-codegen-on', "false") === "true") {
   throw new Error('codegen not available')
 } else {
   analytics.track('Core SDK Event')

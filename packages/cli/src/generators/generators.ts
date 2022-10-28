@@ -10,8 +10,7 @@ async function getAmplitudeCoreCode(config: AmplitudeConfigModel): Promise<CodeB
 
   return new CodeBlock()
     .addAs(CodeBlockTag.Import,`\
-import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`)
+import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";`)
     .addAs(CodeBlockTag.Export, `export { Logger, NoLogger };`)
     .add(`\
 /**
@@ -24,25 +23,12 @@ export interface Typed<T> {
       getEnvironmentCode(config),
       await (new UserCodeGenerator(config.user, config.settings).generate()),
       await (new AnalyticsCoreCodeGenerator(config.analytics).generate()),
-      await (new ExperimentCoreCodeGenerator(config.experiments).generate()),
+      await (new ExperimentCoreCodeGenerator(config.experiments, config.settings).generate()),
     )
     .add(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
   environment?: Environment,
-}
-
-/**
- * EXPERIMENT
- */
-export type AMultiVariateExperiment = { control?: any, treatment?: any };
-
-export interface VariantMethods {
-  flagCodegenEnabled(): boolean;
-  aMultiVariateExperiment(): AMultiVariateExperiment
-}
-
-export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-`
+}`
     );
 }
 
@@ -56,6 +42,18 @@ import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";`)
     .addAs(CodeBlockTag.Export, `export { MessageHub, hub } from "@amplitude/hub";`)
     .add(`\
+/**
+ * ANALYTICS
+ */
+export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
+  get ${codegenSettings.getTypedAnchorName()}(): TrackingPlanMethods {
+    return new TrackingPlanClient(this);
+  }
+}
+
+export const analytics = new Analytics();
+export const typedAnalytics = analytics.${codegenSettings.getTypedAnchorName()};
+
 /**
  * AMPLITUDE
  */
@@ -89,34 +87,7 @@ export class Amplitude extends AmplitudeBrowser {
 }
 
 export const amplitude = new Amplitude();
-
-/**
- * ANALYTICS
- */
-export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get ${codegenSettings.getTypedAnchorName()}(): TrackingPlanMethods {
-    return new TrackingPlanClient(this);
-  }
-}
-
-export const analytics = new Analytics();
-export const typedAnalytics = analytics.${config.settings.typedAnchorName || 'typed'};
-/**
- * EXPERIMENT
- */
-// Example of experiment codegen
-// https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
-export class Experiment extends ExperimentBrowser implements IExperimentClient {
-  get ${codegenSettings.getTypedAnchorName()}() {
-    const core = this;
-    return {
-      flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
-      aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
-    };
-  }
-}
-
-export const experiment = new Experiment();`);
+`);
 }
 
 export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigModel> {

@@ -1,7 +1,7 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
@@ -251,74 +251,6 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
-}
-
-/**
- * EXPERIMENT
- */
-export type AMultiVariateExperiment = { control?: any, treatment?: any };
-
-export interface VariantMethods {
-  codegenArrayExperiment(): CodegenArrayExperiment;
-  codegenBooleanExperiment(): CodegenBooleanExperiment;
-  codegenStringExperiment(): CodegenStringExperiment;
-  codegenExperiment(): CodegenExperiment;
-}
-
-export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-
-
-/**
- * AMPLITUDE
- */
-export class Amplitude extends AmplitudeBrowser {
-  constructor(_user?: User) {
-    super(_user ?? user)
-  }
-
-  get typed() {
-    const core = this;
-    return {
-      load(config: AmplitudeLoadOptions) {
-        const environment = config.environment ?? 'development';
-
-        // FIXME: properly read API keys
-        // @ts-ignore
-        const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
-
-        core.load({
-          ...config,
-          apiKey,
-        });
-        core.addPlugin(analytics);
-        core.addPlugin(experiment);
-      },
-      get user(): User {
-        return core.user as User;
-      }
-    }
-  }
-}
-
-export const amplitude = new Amplitude();
-
-/**
- * ANALYTICS
- */
-export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed(): TrackingPlanMethods {
-    return new TrackingPlanClient(this);
-  }
-}
-
-export const analytics = new Analytics();
-export const typedAnalytics = analytics.typed;
-/**
- * EXPERIMENT
- */
-
 export type BaseExperiment = {
   key: string;
   name: string;
@@ -387,40 +319,6 @@ export namespace CodegenBooleanExperiment {
   }
 }
 
-/* Codegen String Experiment */
-export namespace CodegenStringExperimentVariants {
-  export type Control = { key: 'control', payload: string };
-  export type Treatment = { key: 'treatment', payload: string };
-
-  export enum Keys {
-    Control = 'control',
-    Treatment = 'treatment'
-  }
-}
-export type CodegenStringExperimentType = BaseExperiment & {
-  control?: CodegenStringExperimentVariants.Control;
-  treatment?: CodegenStringExperimentVariants.Treatment;
-}
-export class CodegenStringExperiment implements CodegenStringExperimentType {
-  key = 'codegen-string-experiment';
-  name = "Codegen String Experiment";
-  variant: CodegenStringExperimentVariants.Control |CodegenStringExperimentVariants.Treatment | undefined;
-
-  constructor(
-    public control?: CodegenStringExperimentVariants.Control,
-    public treatment?: CodegenStringExperimentVariants.Treatment,
-  ) {}
-}
-export namespace CodegenStringExperiment {
-  export const Key = 'codegen-string-experiment';
-  export const Name = "Codegen String Experiment";
-
-  export enum Variants {
-    Control = 'control',
-    Treatment = 'treatment'
-  }
-}
-
 /* Codegen Experiment */
 export namespace CodegenExperimentVariants {
   export type Control = { key: 'control', payload: any };
@@ -455,8 +353,48 @@ export namespace CodegenExperiment {
   }
 }
 
-// Example of experiment codegen
-// https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
+/* Codegen String Experiment */
+export namespace CodegenStringExperimentVariants {
+  export type Control = { key: 'control', payload: string };
+  export type Treatment = { key: 'treatment', payload: string };
+
+  export enum Keys {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export type CodegenStringExperimentType = BaseExperiment & {
+  control?: CodegenStringExperimentVariants.Control;
+  treatment?: CodegenStringExperimentVariants.Treatment;
+}
+export class CodegenStringExperiment implements CodegenStringExperimentType {
+  key = 'codegen-string-experiment';
+  name = "Codegen String Experiment";
+  variant: CodegenStringExperimentVariants.Control |CodegenStringExperimentVariants.Treatment | undefined;
+
+  constructor(
+    public control?: CodegenStringExperimentVariants.Control,
+    public treatment?: CodegenStringExperimentVariants.Treatment,
+  ) {}
+}
+export namespace CodegenStringExperiment {
+  export const Key = 'codegen-string-experiment';
+  export const Name = "Codegen String Experiment";
+
+  export enum Variants {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export interface VariantMethods {
+  codegenArrayExperiment(): CodegenArrayExperiment;
+  codegenBooleanExperiment(): CodegenBooleanExperiment;
+  codegenExperiment(): CodegenExperiment;
+  codegenStringExperiment(): CodegenStringExperiment;
+}
+
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
+    
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
     const variant = this.variant(exp.key);
@@ -475,21 +413,73 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
 
   get typed() {
     const core = this;
-      return {
-        codegenArrayExperiment(): CodegenArrayExperiment {
-          return core.getTypedVariant(new CodegenArrayExperiment());
-        },
-        codegenBooleanExperiment(): CodegenBooleanExperiment {
-          return core.getTypedVariant(new CodegenBooleanExperiment());
-        },
-        codegenStringExperiment(): CodegenStringExperiment {
-          return core.getTypedVariant(new CodegenStringExperiment());
-        },
-        codegenExperiment(): CodegenExperiment {
-          return core.getTypedVariant(new CodegenExperiment());
-        },
+    return {
+      codegenArrayExperiment(): CodegenArrayExperiment {
+        return core.getTypedVariant(new CodegenArrayExperiment());
+      },
+      codegenBooleanExperiment(): CodegenBooleanExperiment {
+        return core.getTypedVariant(new CodegenBooleanExperiment());
+      },
+      codegenExperiment(): CodegenExperiment {
+        return core.getTypedVariant(new CodegenExperiment());
+      },
+      codegenStringExperiment(): CodegenStringExperiment {
+        return core.getTypedVariant(new CodegenStringExperiment());
+      }
     };
   }
 }
 
 export const experiment = new Experiment();
+export const typedExperiment = experiment.typed;
+
+
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
+
+/**
+ * ANALYTICS
+ */
+export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
+  get typed(): TrackingPlanMethods {
+    return new TrackingPlanClient(this);
+  }
+}
+
+export const analytics = new Analytics();
+export const typedAnalytics = analytics.typed;
+
+/**
+ * AMPLITUDE
+ */
+export class Amplitude extends AmplitudeBrowser {
+  constructor(_user?: User) {
+    super(_user ?? user)
+  }
+
+  get typed() {
+    const core = this;
+    return {
+      load(config: AmplitudeLoadOptions) {
+        const environment = config.environment ?? 'development';
+        
+        // FIXME: properly read API keys
+        // @ts-ignore
+        const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
+
+        core.load({
+          ...config,
+          apiKey,
+        });
+        core.addPlugin(analytics);
+        core.addPlugin(experiment);
+      },
+      get user(): User {
+        return core.user as User;
+      }
+    }
+  }
+}
+
+export const amplitude = new Amplitude();

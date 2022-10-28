@@ -1,5 +1,10 @@
 import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
-import { AnalyticsConfigModel, ExperimentsConfigModel } from "../../config";
+import {
+  AnalyticsConfigModel,
+  CodeGenerationSettings,
+  CodeGenerationSettingsModel,
+  ExperimentsConfigModel
+} from "../../config";
 import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
   hasNonConstProperties,
@@ -9,8 +14,10 @@ import {
   JsonSchemaPropertyModel,
   removeConstProperties
 } from "../../json-schema";
-import { cloneDeep } from "lodash";
+import { cloneDeep, kebabCase } from "lodash";
 import { ExperimentCodeGenerator } from "../../services/experiment/ExperimentCodeGenerator";
+import { ExperimentModel } from "../../services/experiment/models";
+import { sortAlphabetically } from "../util/sorting";
 
 export class ExperimentsConfig {
   constructor(private model: ExperimentsConfigModel) {}
@@ -20,7 +27,7 @@ export class ExperimentsConfig {
   }
 
   getExperimentNames(): string[] {
-    return Object.keys(this.model);
+    return Object.keys(this.model).sort(sortAlphabetically);
   }
 
   getExperimentSchemas(): JsonSchemaPropertyModel[] {
@@ -31,16 +38,36 @@ export class ExperimentsConfig {
       ...cloneDeep(this.model[name]),
     }));
   }
+
+  getExperiments(): ExperimentModel[] {
+    return this.getExperimentNames().map(name => {
+      const expModel = this.model[name];
+      const variantNames = Object.keys(expModel.variants);
+
+      return {
+        key: kebabCase(name),
+        name,
+        variants: variantNames.map(variantName => ({
+          key: variantName,
+          // FIXME: How ot handle empty payload
+          payload: expModel.variants[variantName]?.payload || {},
+        }))
+      }
+    });
+  }
 }
 
 export class ExperimentCoreCodeGenerator implements CodeGenerator<ExperimentsConfigModel> {
-  private config: ExperimentsConfig;
+  private experimentsConfig: ExperimentsConfig;
+  private codegenConfig: CodeGenerationSettings;
 
   constructor(
-    configModel: ExperimentsConfigModel,
+    experimentsModel: ExperimentsConfigModel,
+    codegenModel: CodeGenerationSettingsModel,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
   ) {
-    this.config = new ExperimentsConfig(configModel);
+    this.experimentsConfig = new ExperimentsConfig(experimentsModel);
+    this.codegenConfig = new CodeGenerationSettings(codegenModel);
   }
 
 //   async generateEventPropertiesTypes(): Promise<CodeBlock> {
@@ -197,12 +224,9 @@ export class ExperimentCoreCodeGenerator implements CodeGenerator<ExperimentsCon
 
   async generate(): Promise<CodeBlock> {
     const { tab, getMethodName, getClassName } = this.lang;
-    const experimentSchemas = this.config.getExperimentSchemas();
 
     const generator = new ExperimentCodeGenerator();
 
-    const code = generator.generateXpntWrapper([]);
-
-    return new CodeBlock(code);
+    return generator.generateXpntWrapper(this.experimentsConfig, this.codegenConfig);
   }
 }

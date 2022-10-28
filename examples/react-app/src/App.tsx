@@ -32,10 +32,15 @@ function App() {
             <span>Experiment</span>
             <button onClick={() => experiment.exposure()}>experiment.exposure()</button>
             <button onClick={() => {
-              console.log(`${experiment.typed.codegenBooleanExperiment().key} is ${
+              console.log(`${
+                experiment.typed.codegenBooleanExperiment().key
+              } is ${
                 experiment.typed.codegenBooleanExperiment().on ? 'on' : 'off'
               }`)
             }}>experiment.codegenBooleanExperiment()</button>
+            <button onClick={() => {
+              console.log(experiment.typed.codegenArrayExperiment().generic?.payload);
+            }}>experiment.codegenArrayExperiment().generic.payload</button>
           </div>
           <div className="section">
             <span>Analytics</span>

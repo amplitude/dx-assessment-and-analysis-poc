@@ -1,24 +1,9 @@
 import { ExperimentModel, VariantModel } from './models';
 import { DuplicateNameMappingDetector } from "../../generators/DuplicateNameMappingDetector";
 import { TypeScriptCodeLanguage } from "../../generators/typescript/TypeScriptCodeModel";
-
-function getVariantPayloadType(variant: VariantModel) {
-  return getType(variant.payload);
-}
-
-function getType(obj: any): string {
-  const type = typeof obj;
-  if (['string', 'number', 'boolean', 'null'].includes(typeof obj)) {
-    return type;
-  }
-  if (Array.isArray(obj)) {
-    const itemType = (obj.length > 0) ? getType(obj[0]) : 'any';
-
-    return `${itemType}[]`;
-  }
-
-  return 'any';
-}
+import { CodeBlock, CodeBlockTag } from "../../generators/code-generator";
+import { ExperimentsConfig } from "../../generators/typescript/experiment";
+import { CodeGenerationSettings } from "../../config";
 
 export class ExperimentCodeGenerator {
   constructor(
@@ -26,7 +11,7 @@ export class ExperimentCodeGenerator {
   ) {}
 
   generateExperimentType(experiment: ExperimentModel): string {
-    const { getClassName, getPropertyName } = this.lang;
+    const { getClassName, getPropertyName, getPropertyType } = this.lang;
     const className = getClassName(experiment.name);
 
     return `\
@@ -37,36 +22,14 @@ ${experiment.variants.map(
       v => `\
   ${getPropertyName(v.key)}: {
     key: '${v.key}',
-    payload: ${getVariantPayloadType(v)}
+    payload: ${getPropertyType(v.payload)}
   };`,
     ).join('\n')}
 };`;
   }
 
   generateExperimentClass(experiment: ExperimentModel): string {
-    const { getClassName, getPropertyName } = this.lang;
-    const className = getClassName(experiment.name);
-    const getVariantTypeName = (v: VariantModel) => `${className}${getClassName(v.key)}`;
-
-    return `\
-${experiment.variants.map(v => `\
-export type ${getVariantTypeName(v)} = { key: '${v.key}', payload: ${getVariantPayloadType(v)} };`).join('\n')}
-export type ${className}Variants = BaseExperiment & {
-${experiment.variants.map(v => `\
-  ${getPropertyName(v.key)}?: ${getVariantTypeName(v)};`).join('\n')}
-}
-export class ${className} implements ${className}Variants {
-  key = '${experiment.key}';
-  name = "${experiment.name}";
-  constructor(
-${experiment.variants.map(v => `\
-    public ${getPropertyName(v.key)}?: ${getVariantTypeName(v)},`).join('\n')}
-  ) {}
-}`;
-  }
-
-  generateExperimentClass2(experiment: ExperimentModel): string {
-    const { getClassName, getPropertyName } = this.lang;
+    const { getClassName, getPropertyName, getPropertyType } = this.lang;
 
     const className = getClassName(experiment.name);
     const getVariantTypeName = (v: VariantModel) => `${getClassName(v.key)}`;
@@ -75,7 +38,8 @@ ${experiment.variants.map(v => `\
 /* ${experiment.name} */
 export namespace ${className}Variants {
 ${experiment.variants.map(v => `\
-  export type ${getVariantTypeName(v)} = { key: '${v.key}', payload: ${getVariantPayloadType(v)} };`).join('\n')}
+  export type ${getVariantTypeName(v)} = { key: '${v.key}', payload: ${getPropertyType(v.payload)} };`).join('\n')}
+
   export enum Keys {
 ${experiment.variants.map(v => `\
     ${getVariantTypeName(v)} = '${v.key}'`).join(',\n')}
@@ -90,6 +54,7 @@ export class ${className} implements ${className}Type {
   name = "${experiment.name}";
   variant: ${experiment.variants.map(v => `\
 ${className}Variants.${getVariantTypeName(v)}`).join(' |')} | undefined;
+
   constructor(
 ${experiment.variants.map(v => `\
     public ${getPropertyName(v.key)}?: ${className}Variants.${getVariantTypeName(v)},`).join('\n')}
@@ -98,6 +63,7 @@ ${experiment.variants.map(v => `\
 export namespace ${className} {
   export const Key = '${experiment.key}';
   export const Name = "${experiment.name}";
+
   export enum Variants {
 ${experiment.variants.map(v => `\
     ${getClassName(v.key)} = '${v.key}'`).join(',\n')}
@@ -112,20 +78,8 @@ ${experiment.variants.map(v => `\
     const methodName = getMethodName(experiment.name);
 
     return `\
-  public ${methodName}(): ${className} {
-    return this.getVariantAndTranslate<${className}>('${experiment.key}');
-  }`;
-  }
-
-  generateExperimentMethod2(experiment: ExperimentModel): string {
-    const { getClassName, getMethodName } = this.lang;
-
-    const className = getClassName(experiment.name);
-    const methodName = getMethodName(experiment.name);
-
-    return `\
-  public ${methodName}(): ${className} {
-    return this.getTypedVariant(new ${className}());
+  ${methodName}(): ${className} {
+    return core.getTypedVariant(new ${className}());
   }`;
   }
 
@@ -146,11 +100,15 @@ ${experiment.variants.map(v => `\
  */`;
   }
 
-  generateXpntWrapper(experiments: ExperimentModel[]): string {
+  generateXpntWrapper(
+    experimentsConfig: ExperimentsConfig,
+    codegenConfig: CodeGenerationSettings
+  ): CodeBlock {
+    const { tab, getMethodName, getClassName } = this.lang;
     // detect duplicate names
     // since the name mapping might map previously non-conflicting names to the same value (camelCase, etc)
-    const duplicateDector = new DuplicateNameMappingDetector(this.lang.getMethodName);
-    const filteredExperiments = experiments.filter(e => {
+    const duplicateDector = new DuplicateNameMappingDetector(getMethodName);
+    const filteredExperiments = experimentsConfig.getExperiments().filter(e => {
       if (duplicateDector.hasDuplicateNameMapping(e.name)) {
         console.log(`Experiment "${e.name}" has a duplicate name mapping as another  and will be removed.`); // eslint-disable-line no-console
         return false;
@@ -158,51 +116,48 @@ ${experiment.variants.map(v => `\
       return true;
     });
 
-    return `\
+    return CodeBlock.from(
+      CodeBlockTag.Import,
+      `import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";`,
+    ).add(`\
 export type BaseExperiment = {
   key: string;
   name: string;
 }
-${filteredExperiments.map(e => this.generateExperimentClass2(e)).join('\n\n')}
-export class Xpmt {
-  /**
-   * Initialize experiment.
-   *
-   * @param apiKey Experiment deployment key.
-   * @param config Experiment client configuration.
-   */
-  public static initialize(apiKey: string, config?: ExperimentConfig): Xpmt {
-    const client = Experiment.initialize(apiKey, config);
-    return new Xpmt(client);
-  }
-  /**
-   * The underlying experiment client.
-   */
-  public readonly client: ExperimentClient;
-  /**
-   * Fetch variants for a user.
-   *
-   * This user is merged with the user provided by the client's user provider.
-   *
-   * @param user The user to fetch variants for.
-   */
-  public async fetch(user?: ExperimentUser): Promise<Xpmt> {
-    await this.client.fetch(user)
-    return this;
-  }
-  private constructor(client: ExperimentClient) {
-    this.client = client;
-  }
+
+${filteredExperiments.map(e => this.generateExperimentClass(e)).join('\n\n')}
+export interface VariantMethods {
+${filteredExperiments.map(e => `  ${getMethodName(e.name)}(): ${getClassName(e.name)};`).join('\n')}
+}
+
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
+    
+export class Experiment extends ExperimentBrowser implements IExperimentClient {
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
-    const variant = this.client.variant(exp.key);
-    if (variant.value) {
-      (exp as any)[variant.value] = { payload: variant.payload };
-      (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+    const variant = this.variant(exp.key);
+    if (typeof variant === 'string') {
+        // FIXME: how to handle string responses?
+        // (exp as any)[variant.value] = { payload: variant.payload };
+        // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+    } else {
+      if (variant.value) {
+        (exp as any)[variant.value] = { payload: variant.payload };
+        (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+      }
     }
     return exp;
   }
-${filteredExperiments.map(e => this.generateExperimentMethod2(e)).join('\n\n')}
+
+  get ${codegenConfig.getTypedAnchorName()}() {
+    const core = this;
+    return {
+${filteredExperiments.map(e => tab(2, this.generateExperimentMethod(e))).join(',\n')}
+    };
+  }
 }
-`;
+
+export const experiment = new Experiment();
+export const typedExperiment = experiment.${codegenConfig.getTypedAnchorName()};
+`);
   }
 }

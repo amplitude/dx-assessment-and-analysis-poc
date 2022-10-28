@@ -18,13 +18,20 @@ environments:
     analytics:
       apiKey: my-api-key
 
-definitions:
+x-analytics-definitions:
   referralSource: &referralSource
     description: How the user was brought to the app
     enum: [ "facebook", "twitter", "other" ]
   songId: &songId
     description: The song unique identifier
     type: string
+
+x-experiment-definitions:
+  payload: &arrayOfStringsPayload
+    description: An array of strings
+    type: array
+    items:
+      type: string
 
 user:
   description: Collection of user properties
@@ -94,14 +101,45 @@ analytics:
           type: string
 
 experiments:
-  Mac Users Flag:
+  Codegen Boolean Experiment:
+    key: codegen-boolean-experiment
     variants:
       on:
-  Windows Users Experiment:
+        payload:
+          type: boolean
+
+  Codegen Array Experiment:
+    key: codegen-array-experiment
+    variants:
+      generic:
+        payload: *arrayOfStringsPayload
+      ampli:
+        payload: *arrayOfStringsPayload
+
+  Codegen String Experiment:
+    key: codegen-string-experiment
     variants:
       control:
         payload:
           type: string
       treatment:
         payload:
-          type: number
+          type: string
+
+  Codegen Experiment:
+    key: codegen-experiment
+    variants:
+      control:
+      treatment:
+
+#  Mac Users Flag:
+#    variants:
+#      on:
+#  Windows Users Experiment:
+#    variants:
+#      control:
+#        payload:
+#          type: string
+#      treatment:
+#        payload:
+#          type: number

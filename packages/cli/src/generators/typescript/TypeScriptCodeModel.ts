@@ -48,7 +48,7 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
   tab = createTab(2);
   tabExceptFirstLine = createTab(2, false);
 
-  getPropertyType(schema: JsonSchemaPropertyModel): string {
+  getPropertyType = (schema: JsonSchemaPropertyModel): string => {
     switch(schema.type) {
       case "boolean":
         return 'boolean';
@@ -59,6 +59,8 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
         return 'null';
       case "object":
         return 'any'
+      case "string":
+        return 'string';
     }
 
     if (schema.type === 'array') {

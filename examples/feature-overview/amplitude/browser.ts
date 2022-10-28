@@ -1,7 +1,10 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
+import {
+  IExperimentClient as IExperimentClientNode,
+  IExperimentClient as IExperimentClientCore
+} from "@amplitude/experiment-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
@@ -223,8 +226,35 @@ export interface VariantMethods {
   flagCodegenEnabled(): FlagCodegenEnabled;
 }
 
+export class VariantMethodsClient implements VariantMethods {
+  constructor(private client: IExperimentClientNode) {}
+
+  private getTypedVariant<T extends BaseExperiment>(exp: T) {
+    const variant = this.client.variant(exp.key);
+    if (typeof variant === 'string') {
+      // FIXME: how to handle string responses?
+      // (exp as any)[variant.value] = { payload: variant.payload };
+      // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+    } else {
+      if (variant.value) {
+        (exp as any)[variant.value] = { payload: variant.payload };
+        (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+      }
+    }
+    return exp;
+  }
+
+  aMultiVariateExperiment(): AMultiVariateExperiment {
+    return this.getTypedVariant(new AMultiVariateExperiment());
+  }
+
+  flagCodegenEnabled(): FlagCodegenEnabled {
+    return this.getTypedVariant(new FlagCodegenEnabled());
+  }
+}
+
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-    
+
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
     const variant = this.variant(exp.key);
@@ -242,15 +272,7 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
   }
 
   get typed() {
-    const core = this;
-    return {
-      aMultiVariateExperiment(): AMultiVariateExperiment {
-        return core.getTypedVariant(new AMultiVariateExperiment());
-      },
-      flagCodegenEnabled(): FlagCodegenEnabled {
-        return core.getTypedVariant(new FlagCodegenEnabled());
-      }
-    };
+    return new VariantMethodsClient(this);
   }
 }
 
@@ -287,7 +309,7 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-        
+
         // FIXME: properly read API keys
         // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];

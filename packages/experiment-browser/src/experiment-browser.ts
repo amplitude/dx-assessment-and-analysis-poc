@@ -13,6 +13,7 @@ import {
 } from "@amplitude/experiment-js-client";
 
 export type { Variant };
+export { IExperimentClient };
 
 export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 

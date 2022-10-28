@@ -6,6 +6,7 @@ import { IExperimentClient, Variant } from "@amplitude/experiment-core";
 import { newTrackMessage } from "@amplitude/analytics-messages";
 
 export type { Variant };
+export { IExperimentClient };
 
 export interface IExperiment extends AmplitudePlugin, UserClient<IExperimentClient> {}
 

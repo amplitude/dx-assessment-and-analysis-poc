@@ -1,7 +1,7 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
+import { IExperimentClient as IExperimentClientNode } from "@amplitude/experiment-node";
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
@@ -228,10 +228,8 @@ export interface VariantMethods {
   flagCodegenEnabled(): FlagCodegenEnabled;
 }
 
-export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-
 export class VariantMethodsClient implements VariantMethods {
-  constructor(private client: IExperimentClientCore) {}
+  constructor(private client: IExperimentClientNode) {}
 
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
     const variant = this.client.variant(exp.key);
@@ -257,7 +255,9 @@ export class VariantMethodsClient implements VariantMethods {
   }
 }
 
-export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
+export interface IExperimentClient extends IExperimentClientNode, Typed<VariantMethods> {}
+
+export class ExperimentClient extends ExperimentClientNode implements IExperimentClient {
   get typed() {
     return new VariantMethodsClient(this);
   }

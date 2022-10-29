@@ -36,6 +36,7 @@ export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> 
 
 async function getAmplitudeBrowserCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
   const codegenSettings = new CodeGenerationSettings(config.settings);
+  const typed = codegenSettings.getTypedAnchorName();
 
   return new CodeBlock()
     .import(`\
@@ -51,13 +52,13 @@ import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
  * ANALYTICS
  */
 export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get ${codegenSettings.getTypedAnchorName()}(): TrackingPlanMethods {
+  get ${typed}(): TrackingPlanMethods {
     return new TrackingPlanClient(this);
   }
 }
 
 export const analytics = new Analytics();
-export const typedAnalytics = analytics.${codegenSettings.getTypedAnchorName()};
+export const typedAnalytics = analytics.${typed};
 
 /**
  * AMPLITUDE
@@ -67,7 +68,7 @@ export class Amplitude extends AmplitudeBrowser {
     super(_user ?? user)
   }
 
-  get ${codegenSettings.getTypedAnchorName()}() {
+  get ${typed}() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
@@ -103,6 +104,7 @@ export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigM
 
 function getAmplitudeNodeCode(settings: CodeGenerationSettingsModel): CodeBlock {
   const codegenSettings = new CodeGenerationSettings(settings);
+  const typed = codegenSettings.getTypedAnchorName();
 
   return CodeBlock.import(`\
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
@@ -119,7 +121,7 @@ import {
  * AMPLITUDE
  */
 export class Amplitude extends AmplitudeNode {
-  get ${codegenSettings.getTypedAnchorName()}() {
+  get ${typed}() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
@@ -145,7 +147,7 @@ export const amplitude = new Amplitude();
  * ANALYTICS
  */
 export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
-  get ${codegenSettings.getTypedAnchorName()}() {
+  get ${typed}() {
     return new TrackingPlanClient(this);;
   }
 }

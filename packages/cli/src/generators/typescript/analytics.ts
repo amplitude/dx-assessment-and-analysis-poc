@@ -1,4 +1,4 @@
-import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
+import { CodeBlock, CodeGenerator } from "../code-generator";
 import { AnalyticsConfigModel } from "../../config";
 import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
@@ -53,7 +53,7 @@ export class AnalyticsCoreCodeGenerator implements CodeGenerator<AnalyticsConfig
         return await jsonSchemaToTypeScript(schema);
       }));
 
-    return CodeBlock.from(CodeBlockTag.Default, ...eventPropertiesTypes);
+    return CodeBlock.code(...eventPropertiesTypes);
   }
 
   protected generatePropertiesLiteralWithConsts(
@@ -126,7 +126,7 @@ ${this.lang.tab(1, constFields)}
       ? `\n  constructor(public event_properties: ${getClassName(event.title)}Properties) {}`
       : '';
 
-    return CodeBlock.from(CodeBlockTag.Default, ...this.config.getEventSchemas().map(event => `\
+    return CodeBlock.code(...this.config.getEventSchemas().map(event => `\
 export class ${getClassName(event.title)} implements AnalyticsEvent {
   event_type = '${event.title}';${getEventProperties(event)}
 ${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
@@ -205,18 +205,17 @@ export class ${getClassName(schema.title)} implements ${baseEventType} {
       ? `properties`
       : '';
 
-    return CodeBlock.from(
-        CodeBlockTag.Import,
-        `import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";`
+    return CodeBlock.import(
+    `import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";`
       )
-      .addAs(CodeBlockTag.Export, `export type { AnalyticsEvent };`)
-      .add(`\
+      .export(`export type { AnalyticsEvent };`)
+      .code(`\
 /**
  * ANALYTICS
  */`)
       .merge(await this.generateEventPropertiesTypes())
       .merge(await this.generateEventClasses())
-      .add(`\
+      .code(`\
 export interface TrackingPlanMethods{
 ${eventSchemas.map(event => tab(1, `${getMethodName(event.title)}(${getEventParams(event)}): void;`))
         .join('\n')}

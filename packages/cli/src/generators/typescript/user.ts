@@ -1,4 +1,4 @@
-import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
+import { CodeBlock, CodeGenerator } from "../code-generator";
 import { CodeGenerationSettings, CodeGenerationSettingsModel, UserConfigModel } from "../../config";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import { JsonSchemaPropertyModel } from "../../json-schema";
@@ -38,14 +38,14 @@ export class UserCodeGenerator implements CodeGenerator<UserConfigModel> {
 
   async generate(): Promise<CodeBlock> {
     return new CodeBlock()
-      .addAs(CodeBlockTag.Import, `import { User as UserCore } from "@amplitude/user";`)
-      .add(`\
+      .import(`import { User as UserCore } from "@amplitude/user";`)
+      .code(`\
 /**
  * USER
  */`
       )
       .merge(await this.generateUserPropertyType())
-      .add(`\
+      .code(`\
 interface TypedUserMethods {
   setUserProperties(properties: UserProperties): TypedUserMethods;
 }

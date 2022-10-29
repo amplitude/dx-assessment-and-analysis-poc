@@ -13,6 +13,9 @@ import { ExperimentModel, VariantModel } from "../../services/experiment/models"
 import { sortAlphabetically } from "../util/sorting";
 import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
 
+/**
+ * ExperimentsConfig
+ */
 export class ExperimentsConfig {
   constructor(private model: ExperimentsConfigModel) {}
 
@@ -51,6 +54,11 @@ export class ExperimentsConfig {
   }
 }
 
+/**
+ * ExperimentCoreCodeGenerator
+ *
+ * Shared across Browser & Node
+ */
 export class ExperimentCoreCodeGenerator implements CodeGenerator<ExperimentsConfigModel> {
   private experimentsConfig: ExperimentsConfig;
   private codegenConfig: CodeGenerationSettings;
@@ -208,6 +216,11 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
   }
 }
 
+/**
+ * ExperimentBrowserCodeGenerator
+ *
+ * Browser Specific
+ */
 export class ExperimentBrowserCodeGenerator extends ExperimentCoreCodeGenerator {
   async generate(): Promise<CodeBlock> {
     const code = await super.generate();
@@ -227,6 +240,11 @@ export const typedExperiment = experiment.typed;`
   }
 }
 
+/**
+ * ExperimentNodeCodeGenerator
+ *
+ * Node Specific
+ */
 export class ExperimentNodeCodeGenerator extends ExperimentCoreCodeGenerator {
   async generate(): Promise<CodeBlock> {
     const code = await super.generate();

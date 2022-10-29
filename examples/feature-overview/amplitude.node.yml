@@ -23,9 +23,6 @@ x-analytics-definitions:
   referralSource: &referralSource
     description: How the user was brought to the app
     enum: [ "facebook", "twitter", "other" ]
-  songId: &songId
-    description: The song unique identifier
-    type: string
 
 x-experiment-definitions:
   payload: &arrayOfStringsPayload

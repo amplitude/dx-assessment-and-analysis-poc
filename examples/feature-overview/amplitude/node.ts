@@ -1,7 +1,7 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientNode } from "@amplitude/experiment-node";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-node";
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
@@ -156,6 +156,10 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
+
 export type BaseExperiment = {
   key: string;
   name: string;
@@ -229,7 +233,7 @@ export interface VariantMethods {
 }
 
 export class VariantMethodsClient implements VariantMethods {
-  constructor(private client: IExperimentClientNode) {}
+  constructor(private client: IExperimentClientCore) {}
 
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
     const variant = this.client.variant(exp.key);
@@ -255,7 +259,7 @@ export class VariantMethodsClient implements VariantMethods {
   }
 }
 
-export interface IExperimentClient extends IExperimentClientNode, Typed<VariantMethods> {}
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
 
 export class ExperimentClient extends ExperimentClientNode implements IExperimentClient {
   get typed() {
@@ -278,10 +282,6 @@ export class Experiment extends ExperimentNode {
 }
 
 export const experiment = new Experiment();
-
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
-}
 
 /**
  * AMPLITUDE

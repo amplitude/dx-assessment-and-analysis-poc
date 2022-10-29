@@ -1,23 +1,17 @@
 import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
 import {
-  AnalyticsConfigModel,
   CodeGenerationSettings,
   CodeGenerationSettingsModel,
   ExperimentsConfigModel
 } from "../../config";
-import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
+import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
-  hasNonConstProperties,
-  hasNonConstRequiredProperties,
-  isConstProperty,
-  JsonSchema,
   JsonSchemaPropertyModel,
-  removeConstProperties
 } from "../../json-schema";
 import { cloneDeep, kebabCase } from "lodash";
-import { ExperimentCodeGenerator } from "../../services/experiment/ExperimentCodeGenerator";
-import { ExperimentModel } from "../../services/experiment/models";
+import { ExperimentModel, VariantModel } from "../../services/experiment/models";
 import { sortAlphabetically } from "../util/sorting";
+import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
 
 export class ExperimentsConfig {
   constructor(private model: ExperimentsConfigModel) {}
@@ -70,163 +64,197 @@ export class ExperimentCoreCodeGenerator implements CodeGenerator<ExperimentsCon
     this.codegenConfig = new CodeGenerationSettings(codegenModel);
   }
 
-//   async generateEventPropertiesTypes(): Promise<CodeBlock> {
-//     const eventPropertiesTypes = await Promise.all(this.config.getEventSchemas()
-//       .filter(schema => hasNonConstProperties(schema))
-//       .map(schema => removeConstProperties(schema))
-//       .map(async (schema) => {
-//         // For "Properties" postfix to interfaces
-//         schema.title = `${schema.title || 'Undefined'} Properties`
-//         return await jsonSchemaToTypeScript(schema);
-//       }));
-//
-//     return CodeBlock.from(CodeBlockTag.Default, ...eventPropertiesTypes);
-//   }
-//
-//   protected generatePropertiesLiteralWithConsts(
-//     schema: JsonSchemaPropertyModel,
-//     defaultValue: string,
-//     propertiesName = 'event_properties',
-//   ): string {
-//     const { tab } = this.lang;
-//     const s = new JsonSchema(schema);
-//     const constProperties = s.getConstProperties();
-//     const hasProps = s.hasNonConstProperties();
-//
-//     const constFields = constProperties
-//       .map((p) => `'${p.name}': ${JSON.stringify(p.const)},`)
-//       .join('\n');
-//
-//     if (hasProps && constProperties.length > 0) {
-//       return `\
-// {
-//   ...${propertiesName},
-// ${tab(1, constFields)}
-// }`;
-//     }
-//
-//     if (constProperties.length > 0) {
-//       return `{
-// ${tab(1, constFields)}
-// }`;
-//     }
-//
-//     if (hasProps) {
-//       return propertiesName;
-//     }
-//
-//     return defaultValue;
-//   }
-//
-//   protected generatePropertyConstsType(schema: JsonSchemaPropertyModel): string {
-//     const event = new JsonSchema(schema);
-//     const constProperties = event.getConstProperties();
-//     if (constProperties.length === 0) {
-//       return '{}';
-//     }
-//
-//     const constFields = constProperties
-//       .map((p) => `'${p.name}': ${JSON.stringify(p.const)};`)
-//       .join('\n');
-//
-//     return `{
-// ${this.lang.tab(1, constFields)}
-// }`;
-//   }
-//
-//   protected generateFunctionParameters(parameters: CodeParameter[], tabs = 2,): string {
-//     const { tab } = this.lang;
-//
-//     if (parameters.length < 1) {
-//       return '';
-//     }
-//     const result = `\n${parameters
-//       .map((p) => tab(tabs, `${this.lang.getFunctionParameter(p)},`))
-//       .join('\n')}\n${tab(tabs - 1, '|')}`;
-//
-//     return result.substr(0, result.length - 1);
-//   }
-//
-//   generateEventClassesLegacy(): CodeBlock {
-//     const { getClassName, tab } = this.lang;
-//     const getEventProperties = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
-//       ? `\n  constructor(public event_properties: ${getClassName(event.title)}Properties) {}`
-//       : '';
-//
-//     return CodeBlock.from(CodeBlockTag.Default, ...this.config.getEventSchemas().map(event => `\
-// export class ${getClassName(event.title)} implements AnalyticsEvent {
-//   event_type = '${event.title}';${getEventProperties(event)}
-// ${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
-// }
-// `));
-//   }
-//
-//   generateEventClasses(): CodeBlock {
-//     const classes = this.config.getEventSchemas().map(schema => {
-//       const { getClassName, tab, tabExceptFirstLine } = this.lang;
-//       const event = new JsonSchema(schema);
-//       const propertiesClassName = `${getClassName(schema.title)}Properties`;
-//       const propertiesField= 'event_properties';
-//       const eventTypeField = 'event_type';
-//       const baseEventType = 'AnalyticsEvent';
-//
-//       const hasConstProperties = event.hasConstProperties();
-//       const hasNonConstProperties = event.hasNonConstProperties();
-//       const hasRequiredProperties = event.hasRequiredProperties(p => !isConstProperty(p));
-//
-//       const constructorParameters: CodeParameter[] = [];
-//       if (hasNonConstProperties) {
-//         constructorParameters.push({
-//           name: hasConstProperties ? propertiesField : `public ${propertiesField}`,
-//           type: propertiesClassName,
-//           required: hasRequiredProperties,
-//         });
-//       }
-//
-//       const propertiesDeclaration = !hasConstProperties
-//         ? ''
-//         : `
-//   ${propertiesField}${hasNonConstProperties ? `: ${propertiesClassName} & ` : ' = '
-//         }${tabExceptFirstLine(
-//           1,
-//           hasNonConstProperties
-//             ? this.generatePropertyConstsType(schema)
-//             : this.generatePropertiesLiteralWithConsts(schema, '', propertiesField),
-//         )};`;
-//
-//       let constructorBody = '';
-//       if (constructorParameters.length > 0) {
-//         constructorBody = !hasConstProperties
-//           ? `constructor(${this.generateFunctionParameters(
-//             constructorParameters, 1,
-//           )}) ${hasNonConstProperties ? `{
-//   this.${propertiesField} = ${propertiesField};
-// }` : {}}`
-//           : `\
-// constructor(${this.generateFunctionParameters(constructorParameters, 1)}) {
-//   this.${propertiesField} = ${tabExceptFirstLine(
-//             1, this.generatePropertiesLiteralWithConsts(schema, '{}', propertiesField,
-//             ))};
-// }`;
-//         constructorBody = `\n\n${tab(1, constructorBody)}`;
-//       }
-//
-//       return `
-// export class ${getClassName(schema.title)} implements ${baseEventType} {
-//   ${eventTypeField} = '${schema.title}';${propertiesDeclaration}${constructorBody}
-// }`;
-//     })
-//       .join('\n')
-//       .trim();
-//
-//     return new CodeBlock(classes.length ? `\n${classes}\n` : '');
-//   }
+  generateExperimentType(experiment: ExperimentModel): string {
+    const { getClassName, getPropertyName, getPropertyType } = this.lang;
+    const className = getClassName(experiment.name);
+
+    return `\
+export type ${className} = {
+  key: '${experiment.key}';
+  name: "${experiment.name}";
+${experiment.variants.map(
+      v => `\
+  ${getPropertyName(v.key)}: {
+    key: '${v.key}',
+    payload: ${getPropertyType(v.payload)}
+  };`,
+    ).join('\n')}
+};`;
+  }
+
+  generateExperimentClass(experiment: ExperimentModel): string {
+    const { getClassName, getPropertyName, getPropertyType } = this.lang;
+
+    const className = getClassName(experiment.name);
+    const getVariantTypeName = (v: VariantModel) => `${getClassName(v.key)}`;
+
+    return `\
+/* ${experiment.name} */
+export namespace ${className}Variants {
+${experiment.variants.map(v => `\
+  export type ${getVariantTypeName(v)} = { key: '${v.key}', payload: ${getPropertyType(v.payload)} };`).join('\n')}
+
+  export enum Keys {
+${experiment.variants.map(v => `\
+    ${getVariantTypeName(v)} = '${v.key}'`).join(',\n')}
+  }
+}
+export type ${className}Type = BaseExperiment & {
+${experiment.variants.map(v => `\
+  ${getPropertyName(v.key)}?: ${className}Variants.${getVariantTypeName(v)};`).join('\n')}
+}
+export class ${className} implements ${className}Type {
+  key = '${experiment.key}';
+  name = "${experiment.name}";
+  variant: ${experiment.variants.map(v => `\
+${className}Variants.${getVariantTypeName(v)}`).join(' |')} | undefined;
+
+  constructor(
+${experiment.variants.map(v => `\
+    public ${getPropertyName(v.key)}?: ${className}Variants.${getVariantTypeName(v)},`).join('\n')}
+  ) {}
+}
+export namespace ${className} {
+  export const Key = '${experiment.key}';
+  export const Name = "${experiment.name}";
+
+  export enum Variants {
+${experiment.variants.map(v => `\
+    ${getClassName(v.key)} = '${v.key}'`).join(',\n')}
+  }
+}`;
+  }
+
+  generateExperimentMethod(experiment: ExperimentModel): string {
+    const { getClassName, getMethodName } = this.lang;
+
+    const className = getClassName(experiment.name);
+    const methodName = getMethodName(experiment.name);
+
+    return `\
+  ${methodName}(): ${className} {
+    return core.getTypedVariant(new ${className}());
+  }`;
+  }
+
+  generateAutogenHeader(): string {
+    return `\
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * Xpmt - A strong typed wrapper for your Experiment
+ *
+ * This file is generated by Amplitude.
+ * To update run 'ampli exp -t token -d deployment-key'
+ *
+ * Required dependencies: @amplitude/experiment-js-client
+ * Experiment Plan Version: 0
+ * Build: 1.0.0
+ * Runtime: browser:typescript
+ */`;
+  }
 
   async generate(): Promise<CodeBlock> {
     const { tab, getMethodName, getClassName } = this.lang;
 
-    const generator = new ExperimentCodeGenerator();
+    // detect duplicate names
+    // since the name mapping might map previously non-conflicting names to the same value (camelCase, etc)
+    const duplicateDector = new DuplicateNameMappingDetector(getMethodName);
+    const filteredExperiments = this.experimentsConfig.getExperiments().filter(e => {
+      if (duplicateDector.hasDuplicateNameMapping(e.name)) {
+        console.log(`Experiment "${e.name}" has a duplicate name mapping as another  and will be removed.`); // eslint-disable-line no-console
+        return false;
+      }
+      return true;
+    });
 
-    return generator.generateXpntWrapper(this.experimentsConfig, this.codegenConfig);
+    return CodeBlock.code(`\
+export type BaseExperiment = {
+  key: string;
+  name: string;
+}
+
+${filteredExperiments.map(e => this.generateExperimentClass(e)).join('\n\n')}
+export interface VariantMethods {
+${filteredExperiments.map(e => `  ${getMethodName(e.name)}(): ${getClassName(e.name)};`).join('\n')}
+}
+
+export class VariantMethodsClient implements VariantMethods {
+  constructor(private client: IExperimentClientCore) {}
+
+  private getTypedVariant<T extends BaseExperiment>(exp: T) {
+    const variant = this.client.variant(exp.key);
+    if (typeof variant === 'string') {
+      // FIXME: how to handle string responses?
+      // (exp as any)[variant.value] = { payload: variant.payload };
+      // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+    } else {
+      if (variant.value) {
+        (exp as any)[variant.value] = { payload: variant.payload };
+        (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+      }
+    }
+    return exp;
+  }
+
+${filteredExperiments.map(e => tab(1, `\
+${getMethodName(e.name)}(): ${getClassName(e.name)} {
+  return this.getTypedVariant(new ${getClassName(e.name)}());
+}`)).join(`\n\n`)}
+}
+
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}`
+    );
+  }
+}
+
+export class ExperimentBrowserCodeGenerator extends ExperimentCoreCodeGenerator {
+  async generate(): Promise<CodeBlock> {
+    const code = await super.generate();
+    code.import(`import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-browser";`)
+      .code(`\
+export class Experiment extends ExperimentBrowser implements IExperimentClient {
+  get typed() {
+    return new VariantMethodsClient(this);
+  }
+}
+
+export const experiment = new Experiment();
+export const typedExperiment = experiment.typed;`
+    );
+
+    return code;
+  }
+}
+
+export class ExperimentNodeCodeGenerator extends ExperimentCoreCodeGenerator {
+  async generate(): Promise<CodeBlock> {
+    const code = await super.generate();
+    code.import(`import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-node";`)
+      .code(`\
+export class ExperimentClient extends ExperimentClientNode implements IExperimentClient {
+  get typed() {
+    return new VariantMethodsClient(this);
+  }
+}
+
+export class Experiment extends ExperimentNode {
+  user(user: User): ExperimentClient {
+    return new ExperimentClient(user, this.config, this);
+  }
+
+  userId(userId: string): ExperimentClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): ExperimentClient {
+    return this.user(new User(undefined, deviceId));
+  }
+}
+
+export const experiment = new Experiment();`
+    );
+
+    return code;
   }
 }

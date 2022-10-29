@@ -29,6 +29,18 @@ export class CodeBlock {
     return new CodeBlock().addAs(tag, ...code);
   }
 
+  static code(...code: string[]) {
+    return new CodeBlock().code(...code);
+  }
+
+  static import(...code: string[]) {
+    return new CodeBlock().import(...code);
+  }
+
+  static export(...code: string[]) {
+    return new CodeBlock().export(...code);
+  }
+
   add(code: string, tag = CodeBlockTag.Default): CodeBlock {
     this.blocks.push({tag, code});
     return this;
@@ -40,6 +52,18 @@ export class CodeBlock {
     }
 
     return this;
+  }
+
+  code(...code: string[]): CodeBlock {
+    return this.addAs(CodeBlockTag.Default, ...code);
+  }
+
+  import(...code: string[]): CodeBlock {
+    return this.addAs(CodeBlockTag.Import, ...code);
+  }
+
+  export(...code: string[]): CodeBlock {
+    return this.addAs(CodeBlockTag.Export, ...code);
   }
 
   merge(...blocks: CodeBlock[]): CodeBlock {

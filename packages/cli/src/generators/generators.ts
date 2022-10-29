@@ -2,17 +2,20 @@ import { AmplitudeConfigModel, CodeGenerationSettings, CodeGenerationSettingsMod
 import { getEnvironmentCode } from "./typescript/environment";
 import { UserCodeGenerator } from "./typescript/user";
 import { AnalyticsCoreCodeGenerator } from "./typescript/analytics";
-import { CodeBlock, CodeBlockTag, CodeExporter, CodeFile, CodeGenerator } from "./code-generator";
-import { ExperimentCoreCodeGenerator } from "./typescript/experiment";
+import { CodeBlock, CodeExporter, CodeFile, CodeGenerator } from "./code-generator";
+import {
+  ExperimentBrowserCodeGenerator,
+  ExperimentNodeCodeGenerator
+} from "./typescript/experiment";
 
 async function getAmplitudeCoreCode(config: AmplitudeConfigModel): Promise<CodeBlock> {
   const codegenSettings = new CodeGenerationSettings(config.settings);
 
   return new CodeBlock()
-    .addAs(CodeBlockTag.Import,`\
+    .import(`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";`)
-    .addAs(CodeBlockTag.Export, `export { Logger, NoLogger };`)
-    .add(`\
+    .export(`export { Logger, NoLogger };`)
+    .code(`\
 /**
  * GENERAL INTERFACES
  */
@@ -23,9 +26,8 @@ export interface Typed<T> {
       getEnvironmentCode(config),
       await (new UserCodeGenerator(config.user, config.settings).generate()),
       await (new AnalyticsCoreCodeGenerator(config.analytics).generate()),
-      await (new ExperimentCoreCodeGenerator(config.experiments, config.settings).generate()),
     )
-    .add(`\
+    .code(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
   environment?: Environment,
 }`
@@ -36,12 +38,15 @@ async function getAmplitudeBrowserCode(config: AmplitudeConfigModel): Promise<Co
   const codegenSettings = new CodeGenerationSettings(config.settings);
 
   return new CodeBlock()
-    .addAs(CodeBlockTag.Import, `\
+    .import(`\
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";`)
-    .addAs(CodeBlockTag.Export, `export { MessageHub, hub } from "@amplitude/hub";`)
-    .add(`\
+    .export(`export { MessageHub, hub } from "@amplitude/hub";`)
+    .merge(
+      await (new ExperimentBrowserCodeGenerator(config.experiments, config.settings).generate()),
+    )
+    .code(`\
 /**
  * ANALYTICS
  */
@@ -99,8 +104,7 @@ export class AmplitudeGeneratorBrowser implements CodeGenerator<AmplitudeConfigM
 function getAmplitudeNodeCode(settings: CodeGenerationSettingsModel): CodeBlock {
   const codegenSettings = new CodeGenerationSettings(settings);
 
-  return new CodeBlock()
-    .addAs(CodeBlockTag.Import, `\
+  return CodeBlock.import(`\
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
@@ -110,7 +114,7 @@ import {
   Experiment as ExperimentNode,
   ExperimentClient as ExperimentClientNode
 } from "@amplitude/experiment-node";`)
-    .add(`\
+    .code(`\
 /**
  * AMPLITUDE
  */
@@ -160,44 +164,15 @@ export class Analytics extends AnalyticsNode {
   }
 }
 
-export const analytics = new Analytics();
-
-/**
- * EXPERIMENT
- */
-
-// Example of experiment codegen
-// https://github.com/amplitude/ampli-examples/pull/109/files#diff-1487646f6355cf6800e238dd89bfe453388e4cd1ceec34980e3418e570c1bb2b
-export class ExperimentClient extends ExperimentClientNode implements Typed<VariantMethods> {
-  get ${codegenSettings.getTypedAnchorName()}() {
-    const core = this;
-    return {
-      flagCodegenEnabled() { return core.variant('flag-codegen-enabled') },
-      aMultiVariateExperiment() { return core.variant('a-multi-variate-experiment') as AMultiVariateExperiment },
-    };
-  }
-}
-
-export class Experiment extends ExperimentNode {
-  user(user: User): ExperimentClient {
-    return new ExperimentClient(user, this.config, this);
-  }
-
-  userId(userId: string): ExperimentClient {
-    return this.user(new User(userId));
-  }
-
-  deviceId(deviceId: string): ExperimentClient {
-    return this.user(new User(undefined, deviceId));
-  }
-}
-
-export const experiment = new Experiment();`);
+export const analytics = new Analytics();`);
 }
 
 export class AmplitudeGeneratorNode implements CodeGenerator<AmplitudeConfigModel> {
   async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
-    return (await getAmplitudeCoreCode(config)).merge(await getAmplitudeNodeCode(config.settings));
+    return (await getAmplitudeCoreCode(config)).merge(
+      await (new ExperimentNodeCodeGenerator(config.experiments, config.settings).generate()),
+      await getAmplitudeNodeCode(config.settings)
+    );
   }
 }
 

@@ -1,13 +1,10 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import {
-  IExperimentClient as IExperimentClientNode,
-  IExperimentClient as IExperimentClientCore
-} from "@amplitude/experiment-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-browser";
 
 export { Logger, NoLogger };
 export type { AnalyticsEvent };
@@ -154,6 +151,10 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
+
 export type BaseExperiment = {
   key: string;
   name: string;
@@ -227,7 +228,7 @@ export interface VariantMethods {
 }
 
 export class VariantMethodsClient implements VariantMethods {
-  constructor(private client: IExperimentClientNode) {}
+  constructor(private client: IExperimentClientCore) {}
 
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
     const variant = this.client.variant(exp.key);
@@ -256,21 +257,6 @@ export class VariantMethodsClient implements VariantMethods {
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
 
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
-  private getTypedVariant<T extends BaseExperiment>(exp: T) {
-    const variant = this.variant(exp.key);
-    if (typeof variant === 'string') {
-        // FIXME: how to handle string responses?
-        // (exp as any)[variant.value] = { payload: variant.payload };
-        // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
-    } else {
-      if (variant.value) {
-        (exp as any)[variant.value] = { payload: variant.payload };
-        (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
-      }
-    }
-    return exp;
-  }
-
   get typed() {
     return new VariantMethodsClient(this);
   }
@@ -278,11 +264,6 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
 
 export const experiment = new Experiment();
 export const typedExperiment = experiment.typed;
-
-
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
-}
 
 /**
  * ANALYTICS
@@ -309,7 +290,7 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-
+        
         // FIXME: properly read API keys
         // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];

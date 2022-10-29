@@ -1,10 +1,10 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
 
 export { Logger, NoLogger };
 export type { AnalyticsEvent };
@@ -251,6 +251,10 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
+
 export type BaseExperiment = {
   key: string;
   name: string;
@@ -433,10 +437,6 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
 export const experiment = new Experiment();
 export const typedExperiment = experiment.typed;
 
-
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
-}
 
 /**
  * ANALYTICS

@@ -4,7 +4,7 @@ import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@ampli
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-core";
+import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-browser";
 
 export { Logger, NoLogger };
 export type { AnalyticsEvent };
@@ -397,15 +397,15 @@ export interface VariantMethods {
   codegenStringExperiment(): CodegenStringExperiment;
 }
 
-export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
-    
-export class Experiment extends ExperimentBrowser implements IExperimentClient {
+export class VariantMethodsClient implements VariantMethods {
+  constructor(private client: IExperimentClientCore) {}
+
   private getTypedVariant<T extends BaseExperiment>(exp: T) {
-    const variant = this.variant(exp.key);
+    const variant = this.client.variant(exp.key);
     if (typeof variant === 'string') {
-        // FIXME: how to handle string responses?
-        // (exp as any)[variant.value] = { payload: variant.payload };
-        // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
+      // FIXME: how to handle string responses?
+      // (exp as any)[variant.value] = { payload: variant.payload };
+      // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
     } else {
       if (variant.value) {
         (exp as any)[variant.value] = { payload: variant.payload };
@@ -415,28 +415,33 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
     return exp;
   }
 
+  codegenArrayExperiment(): CodegenArrayExperiment {
+    return this.getTypedVariant(new CodegenArrayExperiment());
+  }
+
+  codegenBooleanExperiment(): CodegenBooleanExperiment {
+    return this.getTypedVariant(new CodegenBooleanExperiment());
+  }
+
+  codegenExperiment(): CodegenExperiment {
+    return this.getTypedVariant(new CodegenExperiment());
+  }
+
+  codegenStringExperiment(): CodegenStringExperiment {
+    return this.getTypedVariant(new CodegenStringExperiment());
+  }
+}
+
+export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
+
+export class Experiment extends ExperimentBrowser implements IExperimentClient {
   get typed() {
-    const core = this;
-    return {
-      codegenArrayExperiment(): CodegenArrayExperiment {
-        return core.getTypedVariant(new CodegenArrayExperiment());
-      },
-      codegenBooleanExperiment(): CodegenBooleanExperiment {
-        return core.getTypedVariant(new CodegenBooleanExperiment());
-      },
-      codegenExperiment(): CodegenExperiment {
-        return core.getTypedVariant(new CodegenExperiment());
-      },
-      codegenStringExperiment(): CodegenStringExperiment {
-        return core.getTypedVariant(new CodegenStringExperiment());
-      }
-    };
+    return new VariantMethodsClient(this);
   }
 }
 
 export const experiment = new Experiment();
 export const typedExperiment = experiment.typed;
-
 
 /**
  * ANALYTICS

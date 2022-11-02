@@ -73,6 +73,15 @@ export class CodeBlock {
     return this;
   }
 
+  async mergeAsync(...promises: Promise<CodeBlock>[]): Promise<CodeBlock> {
+    const blocks = await Promise.all(promises);
+
+    blocks.forEach(b => {
+      this.blocks.push(...b.blocks);
+    });
+    return this;
+  }
+
   toString() {
     const sortedBlocks = this.blocks.sort(sortByCodeBlockTag);
     const importCode: string[] = [];
@@ -95,8 +104,8 @@ export class CodeBlock {
   }
 }
 
-export interface CodeGenerator<C> {
-  generate(config: C): Promise<CodeBlock>;
+export interface CodeGenerator {
+  generate(): Promise<CodeBlock>;
 }
 
 export interface CodeExporter {

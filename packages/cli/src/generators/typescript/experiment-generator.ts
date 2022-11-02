@@ -1,31 +1,19 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
-import {
-  CodeGenerationSettings,
-  CodeGenerationSettingsModel,
-  ExperimentsConfigModel
-} from "../../config";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import { ExperimentModel, VariantModel } from "../../services/experiment/models";
 import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
-import { ExperimentsConfig } from "../../config/ExperimentsConfig";
+import { AmplitudeConfig } from "../../config/AmplitudeConfig";
 
 /**
  * ExperimentCoreCodeGenerator
  *
  * Shared across Browser & Node
  */
-export class ExperimentCoreCodeGenerator implements CodeGenerator<ExperimentsConfigModel> {
-  private experimentsConfig: ExperimentsConfig;
-  private codegenConfig: CodeGenerationSettings;
-
+export class ExperimentCoreCodeGenerator implements CodeGenerator {
   constructor(
-    experimentsModel: ExperimentsConfigModel,
-    codegenModel: CodeGenerationSettingsModel,
+    protected config: AmplitudeConfig,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
-  ) {
-    this.experimentsConfig = new ExperimentsConfig(experimentsModel);
-    this.codegenConfig = new CodeGenerationSettings(codegenModel);
-  }
+  ) {}
 
   generateExperimentType(experiment: ExperimentModel): string {
     const { getClassName, getPropertyName, getPropertyType } = this.lang;
@@ -123,7 +111,7 @@ ${experiment.variants.map(v => `\
     // detect duplicate names
     // since the name mapping might map previously non-conflicting names to the same value (camelCase, etc)
     const duplicateDector = new DuplicateNameMappingDetector(getMethodName);
-    const filteredExperiments = this.experimentsConfig.getExperiments().filter(e => {
+    const filteredExperiments = this.config.experiment().getExperiments().filter(e => {
       if (duplicateDector.hasDuplicateNameMapping(e.name)) {
         console.log(`Experiment "${e.name}" has a duplicate name mapping as another  and will be removed.`); // eslint-disable-line no-console
         return false;

@@ -1,5 +1,4 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
-import { AnalyticsConfigModel, CodeGenerationSettings, CodeGenerationSettingsModel } from "../../config";
 import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
   hasNonConstProperties,
@@ -10,23 +9,16 @@ import {
   removeConstProperties
 } from "../../json-schema";
 import { jsonSchemaToTypeScript } from "./jsonSchemaToTypeScript";
-import { AnalyticsConfig } from "../../config/AnalyticsConfig";
+import { AmplitudeConfig } from "../../config/AmplitudeConfig";
 
-export class AnalyticsCoreCodeGenerator implements CodeGenerator<AnalyticsConfigModel> {
-  protected config: AnalyticsConfig;
-  protected codegenConfig: CodeGenerationSettings;
-
+export class AnalyticsCoreCodeGenerator implements CodeGenerator {
   constructor(
-    private configModel: AnalyticsConfigModel,
-    private codegenModel: CodeGenerationSettingsModel,
+    protected config: AmplitudeConfig,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
-  ) {
-    this.config = new AnalyticsConfig(configModel);
-    this.codegenConfig = new CodeGenerationSettings(codegenModel);
-  }
+  ) {}
 
   async generateEventPropertiesTypes(): Promise<CodeBlock> {
-    const eventPropertiesTypes = await Promise.all(this.config.getEventSchemas()
+    const eventPropertiesTypes = await Promise.all(this.config.analytics().getEventSchemas()
       .filter(schema => hasNonConstProperties(schema))
       .map(schema => removeConstProperties(schema))
       .map(async (schema) => {
@@ -108,7 +100,7 @@ ${this.lang.tab(1, constFields)}
       ? `\n  constructor(public event_properties: ${getClassName(event.title)}Properties) {}`
       : '';
 
-    return CodeBlock.code(...this.config.getEventSchemas().map(event => `\
+    return CodeBlock.code(...this.config.analytics().getEventSchemas().map(event => `\
 export class ${getClassName(event.title)} implements AnalyticsEvent {
   event_type = '${event.title}';${getEventProperties(event)}
 ${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
@@ -117,7 +109,7 @@ ${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
   }
 
   generateEventClasses(): CodeBlock {
-    const classes = this.config.getEventSchemas().map(schema => {
+    const classes = this.config.analytics().getEventSchemas().map(schema => {
       const { getClassName, tab, tabExceptFirstLine } = this.lang;
       const event = new JsonSchema(schema);
       const propertiesClassName = `${getClassName(schema.title)}Properties`;
@@ -179,7 +171,7 @@ export class ${getClassName(schema.title)} implements ${baseEventType} {
 
   async generate(): Promise<CodeBlock> {
     const { tab, getMethodName, getClassName } = this.lang;
-    const eventSchemas = this.config.getEventSchemas();
+    const eventSchemas = this.config.analytics().getEventSchemas();
     const getEventParams = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
       ? `properties${hasNonConstRequiredProperties(event) ? '' : '?'}: ${getClassName(event.title)}Properties`
       : '';
@@ -219,16 +211,12 @@ ${getMethodName(event.title)}(${getEventParams(event)}) {
 }
 
 export class AnalyticsBrowserCodeGenerator extends AnalyticsCoreCodeGenerator {
-  constructor(
-    analyticsConfigModel: AnalyticsConfigModel,
-    codegenModel: CodeGenerationSettingsModel,
-    lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
-  ) {
-    super(analyticsConfigModel, codegenModel, lang);
+  constructor(config: AmplitudeConfig) {
+    super(config);
   }
 
   async generate(): Promise<CodeBlock> {
-    const typed = this.codegenConfig.getTypedAnchorName();
+    const typed = this.config.codegen().getTypedAnchorName();
 
     const coreCode = await super.generate();
 
@@ -249,16 +237,12 @@ export const typedAnalytics = analytics.${typed};
 }
 
 export class AnalyticsNodeCodeGenerator extends AnalyticsCoreCodeGenerator {
-  constructor(
-    analyticsConfigModel: AnalyticsConfigModel,
-    codegenModel: CodeGenerationSettingsModel,
-    lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
-  ) {
-    super(analyticsConfigModel, codegenModel, lang);
+  constructor(config: AmplitudeConfig) {
+    super(config);
   }
 
   async generate(): Promise<CodeBlock> {
-    const typed = this.codegenConfig.getTypedAnchorName();
+    const typed = this.config.codegen().getTypedAnchorName();
 
     const coreCode = await super.generate();
 

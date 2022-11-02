@@ -11,6 +11,7 @@ import {
   AmplitudeBrowserCodeGenerator,
   AmplitudeNodeCodeGenerator
 } from "./generators/typescript/amplitude-generator";
+import { AmplitudeConfig } from "./config/AmplitudeConfig";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')
@@ -30,16 +31,17 @@ program.command('build')
     try {
       const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
 
-      const config = parseFromYaml(ymlConfig);
-      const configValidation = isValid(config);
+      const configModel = parseFromYaml(ymlConfig);
+      const configValidation = isValid(configModel);
       if (!configValidation.valid) {
         console.error(`Error loading configuration from ${configPath}.`, configValidation.errors);
         return;
       }
 
-      const { platform, output: outputPath, outputFileName }  = config.settings;
+      const config = new AmplitudeConfig(configModel);
+      const { platform, output: outputPath, outputFileName }  = configModel.settings;
 
-      let generator: CodeGenerator<any>;
+      let generator: CodeGenerator;
       switch (platform) {
         case 'Browser':
           generator = new AmplitudeBrowserCodeGenerator(config);
@@ -53,7 +55,7 @@ program.command('build')
       }
 
       let exporter = new TypeScriptExporter();
-      const outputFiles = await exporter.export(await generator.generate(config));
+      const outputFiles = await exporter.export(await generator.generate());
       outputFiles.forEach(file => {
         let fileName = file.path;
         if (outputFileName && fileName.startsWith('index')) {

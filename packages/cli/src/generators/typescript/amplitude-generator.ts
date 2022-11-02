@@ -1,31 +1,21 @@
-import {
-  AmplitudeConfigModel,
-  CodeGenerationSettings,
-} from "../../config";
-import { getEnvironmentCode } from "./environment";
-import { UserCodeGenerator } from "./user";
-import { AnalyticsBrowserCodeGenerator, AnalyticsNodeCodeGenerator } from "./analytics";
+import { EnvironmentCodeGenerator } from "./environment-generator";
+import { UserCodeGenerator } from "./user-generator";
+import { AnalyticsBrowserCodeGenerator, AnalyticsNodeCodeGenerator } from "./analytics-generator";
 import { CodeBlock, CodeGenerator } from "../code-generator";
 import {
   ExperimentBrowserCodeGenerator,
   ExperimentNodeCodeGenerator,
-} from "./experiment";
+} from "./experiment-generator";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import { AmplitudeConfig } from "../../config/AmplitudeConfig";
 
-export class AmplitudeCoreCodeGenerator implements CodeGenerator<AmplitudeConfigModel> {
-  private config: AmplitudeConfig;
-
+export class AmplitudeCoreCodeGenerator implements CodeGenerator {
   constructor(
-    amplitudeConfigModel: AmplitudeConfigModel,
+    protected config: AmplitudeConfig,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
-  ) {
-    this.config = new AmplitudeConfig(amplitudeConfigModel);
-  }
+  ) {}
 
-  async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
-    const codegenSettings = new CodeGenerationSettings(config.settings);
-
+  async generate(): Promise<CodeBlock> {
     return new CodeBlock()
       .import(`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";`)
@@ -35,11 +25,11 @@ import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } fr
  * GENERAL INTERFACES
  */
 export interface Typed<T> {
-  get ${codegenSettings.getTypedAnchorName()}(): T;
+  get ${this.config.codegen().getTypedAnchorName()}(): T;
 }`)
       .merge(
-        getEnvironmentCode(config),
-        await (new UserCodeGenerator(config.user, config.settings).generate()),
+        await (new EnvironmentCodeGenerator(this.config).generate()),
+        await (new UserCodeGenerator(this.config).generate()),
       )
       .code(`\
 export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
@@ -50,18 +40,17 @@ export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> 
 }
 
 export class AmplitudeBrowserCodeGenerator extends AmplitudeCoreCodeGenerator {
-  async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
-    const codegenSettings = new CodeGenerationSettings(config.settings);
-    const typed = codegenSettings.getTypedAnchorName();
+  async generate(): Promise<CodeBlock> {
+    const typed = this.config.codegen().getTypedAnchorName();
 
-    const coreCode = await super.generate(config);
+    const coreCode = await super.generate();
 
     return coreCode
       .import(`import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";`)
       .export(`export { MessageHub, hub } from "@amplitude/hub";`)
       .merge(
-        await (new AnalyticsBrowserCodeGenerator(config.analytics, config.settings).generate()),
-        await (new ExperimentBrowserCodeGenerator(config.experiments, config.settings).generate()),
+        await (new AnalyticsBrowserCodeGenerator(this.config).generate()),
+        await (new ExperimentBrowserCodeGenerator(this.config).generate()),
       )
       .code(`\
 /**
@@ -102,16 +91,15 @@ export const amplitude = new Amplitude();`
 }
 
 export class AmplitudeNodeCodeGenerator extends AmplitudeCoreCodeGenerator {
-  async generate(config: AmplitudeConfigModel): Promise<CodeBlock> {
-    const codegenSettings = new CodeGenerationSettings(config.settings);
-    const typed = codegenSettings.getTypedAnchorName();
+  async generate(): Promise<CodeBlock> {
+    const typed = this.config.codegen().getTypedAnchorName();
 
-    const coreCode = await super.generate(config);
+    const coreCode = await super.generate();
 
     return coreCode
       .merge(
-        await (new AnalyticsNodeCodeGenerator(config.analytics, config.settings).generate()),
-        await (new ExperimentNodeCodeGenerator(config.experiments, config.settings).generate()),
+        await (new AnalyticsNodeCodeGenerator(this.config).generate()),
+        await (new ExperimentNodeCodeGenerator(this.config).generate()),
       )
       .import(`import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";`)
       .code(`\

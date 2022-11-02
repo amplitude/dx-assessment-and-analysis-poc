@@ -1,37 +1,16 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
-import { CodeGenerationSettings, CodeGenerationSettingsModel, UserConfigModel } from "../../config";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
-import { JsonSchemaPropertyModel } from "../../json-schema";
 import { jsonSchemaToTypeScript } from "./jsonSchemaToTypeScript";
+import { AmplitudeConfig } from "../../config/AmplitudeConfig";
 
-export class UserConfig {
-  constructor(private model: UserConfigModel) {}
-
-  getUserSchema(): JsonSchemaPropertyModel {
-    return {
-      type: 'object',
-      title: 'User Properties',
-      additionalProperties: false,
-      ...this.model
-    };
-  }
-}
-
-export class UserCodeGenerator implements CodeGenerator<UserConfigModel> {
-  private userConfig: UserConfig;
-  private codegenSettings: CodeGenerationSettings;
-
+export class UserCodeGenerator implements CodeGenerator {
   constructor(
-    userModel: UserConfigModel,
-    codegenSettingsModel: CodeGenerationSettingsModel,
+    protected config: AmplitudeConfig,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage()
-  ) {
-    this.userConfig = new UserConfig(userModel);
-    this.codegenSettings = new CodeGenerationSettings(codegenSettingsModel);
-  }
+  ) {}
 
   async generateUserPropertyType(): Promise<CodeBlock> {
-    const userPropertiesType = await jsonSchemaToTypeScript(this.userConfig.getUserSchema());
+    const userPropertiesType = await jsonSchemaToTypeScript(this.config.user().getUserSchema());
 
     return new CodeBlock(userPropertiesType);
   }
@@ -51,7 +30,7 @@ interface TypedUserMethods {
 }
 
 export class User extends UserCore implements Typed<TypedUserMethods> {
-  get ${this.codegenSettings.getTypedAnchorName()}(): TypedUserMethods {
+  get ${this.config.codegen().getTypedAnchorName()}(): TypedUserMethods {
     const core = this;
     return {
       setUserProperties(properties) {

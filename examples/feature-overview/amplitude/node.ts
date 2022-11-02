@@ -1,16 +1,16 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-node";
-import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 import {
   Analytics as AnalyticsNode,
   AnalyticsClient as AnalyticsClientNode
 } from "@amplitude/analytics-node";
 import {
   Experiment as ExperimentNode,
-  ExperimentClient as ExperimentClientNode
+  ExperimentClient as ExperimentClientNode,
+  IExperimentClient as IExperimentClientCore,
 } from "@amplitude/experiment-node";
+import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 
 export { Logger, NoLogger };
 export type { AnalyticsEvent };
@@ -74,6 +74,10 @@ export class User extends UserCore implements Typed<TypedUserMethods> {
 }
 
 export const user = new User();
+
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
 
 /**
  * ANALYTICS
@@ -156,9 +160,28 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
+export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
+  get typed() {
+    return new TrackingPlanClient(this);;
+  }
 }
+
+export class Analytics extends AnalyticsNode {
+  user(user: User): AnalyticsClient {
+    return new AnalyticsClient(user, this.config);
+  }
+
+  userId(userId: string): AnalyticsClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): AnalyticsClient {
+    return this.user(new User(undefined, deviceId));
+  }
+}
+
+export const analytics = new Analytics();
+
 
 export type BaseExperiment = {
   key: string;
@@ -308,28 +331,3 @@ export class Amplitude extends AmplitudeNode {
 }
 
 export const amplitude = new Amplitude();
-
-/**
- * ANALYTICS
- */
-export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
-  get typed() {
-    return new TrackingPlanClient(this);;
-  }
-}
-
-export class Analytics extends AnalyticsNode {
-  user(user: User): AnalyticsClient {
-    return new AnalyticsClient(user, this.config);
-  }
-
-  userId(userId: string): AnalyticsClient {
-    return this.user(new User(userId));
-  }
-
-  deviceId(deviceId: string): AnalyticsClient {
-    return this.user(new User(undefined, deviceId));
-  }
-}
-
-export const analytics = new Analytics();

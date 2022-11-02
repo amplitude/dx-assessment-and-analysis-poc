@@ -1,14 +1,16 @@
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
-import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
+import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
 import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
-import { Experiment as ExperimentBrowser } from "@amplitude/experiment-browser";
-import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-browser";
+import {
+  IExperimentClient as IExperimentClientCore,
+  Experiment as ExperimentBrowser,
+} from "@amplitude/experiment-browser";
 
 export { Logger, NoLogger };
-export type { AnalyticsEvent };
 export { MessageHub, hub } from "@amplitude/hub";
+export type { AnalyticsEvent };
 
 /**
  * GENERAL INTERFACES
@@ -69,6 +71,10 @@ export class User extends UserCore implements Typed<TypedUserMethods> {
 }
 
 export const user = new User();
+
+export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
+  environment?: Environment,
+}
 
 /**
  * ANALYTICS
@@ -251,9 +257,16 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
-export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> {
-  environment?: Environment,
+
+export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
+  get typed(): TrackingPlanMethods {
+    return new TrackingPlanClient(this);
+  }
 }
+
+export const analytics = new Analytics();
+export const typedAnalytics = analytics.typed;
+
 
 export type BaseExperiment = {
   key: string;
@@ -442,18 +455,6 @@ export class Experiment extends ExperimentBrowser implements IExperimentClient {
 
 export const experiment = new Experiment();
 export const typedExperiment = experiment.typed;
-
-/**
- * ANALYTICS
- */
-export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed(): TrackingPlanMethods {
-    return new TrackingPlanClient(this);
-  }
-}
-
-export const analytics = new Analytics();
-export const typedAnalytics = analytics.typed;
 
 /**
  * AMPLITUDE

@@ -1,5 +1,5 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
-import { AnalyticsConfigModel } from "../../config";
+import { AnalyticsConfigModel, CodeGenerationSettings, CodeGenerationSettingsModel } from "../../config";
 import { CodeParameter, TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
 import {
   hasNonConstProperties,
@@ -10,37 +10,19 @@ import {
   removeConstProperties
 } from "../../json-schema";
 import { jsonSchemaToTypeScript } from "./jsonSchemaToTypeScript";
-import { cloneDeep } from "lodash";
-
-export class AnalyticsConfig {
-  constructor(private model: AnalyticsConfigModel) {}
-
-  hasEvents(): boolean {
-    return Object.keys(this.model).length > 0;
-  }
-
-  getEventNames(): string[] {
-    return Object.keys(this.model);
-  }
-
-  getEventSchemas(): JsonSchemaPropertyModel[] {
-    return this.getEventNames().map(name => ({
-      type: 'object',
-      title: name,
-      additionalProperties: false,
-      ...cloneDeep(this.model[name]),
-    }));
-  }
-}
+import { AnalyticsConfig } from "../../config/AnalyticsConfig";
 
 export class AnalyticsCoreCodeGenerator implements CodeGenerator<AnalyticsConfigModel> {
-  private config: AnalyticsConfig;
+  protected config: AnalyticsConfig;
+  protected codegenConfig: CodeGenerationSettings;
 
   constructor(
     private configModel: AnalyticsConfigModel,
+    private codegenModel: CodeGenerationSettingsModel,
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
   ) {
     this.config = new AnalyticsConfig(configModel);
+    this.codegenConfig = new CodeGenerationSettings(codegenModel);
   }
 
   async generateEventPropertiesTypes(): Promise<CodeBlock> {
@@ -233,5 +215,82 @@ ${getMethodName(event.title)}(${getEventParams(event)}) {
   .join('\n')}
 }`
       );
+  }
+}
+
+export class AnalyticsBrowserCodeGenerator extends AnalyticsCoreCodeGenerator {
+  constructor(
+    analyticsConfigModel: AnalyticsConfigModel,
+    codegenModel: CodeGenerationSettingsModel,
+    lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
+  ) {
+    super(analyticsConfigModel, codegenModel, lang);
+  }
+
+  async generate(): Promise<CodeBlock> {
+    const typed = this.codegenConfig.getTypedAnchorName();
+
+    const coreCode = await super.generate();
+
+    return coreCode
+      .import(`import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";`)
+      .code(`
+export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
+  get ${typed}(): TrackingPlanMethods {
+    return new TrackingPlanClient(this);
+  }
+}
+
+export const analytics = new Analytics();
+export const typedAnalytics = analytics.${typed};
+`
+      );
+  }
+}
+
+export class AnalyticsNodeCodeGenerator extends AnalyticsCoreCodeGenerator {
+  constructor(
+    analyticsConfigModel: AnalyticsConfigModel,
+    codegenModel: CodeGenerationSettingsModel,
+    lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
+  ) {
+    super(analyticsConfigModel, codegenModel, lang);
+  }
+
+  async generate(): Promise<CodeBlock> {
+    const typed = this.codegenConfig.getTypedAnchorName();
+
+    const coreCode = await super.generate();
+
+    return coreCode
+      .import(`\
+import {
+  Analytics as AnalyticsNode,
+  AnalyticsClient as AnalyticsClientNode
+} from "@amplitude/analytics-node";`
+    )
+      .code(`\
+export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
+  get ${typed}() {
+    return new TrackingPlanClient(this);;
+  }
+}
+
+export class Analytics extends AnalyticsNode {
+  user(user: User): AnalyticsClient {
+    return new AnalyticsClient(user, this.config);
+  }
+
+  userId(userId: string): AnalyticsClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): AnalyticsClient {
+    return this.user(new User(undefined, deviceId));
+  }
+}
+
+export const analytics = new Analytics();
+`);
   }
 }

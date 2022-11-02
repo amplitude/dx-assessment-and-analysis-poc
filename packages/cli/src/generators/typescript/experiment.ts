@@ -1,58 +1,13 @@
-import { CodeBlock, CodeBlockTag, CodeGenerator } from "../code-generator";
+import { CodeBlock, CodeGenerator } from "../code-generator";
 import {
   CodeGenerationSettings,
   CodeGenerationSettingsModel,
   ExperimentsConfigModel
 } from "../../config";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
-import {
-  JsonSchemaPropertyModel,
-} from "../../json-schema";
-import { cloneDeep, kebabCase } from "lodash";
 import { ExperimentModel, VariantModel } from "../../services/experiment/models";
-import { sortAlphabetically } from "../util/sorting";
 import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
-
-/**
- * ExperimentsConfig
- */
-export class ExperimentsConfig {
-  constructor(private model: ExperimentsConfigModel) {}
-
-  hasExperiments(): boolean {
-    return Object.keys(this.model).length > 0;
-  }
-
-  getExperimentNames(): string[] {
-    return Object.keys(this.model).sort(sortAlphabetically);
-  }
-
-  getExperimentSchemas(): JsonSchemaPropertyModel[] {
-    return this.getExperimentNames().map(name => ({
-      type: 'object',
-      title: name,
-      additionalProperties: false,
-      ...cloneDeep(this.model[name]),
-    }));
-  }
-
-  getExperiments(): ExperimentModel[] {
-    return this.getExperimentNames().map(name => {
-      const expModel = this.model[name];
-      const variantNames = Object.keys(expModel.variants);
-
-      return {
-        key: kebabCase(name),
-        name,
-        variants: variantNames.map(variantName => ({
-          key: variantName,
-          // FIXME: How ot handle empty payload
-          payload: expModel.variants[variantName]?.payload || {},
-        }))
-      }
-    });
-  }
-}
+import { ExperimentsConfig } from "../../config/ExperimentsConfig";
 
 /**
  * ExperimentCoreCodeGenerator
@@ -224,7 +179,13 @@ export interface IExperimentClient extends IExperimentClientCore, Typed<VariantM
 export class ExperimentBrowserCodeGenerator extends ExperimentCoreCodeGenerator {
   async generate(): Promise<CodeBlock> {
     const code = await super.generate();
-    code.import(`import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-browser";`)
+    code
+      .import(`\
+import {
+  IExperimentClient as IExperimentClientCore,
+  Experiment as ExperimentBrowser,
+} from "@amplitude/experiment-browser";`
+      )
       .code(`\
 export class Experiment extends ExperimentBrowser implements IExperimentClient {
   get typed() {
@@ -248,7 +209,12 @@ export const typedExperiment = experiment.typed;`
 export class ExperimentNodeCodeGenerator extends ExperimentCoreCodeGenerator {
   async generate(): Promise<CodeBlock> {
     const code = await super.generate();
-    code.import(`import { IExperimentClient as IExperimentClientCore } from "@amplitude/experiment-node";`)
+    code.import(`\
+import {
+  Experiment as ExperimentNode,
+  ExperimentClient as ExperimentClientNode,
+  IExperimentClient as IExperimentClientCore,
+} from "@amplitude/experiment-node";`)
       .code(`\
 export class ExperimentClient extends ExperimentClientNode implements IExperimentClient {
   get typed() {

@@ -3,12 +3,14 @@ import * as fs from "fs";
 import * as path from "path";
 
 import {
-  AmplitudeGeneratorBrowser,
-  AmplitudeGeneratorNode,
   TypeScriptExporter
 } from "./generators/generators";
 import { isValid, parseFromYaml } from "./config";
 import { CodeGenerator } from "./generators/code-generator";
+import {
+  AmplitudeBrowserCodeGenerator,
+  AmplitudeNodeCodeGenerator
+} from "./generators/typescript/amplitude-generator";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')
@@ -40,10 +42,10 @@ program.command('build')
       let generator: CodeGenerator<any>;
       switch (platform) {
         case 'Browser':
-          generator = new AmplitudeGeneratorBrowser();
+          generator = new AmplitudeBrowserCodeGenerator(config);
           break;
         case 'Node':
-          generator = new AmplitudeGeneratorNode();
+          generator = new AmplitudeNodeCodeGenerator(config);
           break;
         default:
           console.error(`Unsupported 'platform' ${platform}.`);

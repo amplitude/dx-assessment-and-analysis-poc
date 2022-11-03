@@ -94,20 +94,6 @@ ${this.lang.tab(1, constFields)}
     return result.substr(0, result.length - 1);
   }
 
-  generateEventClassesLegacy(): CodeBlock {
-    const { getClassName, tab } = this.lang;
-    const getEventProperties = (event: JsonSchemaPropertyModel) => hasNonConstProperties(event)
-      ? `\n  constructor(public event_properties: ${getClassName(event.title)}Properties) {}`
-      : '';
-
-    return CodeBlock.code(...this.config.analytics().getEventSchemas().map(event => `\
-export class ${getClassName(event.title)} implements AnalyticsEvent {
-  event_type = '${event.title}';${getEventProperties(event)}
-${tab(1, this.generatePropertiesLiteralWithConsts(event, ''))}
-}
-`));
-  }
-
   generateEventClasses(): CodeBlock {
     const classes = this.config.analytics().getEventSchemas().map(schema => {
       const { getClassName, tab, tabExceptFirstLine } = this.lang;

@@ -1,8 +1,8 @@
 import { camelCase, isEmpty } from 'lodash';
-import { PropertyConfigModel } from "../../config";
 import createTab from "../util/createTab";
 import { upperCamelCase } from "../util/string";
 import { JsonSchemaPropertyModel } from "../../json-schema";
+import { PropertyConfigModel } from "../../config/PropertyConfigModel";
 
 export interface CodeLanguage {
   getClassName(name:string): string;

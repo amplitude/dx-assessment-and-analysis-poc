@@ -2,16 +2,14 @@ import { program } from 'commander';
 import * as fs from "fs";
 import * as path from "path";
 
-import {
-  TypeScriptExporter
-} from "./generators/generators";
-import { isValid, parseFromYaml } from "./config";
+import { TypeScriptExporter } from "./generators/generators";
 import { CodeGenerator } from "./generators/code-generator";
 import {
   AmplitudeBrowserCodeGenerator,
   AmplitudeNodeCodeGenerator
 } from "./generators/typescript/amplitude-generator";
 import { AmplitudeConfig } from "./config/AmplitudeConfig";
+import { isValid, parseFromYaml } from "./config/AmplitudeConfigYamlParser";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')

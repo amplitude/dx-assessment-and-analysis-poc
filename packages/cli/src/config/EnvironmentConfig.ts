@@ -1,4 +1,13 @@
-import { Environment } from "../config";
+export type Product = 'experiment' | 'analytics';
+
+export interface ProductEnvironment {
+  apiKey: string;
+}
+
+export interface Environment {
+  analytics?: ProductEnvironment;
+  experiment?: ProductEnvironment;
+}
 
 export class EnvironmentConfig {
   constructor(private model: Record<string, Environment>) {}

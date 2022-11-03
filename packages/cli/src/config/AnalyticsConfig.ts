@@ -1,6 +1,16 @@
-import { AnalyticsConfigModel } from "../config";
 import { JsonSchemaPropertyModel } from "../json-schema";
 import { cloneDeep } from "lodash";
+import { PropertyConfigModel } from "./PropertyConfigModel";
+
+export interface EventConfigModel {
+  description?: string;
+  properties?: Record<string, PropertyConfigModel>;
+  required?: string[];
+}
+
+export interface AnalyticsConfigModel {
+  [eventName: string]: EventConfigModel;
+}
 
 export class AnalyticsConfig {
   constructor(private model: AnalyticsConfigModel) {}

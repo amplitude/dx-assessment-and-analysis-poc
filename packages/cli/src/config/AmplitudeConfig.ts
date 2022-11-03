@@ -1,8 +1,17 @@
-import { AmplitudeConfigModel, CodeGenerationSettings } from "../config";
-import { AnalyticsConfig } from "./AnalyticsConfig";
-import { ExperimentsConfig } from "./ExperimentsConfig";
-import { UserConfig } from "./UserConfig";
-import { EnvironmentConfig } from "./EnvironmentConfig";
+import { AnalyticsConfig, AnalyticsConfigModel } from "./AnalyticsConfig";
+import { ExperimentsConfig, ExperimentsConfigModel } from "./ExperimentsConfig";
+import { UserConfig, UserConfigModel } from "./UserConfig";
+import { Environment, EnvironmentConfig } from "./EnvironmentConfig";
+import { CodeGenerationConfig, CodeGenerationConfigModel } from "./CodeGenerationConfig";
+
+
+export interface AmplitudeConfigModel {
+  settings: CodeGenerationConfigModel;
+  environments: Record<string, Environment>;
+  user: UserConfigModel;
+  analytics?: AnalyticsConfigModel;
+  experiments?: ExperimentsConfigModel;
+}
 
 /**
  * AmplitudeConfig
@@ -14,8 +23,8 @@ export class AmplitudeConfig {
     return new AnalyticsConfig(this.model.analytics);
   }
 
-  codegen(): CodeGenerationSettings {
-    return new CodeGenerationSettings(this.model.settings);
+  codegen(): CodeGenerationConfig {
+    return new CodeGenerationConfig(this.model.settings);
   }
 
   environment(): EnvironmentConfig {

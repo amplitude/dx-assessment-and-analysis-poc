@@ -1,8 +1,23 @@
-import { ExperimentsConfigModel } from "../config";
 import { sortAlphabetically } from "../generators/util/sorting";
 import { JsonSchemaPropertyModel } from "../json-schema";
 import { cloneDeep, kebabCase } from "lodash";
 import { ExperimentModel } from "../services/experiment/models";
+
+export interface VariantModel {
+  description?: string;
+  key?: string;
+  payload?: Record<string, JsonSchemaPropertyModel>;
+}
+
+export interface ExperimentConfigModel {
+  description?: string;
+  key?: string;
+  variants?: Record<string, VariantModel>;
+}
+
+export interface ExperimentsConfigModel {
+  [experimentName: string]: ExperimentConfigModel;
+}
 
 /**
  * ExperimentsConfig

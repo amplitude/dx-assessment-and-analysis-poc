@@ -1,4 +1,4 @@
-import { ErrorMessages, isValid, parseFromYaml } from '../src/config'
+import { ErrorMessages, isValid, parseFromYaml } from '../src/config/AmplitudeConfigYamlParser'
 
 afterEach(() => {
   jest.restoreAllMocks();

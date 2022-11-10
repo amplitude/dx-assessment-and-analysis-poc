@@ -35,8 +35,10 @@ test('validate events sequence in from UI actions', () => {
   const analyticsUserLoggedInButton = screen.getByText(SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON);
   const analyticsUserSignedUpButton = screen.getByText(SELECTOR_ANALYTICS_USER_SIGNED_UP_BUTTON);
   const userSetUserPropertiesButton = screen.getByText(SELECTOR_USER_SET_USER_PROPERTIES_BUTTON);
+  const userSetUserIdButton = screen.getByText(SELECTOR_USER_SET_USER_ID_BUTTON);
 
   // interact with UI
+  userEvent.click(userSetUserIdButton);
   userEvent.click(experimentExposureButton);
   userEvent.click(analyticsUserSignedUpButton);
   userEvent.click(analyticsUserLoggedInButton);

@@ -12,6 +12,7 @@ export const CodeBlockTag = {
   Default: 0,
   Export: 1,
   Import: 2,
+  Header: 3,
 };
 
 function sortByCodeBlockTag(a: CodeBlockModel, b: CodeBlockModel) {
@@ -41,6 +42,10 @@ export class CodeBlock {
     return new CodeBlock().export(...code);
   }
 
+  static header(...code: string[]) {
+    return new CodeBlock().header(...code);
+  }
+
   add(code: string, tag = CodeBlockTag.Default): CodeBlock {
     this.blocks.push({tag, code});
     return this;
@@ -66,6 +71,10 @@ export class CodeBlock {
     return this.addAs(CodeBlockTag.Export, ...code);
   }
 
+  header(...code: string[]): CodeBlock {
+    return this.addAs(CodeBlockTag.Header, ...code);
+  }
+
   merge(...blocks: CodeBlock[]): CodeBlock {
     blocks.forEach(b => {
       this.blocks.push(...b.blocks);
@@ -84,12 +93,15 @@ export class CodeBlock {
 
   toString() {
     const sortedBlocks = this.blocks.sort(sortByCodeBlockTag);
+    const headerCode: string[] = [];
     const importCode: string[] = [];
     const exportCode: string[] = [];
     const otherCode: string[] = [];
 
     sortedBlocks.forEach(b => {
-      if (b.tag === CodeBlockTag.Import) {
+      if (b.tag === CodeBlockTag.Header) {
+        headerCode.push(b.code);
+      } else if (b.tag === CodeBlockTag.Import) {
         importCode.push(b.code);
       } else if (b.tag === CodeBlockTag.Export) {
         exportCode.push(b.code);
@@ -98,7 +110,8 @@ export class CodeBlock {
       }
     })
 
-    return importCode.join('\n')
+    return headerCode.join('\n')
+      .concat('\n\n', importCode.join(`\n`))
       .concat('\n\n', exportCode.join(`\n`))
       .concat('\n\n', otherCode.join(`\n\n`));
   }

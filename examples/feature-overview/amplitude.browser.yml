@@ -1,3 +1,4 @@
+# Code generation configuration
 settings:
   platform: Browser
   language: TypeScript
@@ -6,6 +7,7 @@ settings:
   outputFileName: browser
   typedAnchorName: typed
 
+# Environment configuration
 environments:
   development:
     experiment:
@@ -19,6 +21,7 @@ environments:
     analytics:
       apiKey: my-api-key
 
+# Collection of aliases used elsewhere in the config
 x-analytics-definitions:
   referralSource: &referralSource
     description: How the user was brought to the app
@@ -31,6 +34,7 @@ x-experiment-definitions:
     items:
       type: string
 
+# User configuration
 user:
   description: Collection of user properties
   required: [referralSource]
@@ -40,34 +44,38 @@ user:
       description: Total number of favorited songs
       type: integer
 
+# Analytics configuration
 analytics:
-  User Signed Up:
-    description: A user signed up
-    properties:
-      referralSource: *referralSource
+  events:
+    User Signed Up:
+      description: A user signed up
+      properties:
+        referralSource: *referralSource
 
-  User Logged In:
-    description: The user logged in
-    required: [ method ]
-    properties:
-      method:
-        description: The song unique identifier
-        enum: [ "email", "facebook", "google" ]
+    User Logged In:
+      description: The user logged in
+      required: [ method ]
+      properties:
+        method:
+          description: The song unique identifier
+          enum: [ "email", "facebook", "google" ]
 
-  Add To Cart:
-    description: An item was added to the cart
+    Add To Cart:
+      description: An item was added to the cart
 
-  Checkout:
-    description: The user completed their purchase
+    Checkout:
+      description: The user completed their purchase
 
-experiments:
-  Flag Codegen Enabled:
-    variants:
-      on:
+# Experiment configuration
+experiment:
+  flags:
+    Flag Codegen Enabled:
+      variants:
+        on:
 
-  A Multi Variate Experiment:
-    variants:
-      generic:
-        payload: *arrayOfStringsPayload
-      ampli:
-        payload: *arrayOfStringsPayload
+    A Multi Variate Experiment:
+      variants:
+        generic:
+          payload: *arrayOfStringsPayload
+        ampli:
+          payload: *arrayOfStringsPayload

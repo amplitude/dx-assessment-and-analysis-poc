@@ -16,7 +16,9 @@ export interface ExperimentConfigModel {
 }
 
 export interface ExperimentsConfigModel {
-  [experimentName: string]: ExperimentConfigModel;
+  flags?: {
+    [experimentName: string]: ExperimentConfigModel
+  };
 }
 
 /**
@@ -26,11 +28,11 @@ export class ExperimentsConfig {
   constructor(private model: ExperimentsConfigModel) {}
 
   hasExperiments(): boolean {
-    return Object.keys(this.model).length > 0;
+    return Object.keys(this.model.flags ?? {}).length > 0;
   }
 
   getExperimentNames(): string[] {
-    return Object.keys(this.model).sort(sortAlphabetically);
+    return Object.keys(this.model.flags ?? {}).sort(sortAlphabetically);
   }
 
   getExperimentSchemas(): JsonSchemaPropertyModel[] {
@@ -38,13 +40,13 @@ export class ExperimentsConfig {
       type: 'object',
       title: name,
       additionalProperties: false,
-      ...cloneDeep(this.model[name]),
+      ...cloneDeep(this.model.flags?.[name]),
     }));
   }
 
   getExperiments(): ExperimentModel[] {
     return this.getExperimentNames().map(name => {
-      const expModel = this.model[name];
+      const expModel = this.model.flags[name];
       const variantNames = Object.keys(expModel.variants);
 
       return {

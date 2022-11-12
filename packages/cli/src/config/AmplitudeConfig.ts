@@ -10,7 +10,7 @@ export interface AmplitudeConfigModel {
   environments: Record<string, Environment>;
   user: UserConfigModel;
   analytics?: AnalyticsConfigModel;
-  experiments?: ExperimentsConfigModel;
+  experiment?: ExperimentsConfigModel;
 }
 
 /**
@@ -32,7 +32,7 @@ export class AmplitudeConfig {
   }
 
   experiment(): ExperimentsConfig {
-    return new ExperimentsConfig(this.model.experiments);
+    return new ExperimentsConfig(this.model.experiment);
   }
 
   user(): UserConfig {

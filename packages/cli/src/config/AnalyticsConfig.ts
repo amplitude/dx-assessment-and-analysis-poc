@@ -9,18 +9,20 @@ export interface EventConfigModel {
 }
 
 export interface AnalyticsConfigModel {
-  [eventName: string]: EventConfigModel;
+  events?: {
+    [eventName: string]: EventConfigModel;
+  }
 }
 
 export class AnalyticsConfig {
   constructor(private model: AnalyticsConfigModel) {}
 
   hasEvents(): boolean {
-    return Object.keys(this.model).length > 0;
+    return Object.keys(this.model.events ?? {}).length > 0;
   }
 
   getEventNames(): string[] {
-    return Object.keys(this.model);
+    return Object.keys(this.model.events ?? {});
   }
 
   getEventSchemas(): JsonSchemaPropertyModel[] {
@@ -28,7 +30,7 @@ export class AnalyticsConfig {
       type: 'object',
       title: name,
       additionalProperties: false,
-      ...cloneDeep(this.model[name]),
+      ...cloneDeep(this.model.events?.[name]),
     }));
   }
 }

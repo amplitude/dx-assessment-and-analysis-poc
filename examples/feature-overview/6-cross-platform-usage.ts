@@ -34,9 +34,10 @@ if (experimentNode.deviceId('device').typed.flagCodegenEnabled()) {
  * Shared context
  */
 function sharedContext(analytics: IAnalyticsClient, experiment: IExperimentClient) {
-  if (experiment.typed.flagCodegenEnabled())
-  analytics.typed.userSignedUp();
-  analytics.track(new UserLoggedIn({ method: "email" }));
+  if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
+    analytics.typed.userSignedUp();
+    analytics.track(new UserLoggedIn({method: "email"}));
+  }
 }
 
 sharedContext(analyticsBrowser, experimentBrowser);

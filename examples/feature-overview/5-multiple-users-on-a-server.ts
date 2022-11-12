@@ -97,7 +97,7 @@ app.use((req) => {
   const analytics: AnalyticsClient = req.analytics;
   const experiment: ExperimentClient = req.experiment;
 
-  if (experiment.typed.flagCodegenEnabled()) {
+  if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
     analytics.typed.userSignedUp()
   }
 })

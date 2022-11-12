@@ -80,7 +80,7 @@ if (experiment.variant('flag-codegen-on', "false") === "true") {
 //   referralSource: "twitter"
 // });
 //
-// if (experiment.typed.flagCodegenEnabled().on) {
+// if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
 //   analytics.typed.userLoggedIn({ method: "email"});
 //   analytics.track(new UserLoggedIn({ method: "google" }));
 // }

@@ -40,7 +40,7 @@ user.typed.setUserProperties({
  */
 experiment.fetch();
 experiment.exposure();
-if (experiment.typed.flagCodegenEnabled()) {
+if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
   /**
    * For Analytics, we get strong types for Events and Properties.
    */

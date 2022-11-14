@@ -6,6 +6,7 @@ import {
 } from "@amplitude/amplitude-browser";
 import { jsons } from "@amplitude/util";
 import { trackMessage, newTrackMessage } from "@amplitude/analytics-messages";
+import { init, track, flush } from "@amplitude/analytics-browser-legacy";
 
 export type { AnalyticsEvent, IAnalyticsClient };
 
@@ -22,8 +23,14 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
   name = 'analytics';
   version = 0;
 
-  load(config: AnalyticsPluginConfig) {
-    super.load(config);
+  private apiKey;
+
+  load(config: AnalyticsPluginConfig, pluginConfig: any) {
+    super.load(config, pluginConfig);
+
+    this.apiKey = pluginConfig?.apiKey || config.apiKey;
+
+    init(this.apiKey);
 
     config.hub?.analytics.subscribe(trackMessage, message => {
       this.onAcceptableMessage(message.payload, ({event}) => {
@@ -50,10 +57,12 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
 
   protected _track(event: AnalyticsEvent) {
     this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
+    track(event);
   }
 
   flush() {
     this.config.logger.log(`[Analytics.flush]`);
+    flush();
   }
 }
 

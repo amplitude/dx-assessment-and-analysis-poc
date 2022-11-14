@@ -10,13 +10,30 @@ import { amplitude, user, analytics, experiment, UserLoggedIn, Logger, NoLogger 
 const { REACT_APP_LOGGING_DISABLED } = process.env;
 const useLogger = REACT_APP_LOGGING_DISABLED !== 'true';
 
+// Try reading in ApiKeys from .env file
+let { REACT_APP_AMP_ANALYTICS_API_KEY, REACT_APP_AMP_EXPERIMENT_API_KEY } = process.env;
+
+const envConfig = !(REACT_APP_AMP_ANALYTICS_API_KEY || REACT_APP_AMP_EXPERIMENT_API_KEY)
+  ? {}
+  : {
+    configuration: {
+      analytics: {
+        apiKey: REACT_APP_AMP_ANALYTICS_API_KEY,
+      },
+      experiment: {
+        apiKey: REACT_APP_AMP_EXPERIMENT_API_KEY,
+      },
+    }
+  };
+
 amplitude.typed.load({
-  environment: 'production',
+  environment: 'development',
   logger: useLogger ? new Logger() : new NoLogger(),
   plugins: [
     analytics,
     experiment
-  ]
+  ],
+  ...envConfig,
 })
 
 function App() {
@@ -54,7 +71,7 @@ function App() {
           </div>
           <div className="section">
             <span>User</span>
-            <button onClick={() => user.setUserId('user-id')}>Set User Id</button>
+            <button onClick={() => user.setUserId('alpha-user-id')}>Set User Id</button>
             <button onClick={() => user.typed.setUserProperties({
               favoriteSongCount: 1,
               referralSource: 'twitter'

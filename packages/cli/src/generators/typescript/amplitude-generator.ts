@@ -80,17 +80,23 @@ export class Amplitude extends AmplitudeBrowser {
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-        
-        // FIXME: properly read API keys
-        // @ts-ignore
+
+        // FIXME: implement single ApiKey for all products
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
+          // Set per-product ApiKeys
+          configuration: {
+            analytics: {
+              apiKey:  ApiKey['analytics'][environment],
+            },
+            experiment: {
+              apiKey:  ApiKey['experiment'][environment],
+            }
+          },
           ...config,
           apiKey,
         });
-        core.addPlugin(analytics);
-        core.addPlugin(experiment);
       },
       get user(): User {
         return core.user as User;

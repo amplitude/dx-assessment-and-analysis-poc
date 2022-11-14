@@ -24,9 +24,13 @@ export class Experiment extends BrowserAmplitudePluginBase implements IExperimen
   version = 0;
 
   private client: ExperimentClientLegacy;
+  private apiKey: string;
 
   load(config: BrowserPluginConfig, pluginConfig?: any) {
     super.load(config, pluginConfig);
+
+    this.apiKey = pluginConfig?.apiKey || config.apiKey;
+
     // FIXME: Pass in experiment config
     const experimentConfig = undefined;
     this.client = ExperimentLegacy.initialize(config.apiKey, experimentConfig);

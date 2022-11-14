@@ -1,9 +1,12 @@
+# Code generation configuration
 settings:
   platform: Browser
   language: TypeScript
   sdk: "@amplitude/amplitude-browser"
   output: ./src/amplitude
+  typedAnchorName: typed
 
+# Environment configuration
 environments:
   development:
     experiment:
@@ -17,33 +20,133 @@ environments:
     analytics:
       apiKey: my-api-key
 
-experiments:
-  - title: Mac Users Experiment
-    variants:
-      'on': true
-      'off': false
+# Aliases
+x-analytics-definitions:
+  referralSource: &referralSource
+    description: How the user was brought to the app
+    enum: [ "facebook", "twitter", "other" ]
+  songId: &songId
+    description: The song unique identifier
+    type: string
 
-events:
-  - title: Product Event
-    description: A product from Acme's catalog
-    type: object
-    required: [ productId ]
-    properties:
-      price:
-        description: The products name
-        type: string
-      productId:
-        description: The unique identifier for a product
-        type: integer
+x-experiment-definitions:
+  payload: &arrayOfStringsPayload
+    description: An array of strings
+    type: array
+    items:
+      type: string
 
-  - title: Song Played
-    description: A song was played
-    type: object
-    required: [ songId ]
-    properties:
-      songId:
-        description: The song unique identifier
-        type: string
-      songFavorited:
-        description: If the song is favorited
-        type: boolean
+# User configuration
+user:
+  description: Collection of user properties
+  required: [referralSource]
+  properties:
+    referralSource: *referralSource
+    favoriteSongCount:
+      description: Total number of favorited songs
+      type: integer
+
+# Analytics configuration
+analytics:
+  events:
+    User Signed Up:
+      description: A user signed up
+      properties:
+        referralSource: *referralSource
+
+    User Logged In:
+      description: The user logged in
+      required: [ method ]
+      properties:
+        method:
+          description: The song unique identifier
+          enum: [ "email", "facebook", "google" ]
+
+    Song Played:
+      description: A song was played
+      required: [ songId ]
+      properties:
+        songId: *songId
+        songFavorited:
+          description: If the song is a favorite
+          type: boolean
+
+    Song Favorited:
+      description: A song was added to a user's favorites
+      required: [ songId ]
+      properties:
+        songId: *songId
+        optionalProp:
+          description: An optional value
+          type: string
+        aConstant:
+          description: Constant value shouldn't be settable
+          const: true
+
+    Add To Cart:
+      description: An item was added to the cart
+
+    Checkout:
+      description: The user completed their purchase
+
+    Event With Const:
+      description: An Event with only Const props
+      required: [ constProp ]
+      properties:
+        constProp:
+          description: Constant value shouldn't be settable
+          const: true
+
+    Event With Array:
+      description: An Event with Array props
+      properties:
+        arrayProp:
+          description: An array of strings
+          type: array
+          items:
+            type: string
+
+experiment:
+  flags:
+    Codegen Boolean Experiment:
+      key: codegen-boolean-experiment
+      variants:
+        on:
+          payload:
+            type: boolean
+
+    Codegen Array Experiment:
+      key: codegen-array-experiment
+      variants:
+        generic:
+          payload: *arrayOfStringsPayload
+        ampli:
+          payload: *arrayOfStringsPayload
+
+    Codegen String Experiment:
+      key: codegen-string-experiment
+      variants:
+        control:
+          payload:
+            type: string
+        treatment:
+          payload:
+            type: string
+
+    Codegen Experiment:
+      key: codegen-experiment
+      variants:
+        control:
+        treatment:
+
+#    Mac Users Flag:
+#      variants:
+#        on:
+#    Windows Users Experiment:
+#      variants:
+#        control:
+#          payload:
+#            type: string
+#        treatment:
+#          payload:
+#            type: number

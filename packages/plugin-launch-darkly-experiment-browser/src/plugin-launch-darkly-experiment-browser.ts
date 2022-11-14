@@ -2,7 +2,7 @@ import { AmplitudePluginCategory, BrowserAmplitudePluginBase, BrowserPluginConfi
 import { User } from "@amplitude/user";
 import { userUpdatedMessage } from "@amplitude/user-messages";
 import { newTrackMessage } from "@amplitude/analytics-messages";
-import { IExperiment } from "@amplitude/experiment-browser";
+import { IExperiment, Variant } from "@amplitude/experiment-browser";
 // import * as LDClient from 'launchdarkly-js-client-sdk';
 
 const LDClient = {
@@ -58,7 +58,7 @@ export class LaunchDarklyExperiment extends BrowserAmplitudePluginBase implement
     this.updateLdClient();
   }
 
-  variant(key: string): boolean {
+  variant(key: string, fallback?: string): Variant | string {
     this.config.logger.log(`[${this.name}.variant] ${key}`)
 
     return this.client?.variation(key);

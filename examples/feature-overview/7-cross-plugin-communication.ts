@@ -40,7 +40,7 @@ amplitude.load({
  */
 user.setUserId('u-id')
 user.typed.setUserProperties({
-  requiredProp: "strongly typed"
+  referralSource: "twitter"
 });
 
 /**
@@ -68,7 +68,7 @@ segmentAnalytics.track('Segment Only Event')
 /**
  * [Typed] Segment Analytics
  */
-segmentAnalytics.track(new UserLoggedIn());
+segmentAnalytics.track(new UserLoggedIn({ method: "email" }));
 
 const typedSegment = new TrackingPlanClient(segmentAnalytics);
 typedSegment.userSignedUp();

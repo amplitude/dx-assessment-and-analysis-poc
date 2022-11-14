@@ -54,7 +54,7 @@ amplitude.load({
 amplitude.user.setUserId('u-id')
 
 user.setUserProperties({
-  requiredProp: "untyped"
+  referralSource: "untyped"
 });
 user.setGroup('framework', 'awesome');
 user.setGroupProperties('framework', 'awesome', {
@@ -62,7 +62,7 @@ user.setGroupProperties('framework', 'awesome', {
 });
 
 experiment.fetch();
-if (experiment.variant('flag-codegen-on')) {
+if (experiment.variant('flag-codegen-on', "false") === "true") {
   throw new Error('codegen not available')
 } else {
   analytics.track('My Event')
@@ -77,10 +77,10 @@ if (experiment.variant('flag-codegen-on')) {
  */
 // all codegen methods are available on 'data' objects per product
 // user.typed.setUserProperties({
-//   requiredProp: "strongly typed",
+//   referralSource: "twitter"
 // });
 //
-// if (experiment.typed.flagCodegenEnabled()) {
-//   analytics.typed.userLoggedIn();
-//   analytics.track(new UserLoggedIn());
+// if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
+//   analytics.typed.userLoggedIn({ method: "email"});
+//   analytics.track(new UserLoggedIn({ method: "google" }));
 // }

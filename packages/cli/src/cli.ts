@@ -1,8 +1,15 @@
 import { program } from 'commander';
 import * as fs from "fs";
 import * as path from "path";
-import { parse } from 'yaml';
-import { AmplitudeGeneratorBrowser, AmplitudeGeneratorNode, CodeGenerator } from "./generators/generators";
+
+import { TypeScriptExporter } from "./generators/generators";
+import { CodeGenerator } from "./generators/code-generator";
+import {
+  AmplitudeBrowserCodeGenerator,
+  AmplitudeNodeCodeGenerator
+} from "./generators/typescript/amplitude-generator";
+import { AmplitudeConfig } from "./config/AmplitudeConfig";
+import { isValid, parseFromYaml } from "./config/AmplitudeConfigYamlParser";
 
 program.name('Amplitude CLI')
   .description('Generates strongly typed SDKs based on configuration')
@@ -15,36 +22,38 @@ program.command('build')
     "Amplitude configuration file",
     "amplitude.yml",
   )
-  .action((options) => {
+  .action(async (options) => {
     const { config: configPath } = options;
 
     console.log(`Config Path:`, configPath);
     try {
       const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
 
-      const config = parse(ymlConfig);
-
-      if (!config.settings || !config.settings.platform || !config.settings.output) {
-        console.error(`Missing required 'settings'. 'settings.platform' and 'settings.output' are required.`);
+      const configModel = parseFromYaml(ymlConfig);
+      const configValidation = isValid(configModel);
+      if (!configValidation.valid) {
+        console.error(`Error loading configuration from ${configPath}.`, configValidation.errors);
         return;
       }
 
-      const { platform, output: outputPath, outputFileName }  = config.settings;
+      const config = new AmplitudeConfig(configModel);
+      const { platform, output: outputPath, outputFileName }  = configModel.settings;
 
       let generator: CodeGenerator;
       switch (platform) {
         case 'Browser':
-          generator = new AmplitudeGeneratorBrowser();
+          generator = new AmplitudeBrowserCodeGenerator(config);
           break;
         case 'Node':
-          generator = new AmplitudeGeneratorNode();
+          generator = new AmplitudeNodeCodeGenerator(config);
           break;
         default:
           console.error(`Unsupported 'platform' ${platform}.`);
           return;
       }
 
-      const outputFiles = generator.generate();
+      let exporter = new TypeScriptExporter();
+      const outputFiles = await exporter.export(await generator.generate());
       outputFiles.forEach(file => {
         let fileName = file.path;
         if (outputFileName && fileName.startsWith('index')) {

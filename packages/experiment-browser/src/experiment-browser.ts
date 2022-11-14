@@ -1,7 +1,19 @@
-import { AmplitudePlugin, AmplitudePluginCategory, BrowserAmplitudePluginBase } from "@amplitude/amplitude-browser";
+import {
+  AmplitudePlugin,
+  AmplitudePluginCategory,
+  BrowserAmplitudePluginBase,
+  BrowserPluginConfig
+} from "@amplitude/amplitude-browser";
 import { User } from "@amplitude/user";
-import { IExperimentClient } from "@amplitude/experiment-core";
+import { IExperimentClient, Variant } from "@amplitude/experiment-core";
 import { newTrackMessage } from "@amplitude/analytics-messages";
+import {
+  Experiment as ExperimentLegacy,
+  ExperimentClient as ExperimentClientLegacy,
+} from "@amplitude/experiment-js-client";
+
+export type { Variant };
+export { IExperimentClient };
 
 export interface IExperiment extends AmplitudePlugin, IExperimentClient {}
 
@@ -11,6 +23,15 @@ export class Experiment extends BrowserAmplitudePluginBase implements IExperimen
   name = 'experiment';
   version = 0;
 
+  private client: ExperimentClientLegacy;
+
+  load(config: BrowserPluginConfig, pluginConfig?: any) {
+    super.load(config, pluginConfig);
+    // FIXME: Pass in experiment config
+    const experimentConfig = undefined;
+    this.client = ExperimentLegacy.initialize(config.apiKey, experimentConfig);
+  }
+
   fetch = (user?: User) => {
     // We can access the current user using the PluginConfig
     const u = user ?? this.config.user;
@@ -18,10 +39,12 @@ export class Experiment extends BrowserAmplitudePluginBase implements IExperimen
     this.config.logger.log(`[Experiment.fetch] user=${u}`)
   }
 
-  variant(key: string): boolean {
+  variant(key: string, fallback?: string): Variant | string {
     this.config.logger.log(`[Experiment.variant] ${key}`)
 
-    return key === 'flag-codegen-enabled';
+    // this.client.variant(key, fallback);
+
+    return fallback || 'flag-codegen-enabled';
   }
 
   exposure() {

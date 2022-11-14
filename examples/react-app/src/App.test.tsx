@@ -8,6 +8,8 @@ import { trackMessage, AnalyticsEvent } from "@amplitude/analytics-messages";
 const SELECTOR_EXPERIMENT_EXPOSURE_BUTTON = /experiment.exposure/i
 const SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON = /login \(with event method/i
 const SELECTOR_ANALYTICS_USER_SIGNED_UP_BUTTON = /sign up/i
+const SELECTOR_USER_SET_USER_ID_BUTTON = /Set User Id/i
+const SELECTOR_USER_SET_USER_PROPERTIES_BUTTON = /Set User Properties/i
 
 beforeEach(() => {
   jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -32,11 +34,15 @@ test('validate events sequence in from UI actions', () => {
   const experimentExposureButton = screen.getByText(SELECTOR_EXPERIMENT_EXPOSURE_BUTTON);
   const analyticsUserLoggedInButton = screen.getByText(SELECTOR_ANALYTICS_USER_LOGGED_IN_BUTTON);
   const analyticsUserSignedUpButton = screen.getByText(SELECTOR_ANALYTICS_USER_SIGNED_UP_BUTTON);
+  const userSetUserPropertiesButton = screen.getByText(SELECTOR_USER_SET_USER_PROPERTIES_BUTTON);
+  const userSetUserIdButton = screen.getByText(SELECTOR_USER_SET_USER_ID_BUTTON);
 
   // interact with UI
+  userEvent.click(userSetUserIdButton);
   userEvent.click(experimentExposureButton);
   userEvent.click(analyticsUserSignedUpButton);
   userEvent.click(analyticsUserLoggedInButton);
+  userEvent.click(userSetUserPropertiesButton);
 
   // Validate analytics events were tracked as expected
   expect(events.length).toBe(3);

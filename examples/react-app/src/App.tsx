@@ -31,16 +31,34 @@ function App() {
           <div className="section">
             <span>Experiment</span>
             <button onClick={() => experiment.exposure()}>experiment.exposure()</button>
+            <button onClick={() => {
+              console.log(`${
+                experiment.typed.codegenBooleanExperiment().key
+              } is ${
+                experiment.typed.codegenBooleanExperiment().on ? 'on' : 'off'
+              }`)
+            }}>experiment.codegenBooleanExperiment()</button>
+            <button onClick={() => {
+              console.log(experiment.typed.codegenArrayExperiment().generic?.payload);
+            }}>experiment.codegenArrayExperiment().generic.payload</button>
           </div>
           <div className="section">
             <span>Analytics</span>
-            <button onClick={() => analytics.typed.userLoggedIn()}>Login (with Event method)</button>
-            <button onClick={() => analytics.track(new UserLoggedIn())}>Login (with Event class)</button>
+            <button onClick={() => analytics.typed.userLoggedIn({
+              method: 'email'
+            })}>Login (with Event method)</button>
+            <button onClick={() => analytics.track(new UserLoggedIn({
+              method: 'google'
+            }))}>Login (with Event class)</button>
             <button onClick={() => analytics.typed.userSignedUp()}>Sign Up</button>
           </div>
           <div className="section">
             <span>User</span>
             <button onClick={() => user.setUserId('user-id')}>Set User Id</button>
+            <button onClick={() => user.typed.setUserProperties({
+              favoriteSongCount: 1,
+              referralSource: 'twitter'
+            })}>Set User Properties</button>
           </div>
         </div>
       </header>

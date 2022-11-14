@@ -25,6 +25,7 @@
     "@amplitude/user-messages": "^0.0.0"
   },
   "scripts": {
+    "start": "yarn example-all",
     "build": "tsc",
     "clean": "",
     "test": "jest",

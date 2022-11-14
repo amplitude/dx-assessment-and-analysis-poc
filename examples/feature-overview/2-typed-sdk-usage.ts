@@ -32,7 +32,7 @@ amplitude.user.setUserId('u-id')
  * For User, we can require specific properties based on the Data Plan
  */
 user.typed.setUserProperties({
-  requiredProp: "strongly typed",
+  referralSource: "twitter",
 });
 
 /**
@@ -40,10 +40,10 @@ user.typed.setUserProperties({
  */
 experiment.fetch();
 experiment.exposure();
-if (experiment.typed.flagCodegenEnabled()) {
+if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
   /**
    * For Analytics, we get strong types for Events and Properties.
    */
-  analytics.typed.userLoggedIn();
-  analytics.track(new UserLoggedIn());
+  analytics.typed.userLoggedIn({ method: "email" });
+  analytics.track(new UserLoggedIn({ method: "email" }));
 }

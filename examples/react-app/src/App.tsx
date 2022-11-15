@@ -47,6 +47,7 @@ function App() {
         <div className="section-group">
           <div className="section">
             <span>Experiment</span>
+            <button onClick={() => experiment.fetch()}>experiment.fetch()</button>
             <button onClick={() => experiment.exposure()}>experiment.exposure()</button>
             <button onClick={() => {
               console.log(`${
@@ -58,6 +59,9 @@ function App() {
             <button onClick={() => {
               console.log(experiment.typed.codegenArrayExperiment().generic?.payload);
             }}>experiment.codegenArrayExperiment().generic.payload</button>
+            <button onClick={() => {
+              console.log(experiment.typed.codegenArrayExperiment().ampli?.payload);
+            }}>experiment.codegenArrayExperiment().ampli.payload</button>
           </div>
           <div className="section">
             <span>Analytics</span>
@@ -71,7 +75,9 @@ function App() {
           </div>
           <div className="section">
             <span>User</span>
-            <button onClick={() => user.setUserId('alpha-user-id')}>Set User Id</button>
+            <button onClick={() => user.setUserId('alpha-user-id')}>Set User Id (generic)</button>
+            <button onClick={() => user.setUserId('alpha-codegen-user-id')}>Set User Id (codegen)</button>
+            <button onClick={() => user.setUserId('justin.fiedler@amplitude.com')}>Set User Id (codegen)</button>
             <button onClick={() => user.typed.setUserProperties({
               favoriteSongCount: 1,
               referralSource: 'twitter'

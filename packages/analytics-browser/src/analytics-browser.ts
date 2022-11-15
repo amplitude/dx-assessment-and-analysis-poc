@@ -6,7 +6,13 @@ import {
 } from "@amplitude/amplitude-browser";
 import { jsons } from "@amplitude/util";
 import { trackMessage, newTrackMessage } from "@amplitude/analytics-messages";
-import { init, track, flush } from "@amplitude/analytics-browser-legacy";
+import {
+  init,
+  setUserId, setDeviceId, identify, Identify,
+  track,
+  flush,
+} from "@amplitude/analytics-browser-legacy";
+import { userUpdatedMessage } from "@amplitude/user-messages";
 
 export type { AnalyticsEvent, IAnalyticsClient };
 
@@ -31,6 +37,34 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
     this.apiKey = pluginConfig?.apiKey || config.apiKey;
 
     init(this.apiKey);
+
+    config.hub?.user.subscribe(userUpdatedMessage, message => {
+      this.onAcceptableMessage(message.payload, ({ updateType, user}) => {
+        switch (updateType) {
+          case "user-id":
+            this.config.logger.log(`[Analytics.setUserId] ${user.userId}`);
+            setUserId(user.userId);
+            break;
+
+          case "device-id":
+            this.config.logger.log(`[Analytics.setDeviceId] ${user.deviceId}`);
+            setDeviceId(user.deviceId);
+            break;
+
+          case "user-properties":
+            this.config.logger.log(`[Analytics.setUserProperties] ${jsons(user.userProperties)}`);
+
+            const userPropertyNames = Object.keys(user.userProperties);
+            const id = new Identify();
+            for (const propName in userPropertyNames) {
+              id.set(propName, user.userProperties[propName])
+            }
+
+            identify(id);
+            break;
+        }
+      })
+    })
 
     config.hub?.analytics.subscribe(trackMessage, message => {
       this.onAcceptableMessage(message.payload, ({event}) => {

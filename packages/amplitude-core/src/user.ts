@@ -1,6 +1,7 @@
 export interface IUser {
   get userId(): string | undefined;
   get deviceId(): string | undefined;
+  get userProperties(): Record<string, any> | undefined;
 
   setUserId(userId: string): void;
   setDeviceId(userId: string): void;

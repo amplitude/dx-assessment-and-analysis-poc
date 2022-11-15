@@ -33,37 +33,47 @@ export class User extends AmplitudePluginBase implements IUser {
     return this._deviceId;
   }
 
+  get userProperties(): Record<string, any> | undefined {
+    return this._userProperties;
+  }
+
   setUserId(userId: string) {
+    this.config.logger.log(`[User.setUserId] ${userId}`);
+
     const changed = (userId !== this._userId);
     if (changed) {
       this._userId = userId;
-      this._config?.hub?.user.publish(newUserUpdatedMessage(this, this));
+      this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'user-id'));
     }
   }
 
   setDeviceId(deviceId: string) {
+    this.config.logger.log(`[User.setDeviceId] ${deviceId}`);
+
     const changed = (deviceId !== this._deviceId);
     if (changed) {
       this._deviceId = deviceId;
-      this._config?.hub?.user.publish(newUserUpdatedMessage(this, this));
+      this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'device-id'));
     }
   }
 
   setUserProperties(userProperties: Record<string, any>) {
+    this.config.logger.log(`[User.setUserProperties] ${userProperties}`);
+
     this._userProperties = userProperties;
-    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this));
+    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'user-properties'));
   }
 
   setGroup(groupName: string, groupValue: string) {
     this._groups[groupName] = this._groups[groupName]
       ? this._groups[groupName].concat(groupValue)
       : [groupValue];
-    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this));
+    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'group-id'));
   }
 
   setGroupProperties(groupName: string, groupValue: string, groupProperties: Record<string, any>) {
     this._groupProperties[`${groupName}:${groupValue}`] = groupProperties;
-    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this));
+    this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'group-properties'));
   }
 
   toString():string {

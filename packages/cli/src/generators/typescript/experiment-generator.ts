@@ -123,7 +123,7 @@ export class VariantMethodsClient implements VariantMethods {
       // (exp as any)[variant.value] = { payload: variant.payload };
       // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
     } else {
-      if (variant.value) {
+      if (variant && variant.value) {
         (exp as any)[variant.value] = { payload: variant.payload };
         (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
       }

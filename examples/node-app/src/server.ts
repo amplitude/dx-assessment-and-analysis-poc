@@ -1,3 +1,9 @@
+/**
+ * Server NodeJS App using Express
+ *
+ * For basic NodeJS usage see [app.ts](./app.ts)
+ */
+
 import dotenv from 'dotenv';
 import express  from "express";
 import {

@@ -36,8 +36,8 @@ export function getPropertiesArray(schema: JsonSchemaPropertyModel): JsonSchemaP
 
   return keys.map(key => ({
     name: key,
-    ...schema.properties[key]
-  }));
+    ...schema.properties?.[key]
+  } as JsonSchemaPropertyModel));
 }
 
 export function getPropertyNames(schema: JsonSchemaPropertyModel): string[] {
@@ -83,7 +83,11 @@ export function hasNonConstProperties(schema: JsonSchemaPropertyModel): boolean 
 }
 
 export function removeConstProperties(schema: JsonSchemaPropertyModel): JsonSchemaPropertyModel {
-  getConstProperties(schema).forEach(c => delete schema.properties[c.name])
+  getConstProperties(schema).forEach(c => {
+    if (!!c.name) {
+      delete schema.properties?.[c.name]
+    }
+  })
 
   return schema;
 }

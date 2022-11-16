@@ -29,9 +29,9 @@ export class EnvironmentConfig {
     return this.model[environmentName];
   }
 
-  getEnvironmentValue(environmentName: string, productName: string) {
+  getEnvironmentValue(environmentName: string, productName: string): ProductEnvironment | undefined {
     const env = this.model[environmentName];
-    return env ? env[productName] : undefined;
+    return env ? (env as any)[productName] : undefined;
   }
 
   hasEnvironment(name: string): boolean {

@@ -38,7 +38,7 @@ export class User extends AmplitudePluginBase implements IUser {
   }
 
   setUserId(userId: string) {
-    this.config.logger.log(`[User.setUserId] ${userId}`);
+    this._config?.logger.log(`[User.setUserId] ${userId}`);
 
     const changed = (userId !== this._userId);
     if (changed) {
@@ -48,7 +48,7 @@ export class User extends AmplitudePluginBase implements IUser {
   }
 
   setDeviceId(deviceId: string) {
-    this.config.logger.log(`[User.setDeviceId] ${deviceId}`);
+    this._config?.logger.log(`[User.setDeviceId] ${deviceId}`);
 
     const changed = (deviceId !== this._deviceId);
     if (changed) {
@@ -58,7 +58,7 @@ export class User extends AmplitudePluginBase implements IUser {
   }
 
   setUserProperties(userProperties: Record<string, any>) {
-    this.config.logger.log(`[User.setUserProperties] ${userProperties}`);
+    this._config?.logger.log(`[User.setUserProperties] ${userProperties}`);
 
     this._userProperties = userProperties;
     this._config?.hub?.user.publish(newUserUpdatedMessage(this, this, 'user-properties'));

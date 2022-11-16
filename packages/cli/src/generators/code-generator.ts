@@ -16,7 +16,7 @@ export const CodeBlockTag = {
 };
 
 function sortByCodeBlockTag(a: CodeBlockModel, b: CodeBlockModel) {
-  return b.tag - a.tag;
+  return (b.tag ?? 0) - (a.tag ?? 0);
 }
 
 export class CodeBlock {

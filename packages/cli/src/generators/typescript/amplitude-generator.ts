@@ -21,6 +21,7 @@ export class AmplitudeCoreCodeGenerator implements CodeGenerator {
       .import(`\
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";`)
       .export(`export { Logger, NoLogger };`)
+      .export(`export { MessageHub, hub } from "@amplitude/hub";`)
       .code(`\
 /**
  * GENERAL INTERFACES
@@ -61,7 +62,6 @@ export class AmplitudeBrowserCodeGenerator extends AmplitudeCoreCodeGenerator {
 
     return coreCode
       .import(`import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";`)
-      .export(`export { MessageHub, hub } from "@amplitude/hub";`)
       .merge(
         await (new AnalyticsBrowserCodeGenerator(this.config).generate()),
         await (new ExperimentBrowserCodeGenerator(this.config).generate()),

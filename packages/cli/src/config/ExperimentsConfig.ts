@@ -46,8 +46,8 @@ export class ExperimentsConfig {
 
   getExperiments(): ExperimentModel[] {
     return this.getExperimentNames().map(name => {
-      const expModel = this.model.flags[name];
-      const variantNames = Object.keys(expModel.variants);
+      const expModel = this.model.flags![name];
+      const variantNames = expModel.variants ? Object.keys(expModel.variants) : [];
 
       return {
         key: kebabCase(name),
@@ -55,7 +55,7 @@ export class ExperimentsConfig {
         variants: variantNames.map(variantName => ({
           key: variantName,
           // FIXME: How ot handle empty payload
-          payload: expModel.variants[variantName]?.payload || {},
+          payload: expModel.variants?.[variantName]?.payload || {},
         }))
       }
     });

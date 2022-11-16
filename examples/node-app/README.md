@@ -18,4 +18,5 @@ AMP_EXPERIMENT_API_KEY=your-experiment-deployment-key
 ```
 
 ## Individual examples (Cross platform)
-* [src/app.ts](src/app.ts) - Example Node Express app using Amplitude *Typed* SDK
+* [src/app.ts](src/app.ts) - Simple Node app, No frameworks
+* [src/server.ts](src/server.ts) - Express server with middleware usage

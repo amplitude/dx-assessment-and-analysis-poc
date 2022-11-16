@@ -496,6 +496,9 @@ export class Amplitude extends AmplitudeBrowser {
           ...config,
           apiKey,
         });
+        
+        core.addPlugin(analytics);
+        core.addPlugin(experiment);
       },
       get user(): User {
         return core.user as User;

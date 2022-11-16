@@ -29,10 +29,6 @@ const envConfig = !(REACT_APP_AMP_ANALYTICS_API_KEY || REACT_APP_AMP_EXPERIMENT_
 amplitude.typed.load({
   environment: 'development',
   logger: useLogger ? new Logger() : new NoLogger(),
-  plugins: [
-    analytics,
-    experiment
-  ],
   ...envConfig,
 })
 
@@ -77,7 +73,6 @@ function App() {
             <span>User</span>
             <button onClick={() => user.setUserId('alpha-user-id')}>Set User Id (generic)</button>
             <button onClick={() => user.setUserId('alpha-codegen-user-id')}>Set User Id (codegen)</button>
-            <button onClick={() => user.setUserId('justin.fiedler@amplitude.com')}>Set User Id (codegen)</button>
             <button onClick={() => user.typed.setUserProperties({
               favoriteSongCount: 1,
               referralSource: 'twitter'

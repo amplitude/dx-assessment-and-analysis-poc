@@ -97,6 +97,9 @@ export class Amplitude extends AmplitudeBrowser {
           ...config,
           apiKey,
         });
+        
+        core.addPlugin(analytics);
+        core.addPlugin(experiment);
       },
       get user(): User {
         return core.user as User;
@@ -137,6 +140,15 @@ export class Amplitude extends AmplitudeNode {
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
+          // Set per-product ApiKeys
+          configuration: {
+            analytics: {
+              apiKey:  ApiKey['analytics'][environment],
+            },
+            experiment: {
+              apiKey:  ApiKey['experiment'][environment],
+            }
+          },
           ...config,
           apiKey,
         });

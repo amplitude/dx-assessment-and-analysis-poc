@@ -86,9 +86,11 @@ export class Experiment extends BrowserAmplitudePluginBase implements IExperimen
   }
 
   variant(key: string, fallback?: string): Variant | string {
-    this.config.logger.log(`[Experiment.variant] ${key}`)
+    const v = this.client.variant(key, fallback);
 
-    return this.client.variant(key, fallback);
+    this.config.logger.log(`[Experiment.variant] ${key}=${v}`)
+
+    return v;
   }
 
   exposure() {

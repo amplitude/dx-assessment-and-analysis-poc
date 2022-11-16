@@ -23,6 +23,7 @@ import {
 import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 
 export { Logger, NoLogger };
+export { MessageHub, hub } from "@amplitude/hub";
 export type { AnalyticsEvent };
 
 /**
@@ -302,7 +303,7 @@ export class ExperimentClient extends ExperimentClientNode implements IExperimen
 
 export class Experiment extends ExperimentNode {
   user(user: User): ExperimentClient {
-    return new ExperimentClient(user, this.config, this);
+    return new ExperimentClient(user, this.config, this, this.client);
   }
 
   userId(userId: string): ExperimentClient {
@@ -330,6 +331,15 @@ export class Amplitude extends AmplitudeNode {
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
+          // Set per-product ApiKeys
+          configuration: {
+            analytics: {
+              apiKey:  ApiKey['analytics'][environment],
+            },
+            experiment: {
+              apiKey:  ApiKey['experiment'][environment],
+            }
+          },
           ...config,
           apiKey,
         });

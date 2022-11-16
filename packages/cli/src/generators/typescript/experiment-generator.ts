@@ -195,7 +195,7 @@ export class ExperimentClient extends ExperimentClientNode implements IExperimen
 
 export class Experiment extends ExperimentNode {
   user(user: User): ExperimentClient {
-    return new ExperimentClient(user, this.config, this);
+    return new ExperimentClient(user, this.config, this, this.client);
   }
 
   userId(userId: string): ExperimentClient {

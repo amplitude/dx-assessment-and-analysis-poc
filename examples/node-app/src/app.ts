@@ -1,3 +1,9 @@
+/**
+ * Basic NodeJS App, No Frameworks
+ *
+ * For server and middleware usage see [server.ts](./server.ts)
+ */
+
 import dotenv from 'dotenv';
 
 import { amplitude, analytics, experiment, UserLoggedIn, Logger, User } from './amplitude'
@@ -53,40 +59,23 @@ user.typed.setUserProperties({
   referralSource: 'other'
 })
 analytics.user(user).typed.checkout();
-//
-// /**
-//  * 4. Create Request scoped clients
-//  */
-// type Middleware = (req: any, res: any, next: () => void) => any;
-// const app = { // express()
-//   use: (middleware: Middleware) => {}
-// };
-// /**
-//  * 4.1 Add middleware to create dedicated clients for the current user
-//  */
-// app.use((req, res, next) => {
-//   const userId = req.params.id;
-//   // create shared user for both clients
-//   const user = new User(userId);
-//   req.user = user;
-//
-//   // create individual product clients for user
-//   req.analytics =  analytics.user(user);
-//   req.experiment =  experiment.user(user);
-//
-//   // pre-fetch experiment for the given user
-//   req.experiment.fetch();
-//
-//   next()
-// })
-// /**
-//  * 4.2 Other parts of the application can use the injected client without needing to set `userId`
-//  */
-// app.use((req) => {
-//   const analytics: AnalyticsClient = req.analytics;
-//   const experiment: ExperimentClient = req.experiment;
-//
-//   if (experiment.typed.flagCodegenEnabled().on || experiment.typed.aMultiVariateExperiment().generic) {
-//     analytics.typed.userSignedUp()
-//   }
-// })
+
+/**
+ * 4. Keep user scoped clients for multiple actions for the same user
+ */
+// create individual product clients for user
+const userAnalytics =  analytics.user(user);
+const userExperiment =  experiment.user(user);
+
+if (userExperiment.typed.codegenBooleanExperiment().on) {
+  userAnalytics.typed.userSignedUp({
+    referralSource: "other"
+  })
+  userAnalytics.track(new UserLoggedIn({
+    method: "email"
+  }))
+} else {
+  userAnalytics.track({
+    event_type: 'My Untyped Event'
+  })
+}

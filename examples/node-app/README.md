@@ -17,6 +17,6 @@ AMP_ANALYTICS_API_KEY=your-analytics-api-key
 AMP_EXPERIMENT_API_KEY=your-experiment-deployment-key
 ```
 
-## Individual examples (Cross platform)
+## Individual examples
 * [src/app.ts](src/app.ts) - Simple Node app, No frameworks
 * [src/server.ts](src/server.ts) - Express server with middleware usage

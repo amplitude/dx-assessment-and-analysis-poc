@@ -3,7 +3,7 @@ export type VariantModel = {
   payload?: any;
 };
 
-export type ExperimentModel = {
+export type ExperimentFlagModel = {
   // id: string;
   // projectId: string;
   key: string;
@@ -12,6 +12,7 @@ export type ExperimentModel = {
   // enabled: boolean;
   // bucketingKey: string;
   variants: VariantModel[];
+  deployments?: string[];
   // rolloutWeights: { [key: string]: number };
   // targetSegments: any[];
   // stickyBucketing: boolean;

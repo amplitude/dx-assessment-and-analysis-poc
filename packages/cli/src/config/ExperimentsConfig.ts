@@ -1,7 +1,7 @@
 import { sortAlphabetically } from "../generators/util/sorting";
 import { JsonSchemaPropertyModel } from "../json-schema";
 import { cloneDeep, kebabCase } from "lodash";
-import { ExperimentModel } from "../services/experiment/models";
+import { ExperimentFlagModel } from "../services/experiment/models";
 
 export interface VariantModel {
   description?: string;
@@ -44,7 +44,7 @@ export class ExperimentsConfig {
     }));
   }
 
-  getExperiments(): ExperimentModel[] {
+  getExperiments(): ExperimentFlagModel[] {
     return this.getExperimentNames().map(name => {
       const expModel = this.model.flags[name];
       const variantNames = Object.keys(expModel.variants);

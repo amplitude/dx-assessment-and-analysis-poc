@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ExperimentModel } from './models';
+import { ExperimentFlagModel } from './models';
 
 const EXPERIMENT_MANAGEMENT_API_BASE_URL = 'https://management-api.experiment.amplitude.com';
 
@@ -13,15 +13,16 @@ export class ExperimentApiService {
     };
   }
 
-  async loadExperimentsList(deployment: string | undefined, limit = 1000): Promise<ExperimentModel[]> {
+  async loadFlagsList(deployment: string | undefined, limit = 1000): Promise<ExperimentFlagModel[]> {
     try {
       const response = await axios.get(`${EXPERIMENT_MANAGEMENT_API_BASE_URL}/experiments/list?limit=${limit}`, {
         headers: this.headers,
       });
 
-      const experiments: ExperimentModel[] = response.data.experiments; // eslint-disable-line prefer-destructuring
+      const experiments: ExperimentFlagModel[] = response.data.experiments; // eslint-disable-line prefer-destructuring
 
-      return deployment ? experiments.filter(e => e.key.startsWith(deployment)) : experiments;
+      // return deployment ? experiments.filter(e => e.key.startsWith(deployment)) : experiments;
+      return deployment ? experiments.filter(e => e.deployments.includes(deployment)) : experiments;
     }
     catch (e) {
       return [];

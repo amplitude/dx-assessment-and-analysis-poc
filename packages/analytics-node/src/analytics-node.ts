@@ -6,7 +6,7 @@ import {
 import { User } from "@amplitude/user";
 import { jsons } from "@amplitude/util";
 import { createInstance } from "@amplitude/analytics-node-legacy";
-import { NodeClient as NodeClientLegacy } from "@amplitude/analytics-types-legacy";
+import { NodeClient as NodeClientLegacy } from "@amplitude/analytics-types";
 
 export type { AnalyticsEvent };
 

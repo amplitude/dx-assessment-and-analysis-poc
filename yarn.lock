@@ -67,15 +67,15 @@
     "@amplitude/analytics-types" "^0.13.0"
     tslib "^2.3.1"
 
-"@amplitude/analytics-types-legacy@npm:@amplitude/analytics-types@^0.13.0", "@amplitude/analytics-types@^0.13.0":
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.13.0.tgz#5847b3d919a09381699605b6e9f30110c65c2a2b"
-  integrity sha512-yti2SytTIh0R5QknuKO1RMgB+r8CGjauhPfFaaYiTm4keAvqYxDdG9ULarPDoOx2VPSfB5Za779Kt1Muc+34PA==
-
 "@amplitude/analytics-types@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.10.3.tgz#608094a2a9e93d74952200486f9c7fed25cbf851"
   integrity sha512-ZzMcLk4vM0ZLKfX8Vo1GqTKnyva3lH6EJzZ2pEjoAvoZKvkOM9TUpcn35qRiLyVTsMgiBi7G4SR+1T57gaQP9w==
+
+"@amplitude/analytics-types@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.13.0.tgz#5847b3d919a09381699605b6e9f30110c65c2a2b"
+  integrity sha512-yti2SytTIh0R5QknuKO1RMgB+r8CGjauhPfFaaYiTm4keAvqYxDdG9ULarPDoOx2VPSfB5Za779Kt1Muc+34PA==
 
 "@amplitude/evaluation-js@1.0.0":
   version "1.0.0"

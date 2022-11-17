@@ -20,7 +20,7 @@
     "@amplitude/user": "^0.0.0",
     "@amplitude/util": "^0.0.0",
     "@amplitude/analytics-node-legacy": "npm:@amplitude/analytics-node@^0.6.1",
-    "@amplitude/analytics-types-legacy": "npm:@amplitude/analytics-types@^0.13.0"
+    "@amplitude/analytics-types": "^0.13.0"
   },
   "scripts": {
     "build": "tsc",

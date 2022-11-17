@@ -39,7 +39,7 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
     init(this.apiKey);
 
     config.hub?.user.subscribe(userUpdatedMessage, message => {
-      this.onAcceptableMessage(message.payload, ({ updateType, user}) => {
+      this.onAcceptableMessage(message.payload, async ({ updateType, user}) => {
         switch (updateType) {
           case "user-id":
             this.config.logger.log(`[Analytics.setUserId] ${user.userId}`);
@@ -60,20 +60,20 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
               id.set(propName, user.userProperties[propName])
             }
 
-            identify(id);
+            await identify(id);
             break;
         }
       })
     })
 
     config.hub?.analytics.subscribe(trackMessage, message => {
-      this.onAcceptableMessage(message.payload, ({event}) => {
-        this._track(event);
+      this.onAcceptableMessage(message.payload, async ({event}) => {
+        await this._track(event);
       })
     })
   }
 
-  track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
+  async track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
     const event = (typeof eventType === 'string')
       ? { event_type: eventType, event_properties: eventProperties }
       : eventType;
@@ -83,20 +83,20 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
       event.device_id = this.config.user.deviceId;
     }
 
-    this._track(event);
+    await this._track(event);
 
     // Publish event on bus to send to other listeners
     this.config.hub?.analytics.publish(newTrackMessage(this, event));
   }
 
-  protected _track(event: AnalyticsEvent) {
+  protected async _track(event: AnalyticsEvent) {
     this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
-    track(event);
+    await track(event);
   }
 
-  flush() {
+  async flush() {
     this.config.logger.log(`[Analytics.flush]`);
-    flush();
+    await flush();
   }
 }
 

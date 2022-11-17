@@ -42,6 +42,14 @@
   dependencies:
     "@amplitude/ua-parser-js" "0.7.31"
 
+"@amplitude/analytics-core@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.10.1.tgz#1cac30bddd9964de4a485d55d64bad2330288e97"
+  integrity sha512-XYJavGCnf0Y28chswEGNjSM2MqCMafsQvHpSgRD1JYTNrv+j/CTkj7P3TwyxriaXCTSfFcWTDPKRHd3SruU3Aw==
+  dependencies:
+    "@amplitude/analytics-types" "^0.13.0"
+    tslib "^2.3.1"
+
 "@amplitude/analytics-core@^0.9.4":
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.9.4.tgz#b7f8e0a558291d8347cd7fbe5b19660b1421ceed"
@@ -49,6 +57,20 @@
   dependencies:
     "@amplitude/analytics-types" "^0.10.3"
     tslib "^2.3.1"
+
+"@amplitude/analytics-node-legacy@npm:@amplitude/analytics-node@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-0.6.1.tgz#8266ac342f3e3b4fde20c9a73ad5a267c325f557"
+  integrity sha512-TEmYWgRYxnAwXfmnUwvJju3DOUYvsNucJblfvo+HK+OWsVrynJB5ZGefw5A0FBxC7ck6+8opAfDSVMhjxYmWOg==
+  dependencies:
+    "@amplitude/analytics-core" "^0.10.1"
+    "@amplitude/analytics-types" "^0.13.0"
+    tslib "^2.3.1"
+
+"@amplitude/analytics-types-legacy@npm:@amplitude/analytics-types@^0.13.0", "@amplitude/analytics-types@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.13.0.tgz#5847b3d919a09381699605b6e9f30110c65c2a2b"
+  integrity sha512-yti2SytTIh0R5QknuKO1RMgB+r8CGjauhPfFaaYiTm4keAvqYxDdG9ULarPDoOx2VPSfB5Za779Kt1Muc+34PA==
 
 "@amplitude/analytics-types@^0.10.3":
   version "0.10.3"

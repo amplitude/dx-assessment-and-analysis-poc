@@ -248,7 +248,7 @@ export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsCl
 
 export class Analytics extends AnalyticsNode {
   user(user: User): AnalyticsClient {
-    return new AnalyticsClient(user, this.config);
+    return new AnalyticsClient(user, this.config, this, this.client);
   }
 
   userId(userId: string): AnalyticsClient {

@@ -70,13 +70,13 @@ function App() {
               } is ${
                 experiment.typed.codegenBooleanExperiment().on ? 'on' : 'off'
               }`)
-            }}>experiment.codegenBooleanExperiment()</button>
+            }}>experiment.typed.codegenBooleanExperiment()</button>
             <button onClick={() => {
               console.log(experiment.typed.codegenArrayExperiment().generic?.payload);
-            }}>experiment.codegenArrayExperiment().generic.payload</button>
+            }}>experiment.typed.codegenArrayExperiment().generic.payload</button>
             <button onClick={() => {
               console.log(experiment.typed.codegenArrayExperiment().ampli?.payload);
-            }}>experiment.codegenArrayExperiment().ampli.payload</button>
+            }}>experiment.typed.codegenArrayExperiment().ampli.payload</button>
           </div>
         </div>
       </header>

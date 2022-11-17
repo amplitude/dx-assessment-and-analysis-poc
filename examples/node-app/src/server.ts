@@ -75,7 +75,7 @@ app.get( "/", ( req, res ) => {
 `);
 } );
 
-app.get( "/track-events-basic", ( req, res ) => {
+app.get( "/track-events-basic", async (req, res) => {
   /**
    * 1. Track with `userId`
    */
@@ -96,6 +96,9 @@ app.get( "/track-events-basic", ( req, res ) => {
     referralSource: 'other'
   })
   analytics.user(user).typed.checkout();
+
+  // FIXME: Should we put a top-level flush
+  await analytics.userId('').flush()
 
   res.send(`{ "status": "success" }`);
 });
@@ -123,13 +126,15 @@ app.use('/track-events-middleware', async (req: any, res, next) => {
 /**
  * 4.2 Other parts of the application can use the injected client without needing to set `userId`
  */
-app.get('/track-events-middleware', (req: any, res) => {
+app.get('/track-events-middleware', async (req: any, res) => {
   const analytics: AnalyticsClient = req.analytics;
   const experiment: ExperimentClient = req.experiment;
 
   if (experiment.typed.codegenBooleanExperiment().on || experiment.typed.codegenArrayExperiment().ampli) {
     console.log(`Codegen is enabled by experiment`); // eslint-disable-line no-console
-    analytics.typed.userSignedUp()
+    await analytics.typed.userSignedUp()
+    await analytics.track(new UserLoggedIn({ method: "email"}))
+    await analytics.flush()
   }
   res.send(`{ "status": "success" }`);
 });

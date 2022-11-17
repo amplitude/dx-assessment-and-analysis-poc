@@ -157,17 +157,17 @@ export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPl
 
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
-  userSignedUp(properties?: UserSignedUpProperties) {
-    this.analytics.track(new UserSignedUp(properties))
+  async userSignedUp(properties?: UserSignedUpProperties) {
+    return this.analytics.track(new UserSignedUp(properties))
   }
-  userLoggedIn(properties: UserLoggedInProperties) {
-    this.analytics.track(new UserLoggedIn(properties))
+  async userLoggedIn(properties: UserLoggedInProperties) {
+    return this.analytics.track(new UserLoggedIn(properties))
   }
-  addToCart() {
-    this.analytics.track(new AddToCart())
+  async addToCart() {
+    return this.analytics.track(new AddToCart())
   }
-  checkout() {
-    this.analytics.track(new Checkout())
+  async checkout() {
+    return this.analytics.track(new Checkout())
   }
 }
 
@@ -179,7 +179,7 @@ export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsCl
 
 export class Analytics extends AnalyticsNode {
   user(user: User): AnalyticsClient {
-    return new AnalyticsClient(user, this.config);
+    return new AnalyticsClient(user, this.config, this, this.client);
   }
 
   userId(userId: string): AnalyticsClient {

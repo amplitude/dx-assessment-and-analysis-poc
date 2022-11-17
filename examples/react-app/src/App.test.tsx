@@ -23,7 +23,7 @@ test('sample app loads', () => {
   expect(linkElement).toBeInTheDocument();
 });
 
-test('validate events sequence in from UI actions', () => {
+test('validate events sequence in from UI actions', async () => {
   const events: AnalyticsEvent[] = [];
   hub.analytics.subscribe(trackMessage, (message) => {
     events.push(message.payload.event);
@@ -44,6 +44,9 @@ test('validate events sequence in from UI actions', () => {
   userEvent.click(analyticsUserSignedUpButton);
   userEvent.click(analyticsUserLoggedInButton);
   userEvent.click(userSetUserPropertiesButton);
+
+  // FIXME: Need to wait for events to send async
+  await new Promise((r) => setTimeout(r, 2000));
 
   // Validate analytics events were tracked as expected
   expect(events.length).toBe(3);

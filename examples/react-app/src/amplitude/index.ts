@@ -227,43 +227,43 @@ export class EventWithArray implements AnalyticsEvent {
 
 
 export interface TrackingPlanMethods{
-  userSignedUp(properties?: UserSignedUpProperties): void;
-  userLoggedIn(properties: UserLoggedInProperties): void;
-  songPlayed(properties: SongPlayedProperties): void;
-  songFavorited(properties: SongFavoritedProperties): void;
-  addToCart(): void;
-  checkout(): void;
-  eventWithConst(): void;
-  eventWithArray(properties?: EventWithArrayProperties): void;
+  userSignedUp(properties?: UserSignedUpProperties): Promise<void>;
+  userLoggedIn(properties: UserLoggedInProperties): Promise<void>;
+  songPlayed(properties: SongPlayedProperties): Promise<void>;
+  songFavorited(properties: SongFavoritedProperties): Promise<void>;
+  addToCart(): Promise<void>;
+  checkout(): Promise<void>;
+  eventWithConst(): Promise<void>;
+  eventWithArray(properties?: EventWithArrayProperties): Promise<void>;
 }
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
-  userSignedUp(properties?: UserSignedUpProperties) {
-    this.analytics.track(new UserSignedUp(properties))
+  async userSignedUp(properties?: UserSignedUpProperties) {
+    return this.analytics.track(new UserSignedUp(properties))
   }
-  userLoggedIn(properties: UserLoggedInProperties) {
-    this.analytics.track(new UserLoggedIn(properties))
+  async userLoggedIn(properties: UserLoggedInProperties) {
+    return this.analytics.track(new UserLoggedIn(properties))
   }
-  songPlayed(properties: SongPlayedProperties) {
-    this.analytics.track(new SongPlayed(properties))
+  async songPlayed(properties: SongPlayedProperties) {
+    return this.analytics.track(new SongPlayed(properties))
   }
-  songFavorited(properties: SongFavoritedProperties) {
-    this.analytics.track(new SongFavorited(properties))
+  async songFavorited(properties: SongFavoritedProperties) {
+    return this.analytics.track(new SongFavorited(properties))
   }
-  addToCart() {
-    this.analytics.track(new AddToCart())
+  async addToCart() {
+    return this.analytics.track(new AddToCart())
   }
-  checkout() {
-    this.analytics.track(new Checkout())
+  async checkout() {
+    return this.analytics.track(new Checkout())
   }
-  eventWithConst() {
-    this.analytics.track(new EventWithConst())
+  async eventWithConst() {
+    return this.analytics.track(new EventWithConst())
   }
-  eventWithArray(properties?: EventWithArrayProperties) {
-    this.analytics.track(new EventWithArray(properties))
+  async eventWithArray(properties?: EventWithArrayProperties) {
+    return this.analytics.track(new EventWithArray(properties))
   }
 }
 

@@ -177,7 +177,7 @@ export class ${getClassName(schema.title)} implements ${baseEventType} {
       .merge(await this.generateEventClasses())
       .code(`\
 export interface TrackingPlanMethods{
-${eventSchemas.map(event => tab(1, `${getMethodName(event.title)}(${getEventParams(event)}): void;`))
+${eventSchemas.map(event => tab(1, `${getMethodName(event.title)}(${getEventParams(event)}): Promise<void>;`))
         .join('\n')}
 }
 
@@ -186,8 +186,8 @@ export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPl
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
 ${eventSchemas.map(event =>  tab(1, `\
-${getMethodName(event.title)}(${getEventParams(event)}) {
-  this.analytics.track(new ${getClassName(event.title)}(${getPassThruParams(event)}))
+async ${getMethodName(event.title)}(${getEventParams(event)}) {
+  return this.analytics.track(new ${getClassName(event.title)}(${getPassThruParams(event)}))
 }`,
   ))
   .join('\n')}

@@ -45,9 +45,6 @@ test('validate events sequence in from UI actions', async () => {
   userEvent.click(analyticsUserLoggedInButton);
   userEvent.click(userSetUserPropertiesButton);
 
-  // FIXME: Need to wait for events to send async
-  await new Promise((r) => setTimeout(r, 2000));
-
   // Validate analytics events were tracked as expected
   expect(events.length).toBe(3);
 

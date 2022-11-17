@@ -132,8 +132,8 @@ app.get('/track-events-middleware', async (req: any, res) => {
 
   if (experiment.typed.codegenBooleanExperiment().on || experiment.typed.codegenArrayExperiment().ampli) {
     console.log(`Codegen is enabled by experiment`); // eslint-disable-line no-console
-    await analytics.typed.userSignedUp()
-    await analytics.track(new UserLoggedIn({ method: "email"}))
+    void analytics.typed.userSignedUp()
+    void analytics.track(new UserLoggedIn({ method: "email"}))
     await analytics.flush()
   }
   res.send(`{ "status": "success" }`);

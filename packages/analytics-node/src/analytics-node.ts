@@ -30,7 +30,7 @@ export class AnalyticsClient implements IAnalyticsClient {
 
     this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
 
-    await this.client.track(event).promise.then(result => {
+    return this.client.track(event).promise.then(result => {
       this.config.logger.log(`Event tracked (${event.event_type}) ${result.message}`)
     });
   }
@@ -38,7 +38,7 @@ export class AnalyticsClient implements IAnalyticsClient {
   async flush() {
     this.config.logger.log(`[Analytics.flush]`);
 
-    await this.client.flush().promise;
+    return this.client.flush().promise;
   }
 }
 

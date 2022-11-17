@@ -60,15 +60,15 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
               id.set(propName, user.userProperties[propName])
             }
 
-            await identify(id);
+            void identify(id);
             break;
         }
       })
     })
 
     config.hub?.analytics.subscribe(trackMessage, message => {
-      this.onAcceptableMessage(message.payload, async ({event}) => {
-        await this._track(event);
+      this.onAcceptableMessage(message.payload, ({event}) => {
+        void this._track(event);
       })
     })
   }
@@ -83,20 +83,22 @@ export class Analytics extends BrowserAmplitudePluginBase implements IAnalytics 
       event.device_id = this.config.user.deviceId;
     }
 
-    await this._track(event);
+    const trackPromise = this._track(event).then(_ => {});
 
     // Publish event on bus to send to other listeners
     this.config.hub?.analytics.publish(newTrackMessage(this, event));
+
+    return trackPromise;
   }
 
   protected async _track(event: AnalyticsEvent) {
     this.config.logger.log(`[Analytics.track] ${jsons(event)}`);
-    await track(event);
+    return track(event).promise;
   }
 
   async flush() {
     this.config.logger.log(`[Analytics.flush]`);
-    await flush();
+    return flush().promise;
   }
 }
 

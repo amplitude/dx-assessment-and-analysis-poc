@@ -1,5 +1,7 @@
+import * as fs from "fs";
+import * as path from "path";
 import { parse, stringify } from 'yaml';
-import { AmplitudeConfigModel } from "./AmplitudeConfig";
+import { AmplitudeConfig, AmplitudeConfigModel } from "./AmplitudeConfig";
 import { allPlatforms } from "./CodeGenerationConfig";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
@@ -56,4 +58,21 @@ export function isValid(config: AmplitudeConfigModel): ConfigValidation {
     valid,
     errors: errors.length > 0 ? errors : undefined,
   };
+}
+
+export function loadLocalConfiguration(configPath: string): AmplitudeConfig {
+  console.log(`Config Path:`, configPath);
+
+  const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
+
+  const configModel = parseFromYaml(ymlConfig);
+
+  console.log(parseFromYamlAndBack(ymlConfig));
+
+  const configValidation = isValid(configModel);
+  if (!configValidation.valid) {
+    throw new Error(`Error loading configuration from ${configPath}. ${configValidation.errors}`);
+  }
+
+  return new AmplitudeConfig(configModel);
 }

@@ -110,28 +110,25 @@ experiment:
   flags:
     Codegen Boolean Experiment:
       key: codegen-boolean-experiment
+      payload:
+        type: boolean
       variants:
         on:
-          payload:
-            type: boolean
 
     Codegen Array Experiment:
       key: codegen-array-experiment
+      payload: *arrayOfStringsPayload
       variants:
         generic:
-          payload: *arrayOfStringsPayload
         ampli:
-          payload: *arrayOfStringsPayload
 
     Codegen String Experiment:
       key: codegen-string-experiment
+      payload:
+        type: string
       variants:
         control:
-          payload:
-            type: string
         treatment:
-          payload:
-            type: string
 
     Codegen Experiment:
       key: codegen-experiment
@@ -139,14 +136,8 @@ experiment:
         control:
         treatment:
 
-#    Mac Users Flag:
-#      variants:
-#        on:
-#    Windows Users Experiment:
-#      variants:
-#        control:
-#          payload:
-#            type: string
-#        treatment:
-#          payload:
-#            type: number
+    Dummmy Flag:
+      key: codegen-experiment
+      variants:
+        control:
+        treatment:

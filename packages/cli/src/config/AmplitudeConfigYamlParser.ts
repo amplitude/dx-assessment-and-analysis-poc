@@ -1,10 +1,15 @@
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
 import { AmplitudeConfigModel } from "./AmplitudeConfig";
 import { allPlatforms } from "./CodeGenerationConfig";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   const config: AmplitudeConfigModel = parse(yaml);
   return config ?? {} as AmplitudeConfigModel;
+}
+
+export function parseFromYamlAndBack(yaml: string): string {
+  const config = parse(yaml);
+  return stringify(config ?? {}, {});
 }
 
 export interface ConfigValidation {

@@ -8,7 +8,7 @@ export type ExperimentFlagModel = {
   // projectId: string;
   key: string;
   name: string;
-  // description: string;
+  description?: string;
   // enabled: boolean;
   // bucketingKey: string;
   variants: VariantModel[];

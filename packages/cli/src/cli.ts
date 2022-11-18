@@ -5,14 +5,19 @@ import * as dotenv from 'dotenv';
 
 import { TypeScriptExporter } from "./generators/generators";
 import { CodeGenerator } from "./generators/code-generator";
-import {
-  AmplitudeBrowserCodeGenerator,
-  AmplitudeNodeCodeGenerator
-} from "./generators/typescript/amplitude-generator";
+import { AmplitudeBrowserCodeGenerator, AmplitudeNodeCodeGenerator } from "./generators/typescript/amplitude-generator";
 import { AmplitudeConfig } from "./config/AmplitudeConfig";
-import { isValid, parseFromYaml } from "./config/AmplitudeConfigYamlParser";
+import { isValid, parseFromYaml, parseFromYamlAndBack } from "./config/AmplitudeConfigYamlParser";
 import { ExperimentApiService } from "./services/experiment/ExperimentApiService";
+import { ExperimentFlagModel } from "./services/experiment/models";
+import { ComparisonResultSymbol, ICON_WARNING_W_TEXT } from "./ui/icons";
+import { ComparisonResult } from "./comparison/ComparisonResult";
+import { cloneDeep, omit } from "lodash";
+import { ExperimentFlagComparator } from "./services/experiment/ExperimentFlagComparator";
 import { jsons } from "@amplitude/util";
+import { convertToYaml, ExperimentConfigModel } from "./config/ExperimentsConfig";
+import { omitDeep } from "./util/omitDeep";
+
 
 // Load local '.env'
 dotenv.config();
@@ -28,6 +33,9 @@ function loadLocalConfiguration(configPath: string): AmplitudeConfig {
   const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
 
   const configModel = parseFromYaml(ymlConfig);
+
+  console.log(parseFromYamlAndBack(ymlConfig));
+
   const configValidation = isValid(configModel);
   if (!configValidation.valid) {
     throw new Error(`Error loading configuration from ${configPath}. ${configValidation.errors}`);
@@ -125,11 +133,54 @@ program.command('pull')
       console.log(`Experiment Deployment Id: ${deploymentId}`);
 
       const experimentApiService = new ExperimentApiService(experimentToken);
-      const flags = await experimentApiService.loadFlagsList(deploymentId);
+      const flagsFromServer = await experimentApiService.loadFlagsList2(deploymentId);
 
-      console.log(`Received ${flags.length} flags.`);
+      // console.log(jsons(flagsFromServer));
 
-      console.log(jsons(flags)); // eslint-disable-line no-console
+      console.log(`Received ${flagsFromServer.length} flags from server.`);
+
+      const flagsFromLocal = config.experiment().getFlags();
+      console.log(`Found ${flagsFromLocal.length} local flags.`);
+
+      const mergedFlags: ExperimentConfigModel[] = [];
+      const comparator = new ExperimentFlagComparator();
+
+      // check for changes in flags on both
+      for (const serverFlag of flagsFromServer) {
+        const localFlag = flagsFromLocal.find(f => f.key === serverFlag.key);
+        if (!localFlag) {
+          console.log(`${ComparisonResultSymbol[ComparisonResult.Added]} ${serverFlag.key}`);
+          mergedFlags.push(serverFlag)
+        } else {
+          const comparison = comparator.compare2(localFlag, serverFlag)
+          console.log(`${ComparisonResultSymbol[comparison.result]} ${serverFlag.key}`);
+
+          const mergedFlag = cloneDeep(localFlag);
+          mergedFlags.push(mergedFlag);
+          if (comparison.result !== ComparisonResult.NoChanges) {
+            console.warn(`${ICON_WARNING_W_TEXT} Server changes will take precedence.`);
+
+            // copy server changes but keep payload schema from local
+            mergedFlag.key = serverFlag.key;
+            mergedFlag.description = serverFlag.description;
+            mergedFlag.variants = omitDeep(serverFlag.variants, ['key', 'name', 'payload']);
+          }
+        }
+      }
+
+      // Check for local flags that no longer exist on server
+      for (const localFlag of flagsFromLocal) {
+        const serverFlag = flagsFromServer.find(f => f.key === localFlag.key);
+        if (!serverFlag) {
+          console.log(`${ComparisonResultSymbol[ComparisonResult.Removed]} ${localFlag.key}`);
+        }
+      }
+
+      console.log(`Flags ${jsons(mergedFlags)}`);
+
+      const yaml = mergedFlags.map(f => convertToYaml(f)).join(`\n`);
+      console.log(yaml);
+
 
 
     } catch (err) {

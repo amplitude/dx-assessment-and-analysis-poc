@@ -31,7 +31,7 @@ export class PullAction extends BaseAction {
       const config = loadLocalConfiguration(configPath);
 
       const experimentToken = experimentManagementApiKey ?? AMP_EXPERIMENT_MANAGEMENT_API_KEY;
-      console.log(`Experiment Management API key: ${experimentToken}`);
+      // console.log(`Experiment Management API key: ${experimentToken}`);
       if (!experimentToken) {
         console.error(`Error: 'experimentManagementApiKey' is required.`);
         return;
@@ -42,7 +42,7 @@ export class PullAction extends BaseAction {
         console.error(`Error: 'experimentDeploymentId' is required.`);
         return;
       }
-      console.log(`Experiment Deployment Id: ${deploymentId}`);
+      // console.log(`Experiment Deployment Id: ${deploymentId}`);
 
       // get flags from local amplitude.yml
       const flagsFromLocal = config.experiment().getFlags();

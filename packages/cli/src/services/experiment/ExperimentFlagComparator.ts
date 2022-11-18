@@ -1,7 +1,13 @@
-import { addChange, ComparisonResult, ValueChange, ValueChangeMap } from "../../comparison/ComparisonResult";
+import {
+  addChange,
+  addChangeExplicit,
+  ComparisonResult,
+  ValueChangeMap
+} from "../../comparison/ComparisonResult";
 import { ExperimentFlagModel, VariantModel } from "./models";
 import { groupBy, isEmpty } from "lodash";
 import { ExperimentConfigModel } from "../../config/ExperimentsConfig";
+import { sortAlphabetically } from "../../generators/util/sorting";
 
 interface ExperimentFlagVersionComparison {
   result: ComparisonResult;
@@ -61,18 +67,29 @@ export class ExperimentFlagComparator {
       }
     }
 
-    const originVariantKeys = Object.keys(origin.variants);
-    const targetVariantKeys = Object.keys(target.variants);
+    const originVariantKeys = Object.keys(origin.variants).sort(sortAlphabetically);
+    const targetVariantKeys = Object.keys(target.variants).sort(sortAlphabetically);
 
+    let variantsChanged = false;
     if (originVariantKeys.length != targetVariantKeys.length) {
-      result = ComparisonResult.Updated;
+      variantsChanged = true;
     } else  {
       originVariantKeys.forEach(variantKey => {
         const targetVariant = target.variants[variantKey];
         if (!targetVariant) {
-          result = ComparisonResult.Updated;
+          variantsChanged = true;
         }
       })
+    }
+
+    if (variantsChanged) {
+      result = ComparisonResult.Updated;
+      addChangeExplicit(
+        changes,
+        'variants',
+        `{ ${originVariantKeys.join(',')} }`,
+        `{ ${targetVariantKeys.join(',')} }`,
+      );
     }
 
     return {

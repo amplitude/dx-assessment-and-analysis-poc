@@ -1,26 +1,20 @@
-# Code generation configuration
 settings:
   platform: Browser
   language: TypeScript
   sdk: "@amplitude/amplitude-browser"
   output: ./src/amplitude
   typedAnchorName: typed
-
-# Environment configuration
 environments:
   development:
     experiment:
       apiKey: my-deployment-key
     analytics:
       apiKey: my-api-key
-
   production:
     experiment:
       apiKey: my-deployment-key
     analytics:
       apiKey: my-api-key
-
-# User configuration
 user:
   description: Collection of user properties
   required:
@@ -28,12 +22,13 @@ user:
   properties:
     referralSource:
       description: How the user was brought to the app
-      enum: [ "facebook", "twitter", "other" ]
+      enum:
+        - facebook
+        - twitter
+        - other
     favoriteSongCount:
       description: Total number of favorited songs
       type: integer
-
-# Analytics configuration
 analytics:
   events:
     User Signed Up:
@@ -41,8 +36,10 @@ analytics:
       properties:
         referralSource:
           description: How the user was brought to the app
-          enum: [ "facebook", "twitter", "other" ]
-
+          enum:
+            - facebook
+            - twitter
+            - other
     User Logged In:
       description: The user logged in
       required:
@@ -50,8 +47,10 @@ analytics:
       properties:
         method:
           description: The song unique identifier
-          enum: [ "email", "facebook", "google" ]
-
+          enum:
+            - email
+            - facebook
+            - google
     Song Played:
       description: A song was played
       required:
@@ -63,7 +62,6 @@ analytics:
         songFavorited:
           description: If the song is a favorite
           type: boolean
-
     Song Favorited:
       description: A song was added to a user's favorites
       required:
@@ -78,13 +76,10 @@ analytics:
         aConstant:
           description: Constant value shouldn't be settable
           const: true
-
     Add To Cart:
       description: An item was added to the cart
-
     Checkout:
       description: The user completed their purchase
-
     Event With Const:
       description: An Event with only Const props
       required:
@@ -93,7 +88,6 @@ analytics:
         constProp:
           description: Constant value shouldn't be settable
           const: true
-
     Event With Array:
       description: An Event with Array props
       properties:
@@ -102,16 +96,8 @@ analytics:
           type: array
           items:
             type: string
-
 experiment:
   flags:
-    Codegen Boolean Experiment:
-      key: codegen-boolean-experiment
-      payload:
-        type: boolean
-      variants:
-        ? on
-
     Codegen Array Experiment:
       key: codegen-array-experiment
       payload:
@@ -122,7 +108,12 @@ experiment:
       variants:
         ? generic
         ? ampli
-
+    Codegen Boolean Experiment:
+      key: codegen-boolean-experiment
+      payload:
+        type: boolean
+      variants:
+        ? on
     Codegen String Experiment:
       key: codegen-string-experiment
       payload:
@@ -130,14 +121,7 @@ experiment:
       variants:
         ? control
         ? treatment
-
     Codegen Experiment:
-      key: codegen-experiment
-      variants:
-        ? control
-        ? treatment
-
-    Dummmy Flag:
       key: codegen-experiment
       variants:
         ? control

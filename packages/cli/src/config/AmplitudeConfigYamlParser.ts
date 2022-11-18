@@ -9,11 +9,6 @@ export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   return config ?? {} as AmplitudeConfigModel;
 }
 
-export function parseFromYamlAndBack(yaml: string): string {
-  const config = parse(yaml);
-  return stringify(config ?? {}, {});
-}
-
 export interface ConfigValidation {
   valid: boolean;
   errors?: string[];
@@ -67,12 +62,16 @@ export function loadLocalConfiguration(configPath: string): AmplitudeConfig {
 
   const configModel = parseFromYaml(ymlConfig);
 
-  console.log(parseFromYamlAndBack(ymlConfig));
-
   const configValidation = isValid(configModel);
   if (!configValidation.valid) {
     throw new Error(`Error loading configuration from ${configPath}. ${configValidation.errors}`);
   }
 
   return new AmplitudeConfig(configModel);
+}
+
+export function saveYamlToFile(filePath: string, config: AmplitudeConfig) {
+  const yamlContents = stringify(config.model ?? {}, {});
+
+  fs.writeFileSync(filePath, yamlContents);
 }

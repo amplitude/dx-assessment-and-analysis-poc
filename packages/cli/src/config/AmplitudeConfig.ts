@@ -17,7 +17,7 @@ export interface AmplitudeConfigModel {
  * AmplitudeConfig
  */
 export class AmplitudeConfig {
-  constructor(private model: AmplitudeConfigModel) {}
+  constructor(public model: AmplitudeConfigModel) {}
 
   analytics(): AnalyticsConfig {
     return new AnalyticsConfig(this.model.analytics);

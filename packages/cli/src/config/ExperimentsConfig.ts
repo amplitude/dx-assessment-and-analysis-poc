@@ -58,6 +58,28 @@ export function convertToYaml(flag: ExperimentConfigModel) {
   }).replace(/ \{\}/g, '');
 }
 
+export function convertFlagArrayToMap(flags: ExperimentConfigModel[]): Record<string, ExperimentConfigModel> {
+  const flagMap: Record<string, ExperimentConfigModel> = {};
+
+  flags.reduce((acc: Record<string, ExperimentConfigModel>, flag) => {
+    const name = (flag as any).name || flag.key;
+
+    const payload = flag.payload.type == "object" ? undefined : {
+      payload: flag.payload
+    };
+
+    acc[name] = {
+      key: flag.key,
+      ...payload,
+      variants: flag.variants,
+    };
+
+    return acc;
+  }, flagMap);
+
+  return flagMap;
+}
+
 /**
  * ExperimentsConfig
  */
@@ -117,5 +139,9 @@ export class ExperimentsConfig {
         variants
       }
     });
+  }
+
+  setFlags(flags: ExperimentConfigModel[]) {
+    this.model.flags = convertFlagArrayToMap(flags);
   }
 }

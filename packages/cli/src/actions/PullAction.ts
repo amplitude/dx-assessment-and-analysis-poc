@@ -1,11 +1,10 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
-import { convertToYaml, ExperimentConfigModel, sanitizeVariants } from "../config/ExperimentsConfig";
+import { ExperimentConfigModel, sanitizeVariants } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
 import { ComparisonResultSymbol, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
 import { cloneDeep } from "lodash";
-import { jsons } from "@amplitude/util";
-import { loadLocalConfiguration } from "../config/AmplitudeConfigYamlParser";
+import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
 import { BaseAction } from "./BaseAction";
 
 export interface PullActionOptions {
@@ -89,12 +88,9 @@ export class PullAction extends BaseAction {
         }
       }
 
-      console.log(`Flags ${jsons(mergedFlags)}`);
-
-      const yaml = mergedFlags.map(f => convertToYaml(f)).join(`\n`);
-      console.log(yaml);
-
-
+      // Update config with updated flags & save to file
+      config.experiment().setFlags(mergedFlags);
+      saveYamlToFile(configPath, config);
     } catch (err) {
       console.log(`Unhandled exception ${err}`);
       return;

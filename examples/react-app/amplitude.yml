@@ -20,28 +20,15 @@ environments:
     analytics:
       apiKey: my-api-key
 
-# Aliases
-x-analytics-definitions:
-  referralSource: &referralSource
-    description: How the user was brought to the app
-    enum: [ "facebook", "twitter", "other" ]
-  songId: &songId
-    description: The song unique identifier
-    type: string
-
-x-experiment-definitions:
-  payload: &arrayOfStringsPayload
-    description: An array of strings
-    type: array
-    items:
-      type: string
-
 # User configuration
 user:
   description: Collection of user properties
-  required: [referralSource]
+  required:
+    - referralSource
   properties:
-    referralSource: *referralSource
+    referralSource:
+      description: How the user was brought to the app
+      enum: [ "facebook", "twitter", "other" ]
     favoriteSongCount:
       description: Total number of favorited songs
       type: integer
@@ -52,11 +39,14 @@ analytics:
     User Signed Up:
       description: A user signed up
       properties:
-        referralSource: *referralSource
+        referralSource:
+          description: How the user was brought to the app
+          enum: [ "facebook", "twitter", "other" ]
 
     User Logged In:
       description: The user logged in
-      required: [ method ]
+      required:
+        - method
       properties:
         method:
           description: The song unique identifier
@@ -64,18 +54,24 @@ analytics:
 
     Song Played:
       description: A song was played
-      required: [ songId ]
+      required:
+        - songId
       properties:
-        songId: *songId
+        songId:
+          description: The song unique identifier
+          type: string
         songFavorited:
           description: If the song is a favorite
           type: boolean
 
     Song Favorited:
       description: A song was added to a user's favorites
-      required: [ songId ]
+      required:
+        - songId
       properties:
-        songId: *songId
+        songId:
+          description: The song unique identifier
+          type: string
         optionalProp:
           description: An optional value
           type: string
@@ -91,7 +87,8 @@ analytics:
 
     Event With Const:
       description: An Event with only Const props
-      required: [ constProp ]
+      required:
+        - constProp
       properties:
         constProp:
           description: Constant value shouldn't be settable
@@ -113,31 +110,35 @@ experiment:
       payload:
         type: boolean
       variants:
-        on:
+        ? on
 
     Codegen Array Experiment:
       key: codegen-array-experiment
-      payload: *arrayOfStringsPayload
+      payload:
+        description: An array of strings
+        type: array
+        items:
+          type: string
       variants:
-        generic:
-        ampli:
+        ? generic
+        ? ampli
 
     Codegen String Experiment:
       key: codegen-string-experiment
       payload:
         type: string
       variants:
-        control:
-        treatment:
+        ? control
+        ? treatment
 
     Codegen Experiment:
       key: codegen-experiment
       variants:
-        control:
-        treatment:
+        ? control
+        ? treatment
 
     Dummmy Flag:
       key: codegen-experiment
       variants:
-        control:
-        treatment:
+        ? control
+        ? treatment

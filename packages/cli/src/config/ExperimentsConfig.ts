@@ -1,8 +1,9 @@
-import { cloneDeep, kebabCase } from "lodash";
+import { cloneDeep, isEmpty, kebabCase } from "lodash";
 import { stringify } from 'yaml';
 import { sortAlphabetically } from "../generators/util/sorting";
 import { JsonSchemaPropertyModel } from "../json-schema";
 import { ExperimentFlagModel } from "../services/experiment/models";
+import { omitDeep } from "../util/omitDeep";
 
 export interface VariantModel {
   description?: string;
@@ -29,6 +30,18 @@ export interface ExperimentsConfigModel {
 //     variants: model.variants
 //   }
 // }
+
+export function sanitizeVariants(variants: Record<string, VariantModel>): Record<string, VariantModel> {
+  let cleanVariants = omitDeep(variants, ['key', 'name', 'payload']);
+  const variantKeys = Object.keys(variants);
+  variantKeys.forEach(key => {
+    if (isEmpty(cleanVariants[key])) {
+      cleanVariants[key] = null;
+    }
+  })
+
+  return cleanVariants;
+}
 
 export function convertToYaml(flag: ExperimentConfigModel) {
   const name = (flag as any).name || flag.key;

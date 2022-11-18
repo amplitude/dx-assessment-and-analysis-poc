@@ -15,7 +15,7 @@ import { ComparisonResult } from "./comparison/ComparisonResult";
 import { cloneDeep, omit } from "lodash";
 import { ExperimentFlagComparator } from "./services/experiment/ExperimentFlagComparator";
 import { jsons } from "@amplitude/util";
-import { convertToYaml, ExperimentConfigModel } from "./config/ExperimentsConfig";
+import { convertToYaml, ExperimentConfigModel, sanitizeVariants } from "./config/ExperimentsConfig";
 import { omitDeep } from "./util/omitDeep";
 
 
@@ -163,7 +163,7 @@ program.command('pull')
             // copy server changes but keep payload schema from local
             mergedFlag.key = serverFlag.key;
             mergedFlag.description = serverFlag.description;
-            mergedFlag.variants = omitDeep(serverFlag.variants, ['key', 'name', 'payload']);
+            mergedFlag.variants = sanitizeVariants(serverFlag.variants);
           }
         }
       }

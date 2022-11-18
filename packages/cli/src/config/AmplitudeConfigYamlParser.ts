@@ -3,6 +3,8 @@ import * as path from "path";
 import { parse, stringify } from 'yaml';
 import { AmplitudeConfig, AmplitudeConfigModel } from "./AmplitudeConfig";
 import { allPlatforms } from "./CodeGenerationConfig";
+import { cloneDeep, isEmpty } from "lodash";
+import { sanitizeVariants } from "./ExperimentsConfig";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   const config: AmplitudeConfigModel = parse(yaml);
@@ -71,7 +73,19 @@ export function loadLocalConfiguration(configPath: string): AmplitudeConfig {
 }
 
 export function saveYamlToFile(filePath: string, config: AmplitudeConfig) {
-  const yamlContents = stringify(config.model ?? {}, {});
+  // Clean up variants prior to output
+  const outputConfig: AmplitudeConfigModel = cloneDeep(config.model)
+
+  const flagKeys = Object.keys(outputConfig.experiment.flags);
+  flagKeys.forEach(flagKey => {
+    const flag = outputConfig.experiment.flags[flagKey];
+    if (isEmpty(flag.description)) {
+      delete flag.description;
+    }
+    flag.variants = sanitizeVariants(flag.variants);
+  })
+
+  const yamlContents = stringify(outputConfig);
 
   fs.writeFileSync(filePath, yamlContents);
 }

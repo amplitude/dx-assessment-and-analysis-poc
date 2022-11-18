@@ -1,7 +1,7 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
-import { ExperimentConfigModel, sanitizeVariants } from "../config/ExperimentsConfig";
+import { ExperimentConfigModel } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
-import { ComparisonResultSymbol, ICON_WARNING_W_TEXT } from "../ui/icons";
+import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
 import { cloneDeep } from "lodash";
 import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
@@ -44,20 +44,20 @@ export class PullAction extends BaseAction {
       }
       console.log(`Experiment Deployment Id: ${deploymentId}`);
 
-      const experimentApiService = new ExperimentApiService(experimentToken);
-      const flagsFromServer = await experimentApiService.loadFlagsList2(deploymentId);
-
-      // console.log(jsons(flagsFromServer));
-
-      console.log(`Received ${flagsFromServer.length} flags from server.`);
-
+      // get flags from local amplitude.yml
       const flagsFromLocal = config.experiment().getFlags();
       console.log(`Found ${flagsFromLocal.length} local flags.`);
+
+      // load flags from server
+      const experimentApiService = new ExperimentApiService(experimentToken);
+      const flagsFromServer = await experimentApiService.loadFlagsList2(deploymentId);
+      console.log(`Received ${flagsFromServer.length} flags from server.`);
 
       const mergedFlags: ExperimentConfigModel[] = [];
       const comparator = new ExperimentFlagComparator();
 
       // check for changes in flags on both
+      let hasChanges = false;
       for (const serverFlag of flagsFromServer) {
         const localFlag = flagsFromLocal.find(f => f.key === serverFlag.key);
         if (!localFlag) {
@@ -66,16 +66,21 @@ export class PullAction extends BaseAction {
         } else {
           const comparison = comparator.compare2(localFlag, serverFlag)
           console.log(`${ComparisonResultSymbol[comparison.result]} ${serverFlag.key}`);
+          const { changes } = comparison;
+          const changedFields = Object.keys(changes);
+          changedFields.forEach(field => {
+            console.log(`    ${ICON_RETURN_ARROW} ${field}: ${changes[field].origin} -> ${changes[field].target}`);
+          })
 
           const mergedFlag = cloneDeep(localFlag);
           mergedFlags.push(mergedFlag);
           if (comparison.result !== ComparisonResult.NoChanges) {
-            console.warn(`${ICON_WARNING_W_TEXT} Server changes will take precedence.`);
+            hasChanges = true;
 
             // copy server changes but keep payload schema from local
             mergedFlag.key = serverFlag.key;
             mergedFlag.description = serverFlag.description;
-            mergedFlag.variants = sanitizeVariants(serverFlag.variants);
+            mergedFlag.variants = serverFlag.variants;
           }
         }
       }
@@ -84,8 +89,13 @@ export class PullAction extends BaseAction {
       for (const localFlag of flagsFromLocal) {
         const serverFlag = flagsFromServer.find(f => f.key === localFlag.key);
         if (!serverFlag) {
+          hasChanges = true;
           console.log(`${ComparisonResultSymbol[ComparisonResult.Removed]} ${localFlag.key}`);
         }
+      }
+
+      if (hasChanges) {
+        console.warn(`${ICON_WARNING_W_TEXT} Server changes will overwrite local values.`);
       }
 
       // Update config with updated flags & save to file

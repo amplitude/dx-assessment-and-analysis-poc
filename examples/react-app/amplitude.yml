@@ -100,6 +100,7 @@ experiment:
   flags:
     Codegen Array Experiment:
       key: codegen-array-experiment
+      description: Experiment with Array payload
       payload:
         description: An array of strings
         type: array
@@ -110,12 +111,14 @@ experiment:
         ? ampli
     Codegen Boolean Experiment:
       key: codegen-boolean-experiment
+      description: Experiment with boolean payload
       payload:
         type: boolean
       variants:
         ? on
     Codegen String Experiment:
       key: codegen-string-experiment
+      description: Example experiment with string payload
       payload:
         type: string
       variants:

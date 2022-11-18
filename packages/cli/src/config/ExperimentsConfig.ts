@@ -70,6 +70,7 @@ export function convertFlagArrayToMap(flags: ExperimentConfigModel[]): Record<st
 
     acc[name] = {
       key: flag.key,
+      description: flag.description,
       ...payload,
       variants: flag.variants,
     };
@@ -122,8 +123,8 @@ export class ExperimentsConfig {
 
   getFlags(): ExperimentConfigModel[] {
     return this.getExperimentNames().map(name => {
-      const expModel = this.model.flags[name];
-      const variantNames = Object.keys(expModel.variants);
+      const flag = this.model.flags[name];
+      const variantNames = Object.keys(flag.variants);
 
       const variants: Record<string, VariantModel> = variantNames.reduce((acc: Record<string, VariantModel>, variantName) => {
         acc[variantName] = {
@@ -135,7 +136,8 @@ export class ExperimentsConfig {
       return {
         key: kebabCase(name),
         name,
-        payload: expModel.payload || { type: "object" },
+        description: flag.description,
+        payload: flag.payload || { type: "object" },
         variants
       }
     });

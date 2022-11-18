@@ -1,6 +1,6 @@
-import { ComparisonResult } from "../../comparison/ComparisonResult";
+import { addChange, ComparisonResult, ValueChange, ValueChangeMap } from "../../comparison/ComparisonResult";
 import { ExperimentFlagModel, VariantModel } from "./models";
-import { groupBy } from "lodash";
+import { groupBy, isEmpty } from "lodash";
 import { ExperimentConfigModel } from "../../config/ExperimentsConfig";
 
 interface ExperimentFlagVersionComparison {
@@ -13,6 +13,7 @@ interface ExperimentConfigFlagVersionComparison {
   result: ComparisonResult;
   origin: ExperimentConfigModel;
   target: ExperimentConfigModel;
+  changes: ValueChangeMap;
 }
 
 export class ExperimentFlagComparator {
@@ -47,12 +48,17 @@ export class ExperimentFlagComparator {
 
   compare2(origin: ExperimentConfigModel, target: ExperimentConfigModel): ExperimentConfigFlagVersionComparison {
     let result = ComparisonResult.NoChanges;
-    if (origin.key != target.key) {
+    const changes: ValueChangeMap = {};
+    if (origin.key !== target.key) {
+      addChange(changes, 'key', origin, target);
       result = ComparisonResult.Updated;
     }
 
-    if (origin.description != target.description) {
-      result = ComparisonResult.Updated;
+    if (origin.description !== target.description) {
+      if (!(isEmpty(origin.description) && isEmpty(target.description))) {
+        addChange(changes, 'description', origin, target);
+        result = ComparisonResult.Updated;
+      }
     }
 
     const originVariantKeys = Object.keys(origin.variants);
@@ -73,6 +79,7 @@ export class ExperimentFlagComparator {
       result,
       origin,
       target,
+      changes
     }
   }
 }

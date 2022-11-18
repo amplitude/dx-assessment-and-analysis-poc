@@ -17,7 +17,7 @@ export const ICON_SUCCESS_W_TEXT = `${ICON_SUCCESS} ${green('SUCCESS')}`;
 export const ICON_ERROR_W_TEXT = `${ICON_ERROR} ${red('ERROR')}`;
 export const ICON_WARNING_W_TEXT = `${ICON_WARNING} ${yellow('WARNING')}`;
 
-const padding = ' ';
+const padding = '';
 export const ComparisonResultSymbol: Record<ComparisonResult, string> = {
   [ComparisonResult.Added]: greenBright(`${padding}[A]`),
   [ComparisonResult.Removed]: redBright(`${padding}[D]`),

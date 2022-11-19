@@ -1,7 +1,7 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
 import { ExperimentConfigModel } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
-import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_WARNING_W_TEXT } from "../ui/icons";
+import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_SUCCESS, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
 import { cloneDeep } from "lodash";
 import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
@@ -96,11 +96,14 @@ export class PullAction extends BaseAction {
 
       if (hasChanges) {
         console.warn(`${ICON_WARNING_W_TEXT} Server changes will overwrite local values.`);
+        // Update config with updated flags & save to file
+        config.experiment().setFlags(mergedFlags);
+        saveYamlToFile(configPath, config);
+        console.log(`${ICON_SUCCESS} Configuration saved successfully.`);
+        console.log(`  ${ICON_RETURN_ARROW} ${configPath}`);
+      } else {
+        console.log(`${ICON_SUCCESS} Local configuration is already up to date.`);
       }
-
-      // Update config with updated flags & save to file
-      config.experiment().setFlags(mergedFlags);
-      saveYamlToFile(configPath, config);
     } catch (err) {
       console.log(`Unhandled exception ${err}`);
       return;

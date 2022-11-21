@@ -123,7 +123,7 @@ export class VariantMethodsClient implements VariantMethods {
       // (exp as any)[variant.value] = { payload: variant.payload };
       // (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
     } else {
-      if (variant.value) {
+      if (variant && variant.value) {
         (exp as any)[variant.value] = { payload: variant.payload };
         (exp as any)['variant'] = { key: variant.value, payload: variant.payload };
       }
@@ -195,7 +195,7 @@ export class ExperimentClient extends ExperimentClientNode implements IExperimen
 
 export class Experiment extends ExperimentNode {
   user(user: User): ExperimentClient {
-    return new ExperimentClient(user, this.config, this);
+    return new ExperimentClient(user, this.config, this, this.client);
   }
 
   userId(userId: string): ExperimentClient {

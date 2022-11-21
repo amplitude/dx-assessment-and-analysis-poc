@@ -1,0 +1,32 @@
+{
+  "name": "node-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@amplitude/amplitude-node": "^0.0.0",
+    "@amplitude/analytics-node": "^0.0.0",
+    "@amplitude/analytics-messages": "^0.0.0",
+    "@amplitude/experiment-node": "^0.0.0",
+    "@amplitude/hub": "^0.0.0",
+    "@amplitude/user": "^0.0.0",
+    "@amplitude/user-messages": "^0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "@types/express": "^4.17.14"
+  },
+  "scripts": {
+    "start": "npx ts-node src/app.ts",
+    "start:server": "npx nodemon src/server.ts",
+    "build": "echo 'Build'",
+    "clean": "",
+    "test": "jest",
+    "cli": "ts-node ../../packages/cli/src/cli.ts",
+    "pull": "yarn cli build --config amplitude.yml"
+  }
+}

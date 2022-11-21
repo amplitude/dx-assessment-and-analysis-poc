@@ -20,22 +20,22 @@ export class AmplitudeConfig {
   constructor(private model: AmplitudeConfigModel) {}
 
   analytics(): AnalyticsConfig {
-    return new AnalyticsConfig(this.model.analytics);
+    return new AnalyticsConfig(this.model.analytics!);
   }
 
   codegen(): CodeGenerationConfig {
-    return new CodeGenerationConfig(this.model.settings);
+    return new CodeGenerationConfig(this.model.settings!);
   }
 
   environment(): EnvironmentConfig {
-    return new EnvironmentConfig(this.model.environments);
+    return new EnvironmentConfig(this.model.environments!);
   }
 
   experiment(): ExperimentsConfig {
-    return new ExperimentsConfig(this.model.experiment);
+    return new ExperimentsConfig(this.model.experiment!);
   }
 
   user(): UserConfig {
-    return new UserConfig(this.model.user);
+    return new UserConfig(this.model.user!);
   }
 }

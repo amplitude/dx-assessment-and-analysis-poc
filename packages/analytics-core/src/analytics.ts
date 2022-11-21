@@ -9,9 +9,9 @@ export interface AnalyticsEvent extends AnalyticsEventOptions {
 }
 
 export interface IAnalyticsClient {
-  track(eventType: string, eventProperties?: Record<string, any>): void;
-  track(event: AnalyticsEvent): void;
-  flush(): void;
+  track(eventType: string, eventProperties?: Record<string, any>): Promise<void>;
+  track(event: AnalyticsEvent): Promise<void>;
+  flush(): Promise<void>;
 }
 
 export interface AnalyticsPluginConfig {

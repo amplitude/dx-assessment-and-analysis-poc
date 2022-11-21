@@ -24,13 +24,13 @@ export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAna
 
     // Hook into the event bus and forward analytics events to Segment
     config.hub?.analytics.subscribe(trackMessage, message => {
-      this.onAcceptableMessage(message.payload, ({ event }) => {
-        this.track(event);
+      this.onAcceptableMessage(message.payload, async ({ event }) => {
+        await this.track(event);
       });
     })
   };
 
-  track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
+  async track(eventType: string | AnalyticsEvent, eventProperties?: Record<string, any>) {
     // TODO: Consolidate this logic with Amplitude Analytics plugin
     //  New base class BrowserAnalyticsPluginBase?
     const event = (typeof eventType === 'string')
@@ -46,7 +46,9 @@ export class SegmentAnalytics extends BrowserAmplitudePluginBase implements IAna
     this.config.logger?.log(`[Segment.track] ${jsons(event)}`)
   }
 
-  flush() {}
+  async flush() {
+    // TBD
+  }
 }
 
 // default instance

@@ -106,8 +106,8 @@ export class ExperimentsConfig {
 
   getExperiments(): ExperimentFlagModel[] {
     return this.getExperimentNames().map(name => {
-      const expModel = this.model.flags[name];
-      const variantNames = Object.keys(expModel.variants);
+      const expModel = this.model.flags![name];
+      const variantNames = expModel.variants ? Object.keys(expModel.variants) : [];
 
       return {
         key: kebabCase(name),

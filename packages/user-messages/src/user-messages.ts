@@ -13,6 +13,15 @@ export interface UserMessage extends AmplitudeMessage {
   user: IUser;
 }
 
+export type UserUpdateType =
+  'user-id' | 'device-id' | 'user-properties' |
+  // FIXME: Move into Group module
+  'group-id' | 'group-properties';
+
+export interface UserUpdatedMessage extends UserMessage {
+  updateType: UserUpdateType,
+}
+
 /**
  * USER
  */
@@ -20,11 +29,16 @@ export interface UserMessage extends AmplitudeMessage {
 /**
  * User updates
  */
-export const userUpdatedMessage = createEventDefinition<UserMessage>()(MessageTypes.UserUpdated);
+export const userUpdatedMessage = createEventDefinition<UserUpdatedMessage>()(MessageTypes.UserUpdated);
 
-export const newUserUpdatedMessage = (sender: AmplitudePlugin, user: IUser) => userUpdatedMessage({
+export const newUserUpdatedMessage = (
+  sender: AmplitudePlugin,
+  user: IUser,
+  updateType: UserUpdateType,
+) => userUpdatedMessage({
   sender: { name: sender.name, version: sender.version },
-  user
+  user,
+  updateType
 })
 
 /**

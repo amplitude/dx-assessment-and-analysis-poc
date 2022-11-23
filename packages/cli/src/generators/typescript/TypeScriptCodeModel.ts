@@ -29,19 +29,19 @@ export interface CodeParameter {
 }
 
 export class TypeScriptCodeLanguage implements CodeLanguage {
-  getClassName(name: string): string {
+  getClassName(name: string  = 'unknown'): string {
     return upperCamelCase(name);
   }
 
-  getMethodName(name: string): string {
+  getMethodName(name: string = 'unknown'): string {
     return camelCase(name);
   }
 
-  getVariableName(name: string): string {
+  getVariableName(name: string  = 'unknown'): string {
     return camelCase(name);
   }
 
-  getPropertyName(name: string): string {
+  getPropertyName(name: string = 'unknown'): string {
     return camelCase(name);
   }
 
@@ -65,9 +65,9 @@ export class TypeScriptCodeLanguage implements CodeLanguage {
 
     if (schema.type === 'array') {
       if (!isEmpty(schema.items)) {
-        return `${this.getPropertyType(schema.items)}[]`;
+        return `${this.getPropertyType(schema.items as any)}[]`;
       }
-      return this.getPropertyType(schema.items);
+      return this.getPropertyType(schema.items as any);
     }
 
     // default to 'any' for unsupported types

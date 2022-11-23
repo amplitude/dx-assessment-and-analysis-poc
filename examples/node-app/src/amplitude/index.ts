@@ -10,13 +10,17 @@
 
 import { AmplitudeLoadOptions as AmplitudeLoadOptionsCore, Logger, NoLogger } from "@amplitude/amplitude-core";
 import { User as UserCore } from "@amplitude/user";
-import { Amplitude as AmplitudeBrowser } from "@amplitude/amplitude-browser";
 import { AnalyticsEvent, IAnalyticsClient as IAnalyticsClientCore } from "@amplitude/analytics-core";
-import { Analytics as AnalyticsBrowser } from "@amplitude/analytics-browser";
 import {
+  Analytics as AnalyticsNode,
+  AnalyticsClient as AnalyticsClientNode
+} from "@amplitude/analytics-node";
+import {
+  Experiment as ExperimentNode,
+  ExperimentClient as ExperimentClientNode,
   IExperimentClient as IExperimentClientCore,
-  Experiment as ExperimentBrowser,
-} from "@amplitude/experiment-browser";
+} from "@amplitude/experiment-node";
+import { Amplitude as AmplitudeNode } from "@amplitude/amplitude-node";
 
 export { Logger, NoLogger };
 export { MessageHub, hub } from "@amplitude/hub";
@@ -167,15 +171,27 @@ export class TrackingPlanClient implements TrackingPlanMethods {
   }
 }
 
+export class AnalyticsClient extends AnalyticsClientNode implements IAnalyticsClient {
+  get typed() {
+    return new TrackingPlanClient(this);;
+  }
+}
 
-export class Analytics extends AnalyticsBrowser implements IAnalyticsClient {
-  get typed(): TrackingPlanMethods {
-    return new TrackingPlanClient(this);
+export class Analytics extends AnalyticsNode {
+  user(user: User): AnalyticsClient {
+    return new AnalyticsClient(user, this.config, this, this.client);
+  }
+
+  userId(userId: string): AnalyticsClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): AnalyticsClient {
+    return this.user(new User(undefined, deviceId));
   }
 }
 
 export const analytics = new Analytics();
-export const typedAnalytics = analytics.typed;
 
 
 export type BaseExperiment = {
@@ -183,8 +199,8 @@ export type BaseExperiment = {
   name: string;
 }
 
-/* A Multi Variate Experiment */
-export namespace AMultiVariateExperimentVariants {
+/* Codegen Array Experiment */
+export namespace CodegenArrayExperimentVariants {
   export type Generic = { key: 'generic', payload: string[] };
   export type Ampli = { key: 'ampli', payload: string[] };
 
@@ -193,23 +209,23 @@ export namespace AMultiVariateExperimentVariants {
     Ampli = 'ampli'
   }
 }
-export type AMultiVariateExperimentType = BaseExperiment & {
-  generic?: AMultiVariateExperimentVariants.Generic;
-  ampli?: AMultiVariateExperimentVariants.Ampli;
+export type CodegenArrayExperimentType = BaseExperiment & {
+  generic?: CodegenArrayExperimentVariants.Generic;
+  ampli?: CodegenArrayExperimentVariants.Ampli;
 }
-export class AMultiVariateExperiment implements AMultiVariateExperimentType {
-  key = 'a-multi-variate-experiment';
-  name = "A Multi Variate Experiment";
-  variant: AMultiVariateExperimentVariants.Generic |AMultiVariateExperimentVariants.Ampli | undefined;
+export class CodegenArrayExperiment implements CodegenArrayExperimentType {
+  key = 'codegen-array-experiment';
+  name = "Codegen Array Experiment";
+  variant: CodegenArrayExperimentVariants.Generic |CodegenArrayExperimentVariants.Ampli | undefined;
 
   constructor(
-    public generic?: AMultiVariateExperimentVariants.Generic,
-    public ampli?: AMultiVariateExperimentVariants.Ampli,
+    public generic?: CodegenArrayExperimentVariants.Generic,
+    public ampli?: CodegenArrayExperimentVariants.Ampli,
   ) {}
 }
-export namespace AMultiVariateExperiment {
-  export const Key = 'a-multi-variate-experiment';
-  export const Name = "A Multi Variate Experiment";
+export namespace CodegenArrayExperiment {
+  export const Key = 'codegen-array-experiment';
+  export const Name = "Codegen Array Experiment";
 
   export enum Variants {
     Generic = 'generic',
@@ -217,37 +233,107 @@ export namespace AMultiVariateExperiment {
   }
 }
 
-/* Flag Codegen Enabled */
-export namespace FlagCodegenEnabledVariants {
-  export type On = { key: 'on', payload: any };
+/* Codegen Boolean Experiment */
+export namespace CodegenBooleanExperimentVariants {
+  export type On = { key: 'on', payload: boolean };
 
   export enum Keys {
     On = 'on'
   }
 }
-export type FlagCodegenEnabledType = BaseExperiment & {
-  on?: FlagCodegenEnabledVariants.On;
+export type CodegenBooleanExperimentType = BaseExperiment & {
+  on?: CodegenBooleanExperimentVariants.On;
 }
-export class FlagCodegenEnabled implements FlagCodegenEnabledType {
-  key = 'flag-codegen-enabled';
-  name = "Flag Codegen Enabled";
-  variant: FlagCodegenEnabledVariants.On | undefined;
+export class CodegenBooleanExperiment implements CodegenBooleanExperimentType {
+  key = 'codegen-boolean-experiment';
+  name = "Codegen Boolean Experiment";
+  variant: CodegenBooleanExperimentVariants.On | undefined;
 
   constructor(
-    public on?: FlagCodegenEnabledVariants.On,
+    public on?: CodegenBooleanExperimentVariants.On,
   ) {}
 }
-export namespace FlagCodegenEnabled {
-  export const Key = 'flag-codegen-enabled';
-  export const Name = "Flag Codegen Enabled";
+export namespace CodegenBooleanExperiment {
+  export const Key = 'codegen-boolean-experiment';
+  export const Name = "Codegen Boolean Experiment";
 
   export enum Variants {
     On = 'on'
   }
 }
+
+/* Codegen Experiment */
+export namespace CodegenExperimentVariants {
+  export type Control = { key: 'control', payload: any };
+  export type Treatment = { key: 'treatment', payload: any };
+
+  export enum Keys {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export type CodegenExperimentType = BaseExperiment & {
+  control?: CodegenExperimentVariants.Control;
+  treatment?: CodegenExperimentVariants.Treatment;
+}
+export class CodegenExperiment implements CodegenExperimentType {
+  key = 'codegen-experiment';
+  name = "Codegen Experiment";
+  variant: CodegenExperimentVariants.Control |CodegenExperimentVariants.Treatment | undefined;
+
+  constructor(
+    public control?: CodegenExperimentVariants.Control,
+    public treatment?: CodegenExperimentVariants.Treatment,
+  ) {}
+}
+export namespace CodegenExperiment {
+  export const Key = 'codegen-experiment';
+  export const Name = "Codegen Experiment";
+
+  export enum Variants {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+
+/* Codegen String Experiment */
+export namespace CodegenStringExperimentVariants {
+  export type Control = { key: 'control', payload: string };
+  export type Treatment = { key: 'treatment', payload: string };
+
+  export enum Keys {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
+export type CodegenStringExperimentType = BaseExperiment & {
+  control?: CodegenStringExperimentVariants.Control;
+  treatment?: CodegenStringExperimentVariants.Treatment;
+}
+export class CodegenStringExperiment implements CodegenStringExperimentType {
+  key = 'codegen-string-experiment';
+  name = "Codegen String Experiment";
+  variant: CodegenStringExperimentVariants.Control |CodegenStringExperimentVariants.Treatment | undefined;
+
+  constructor(
+    public control?: CodegenStringExperimentVariants.Control,
+    public treatment?: CodegenStringExperimentVariants.Treatment,
+  ) {}
+}
+export namespace CodegenStringExperiment {
+  export const Key = 'codegen-string-experiment';
+  export const Name = "Codegen String Experiment";
+
+  export enum Variants {
+    Control = 'control',
+    Treatment = 'treatment'
+  }
+}
 export interface VariantMethods {
-  aMultiVariateExperiment(): AMultiVariateExperiment;
-  flagCodegenEnabled(): FlagCodegenEnabled;
+  codegenArrayExperiment(): CodegenArrayExperiment;
+  codegenBooleanExperiment(): CodegenBooleanExperiment;
+  codegenExperiment(): CodegenExperiment;
+  codegenStringExperiment(): CodegenStringExperiment;
 }
 
 export class VariantMethodsClient implements VariantMethods {
@@ -268,41 +354,58 @@ export class VariantMethodsClient implements VariantMethods {
     return exp;
   }
 
-  aMultiVariateExperiment(): AMultiVariateExperiment {
-    return this.getTypedVariant(new AMultiVariateExperiment());
+  codegenArrayExperiment(): CodegenArrayExperiment {
+    return this.getTypedVariant(new CodegenArrayExperiment());
   }
 
-  flagCodegenEnabled(): FlagCodegenEnabled {
-    return this.getTypedVariant(new FlagCodegenEnabled());
+  codegenBooleanExperiment(): CodegenBooleanExperiment {
+    return this.getTypedVariant(new CodegenBooleanExperiment());
+  }
+
+  codegenExperiment(): CodegenExperiment {
+    return this.getTypedVariant(new CodegenExperiment());
+  }
+
+  codegenStringExperiment(): CodegenStringExperiment {
+    return this.getTypedVariant(new CodegenStringExperiment());
   }
 }
 
 export interface IExperimentClient extends IExperimentClientCore, Typed<VariantMethods> {}
 
-export class Experiment extends ExperimentBrowser implements IExperimentClient {
+export class ExperimentClient extends ExperimentClientNode implements IExperimentClient {
   get typed() {
     return new VariantMethodsClient(this);
   }
 }
 
+export class Experiment extends ExperimentNode {
+  user(user: User): ExperimentClient {
+    return new ExperimentClient(user, this.config, this, this.client);
+  }
+
+  userId(userId: string): ExperimentClient {
+    return this.user(new User(userId));
+  }
+
+  deviceId(deviceId: string): ExperimentClient {
+    return this.user(new User(undefined, deviceId));
+  }
+}
+
 export const experiment = new Experiment();
-export const typedExperiment = experiment.typed;
 
 /**
  * AMPLITUDE
  */
-export class Amplitude extends AmplitudeBrowser {
-  constructor(_user?: User) {
-    super(_user ?? user)
-  }
-
+export class Amplitude extends AmplitudeNode {
   get typed() {
     const core = this;
     return {
       load(config: AmplitudeLoadOptions) {
         const environment = config.environment ?? 'development';
-
-        // FIXME: implement single ApiKey for all products
+        // FIXME: properly read API keys
+        // @ts-ignore
         const apiKey = config.apiKey ?? ApiKey['analytics'][environment];
 
         core.load({
@@ -318,14 +421,10 @@ export class Amplitude extends AmplitudeBrowser {
           ...config,
           apiKey,
         });
-        
         core.addPlugin(analytics);
         core.addPlugin(experiment);
       },
-      get user(): User {
-        return core.user as User;
-      }
-    }
+    };
   }
 }
 

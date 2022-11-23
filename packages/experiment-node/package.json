@@ -19,7 +19,8 @@
     "@amplitude/analytics-messages": "^0.0.0",
     "@amplitude/hub": "^0.0.0",
     "@amplitude/user": "^0.0.0",
-    "@amplitude/util": "^0.0.0"
+    "@amplitude/util": "^0.0.0",
+    "@amplitude/experiment-node-server": "^1.2.1"
   },
   "scripts": {
     "build": "tsc",

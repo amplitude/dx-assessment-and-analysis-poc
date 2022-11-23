@@ -9,5 +9,5 @@ export async function jsonSchemaToTypeScript(
     additionalProperties: false
   }
 ): Promise<string> {
-  return compile(schema, name, options);
+  return compile(schema, name || '', options);
 }

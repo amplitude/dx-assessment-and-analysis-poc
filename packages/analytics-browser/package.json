@@ -18,6 +18,7 @@
     "@amplitude/analytics-core": "^0.0.0",
     "@amplitude/hub": "^0.0.0",
     "@amplitude/util": "^0.0.0",
+    "@amplitude/user-messages": "^0.0.0",
     "@amplitude/analytics-browser-legacy": "npm:@amplitude/analytics-browser@^1.2.1"
   },
   "scripts": {

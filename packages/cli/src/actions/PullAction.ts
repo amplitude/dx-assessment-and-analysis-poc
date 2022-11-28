@@ -1,7 +1,13 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
 import { convertToFlagConfigModel, FlagConfigModel } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../comparison/ExperimentFlagComparator";
-import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_SUCCESS, ICON_WARNING_W_TEXT } from "../ui/icons";
+import {
+  ComparisonResultSymbol,
+  ICON_ERROR_W_TEXT,
+  ICON_RETURN_ARROW,
+  ICON_SUCCESS,
+  ICON_WARNING_W_TEXT
+} from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
 import { cloneDeep, isEmpty } from "lodash";
 import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
@@ -10,8 +16,7 @@ import { BaseAction } from "./BaseAction";
 export interface PullActionOptions {
   config: string;
   experimentManagementApiKey?: string;
-  experimentDeploymentLabel?: string;
-  experimentDeploymentId?: string;
+  experimentDeploymentKey?: string;
 }
 
 export class PullAction extends BaseAction {
@@ -20,14 +25,12 @@ export class PullAction extends BaseAction {
     const {
       config: configPath,
       experimentManagementApiKey,
-      experimentDeploymentLabel,
-      experimentDeploymentId
+      experimentDeploymentKey,
     } = options;
 
     const {
       AMP_EXPERIMENT_MANAGEMENT_API_KEY,
-      AMP_EXPERIMENT_DEPLOYMENT_LABEL,
-      AMP_EXPERIMENT_DEPLOYMENT_ID
+      AMP_EXPERIMENT_DEPLOYMENT_KEY,
     } = process.env;
 
     try {
@@ -44,24 +47,16 @@ export class PullAction extends BaseAction {
       const experimentApiService = new ExperimentApiService(experimentToken);
 
       // Get Deployment
-      let deploymentId = experimentDeploymentId ?? AMP_EXPERIMENT_DEPLOYMENT_ID;
-      if (isEmpty(deploymentId)) {
-        // If no deploymentId is given try to look it up by label
-        const deploymentLabel = experimentDeploymentLabel ?? AMP_EXPERIMENT_DEPLOYMENT_LABEL;
-
-        if (!isEmpty(deploymentLabel)) {
-          console.log(`Looking up deployment by label: ${deploymentLabel}...`);
-          const deployments = await experimentApiService.getDeployments();
-          for (const d of deployments) {
-            if (d.label === deploymentLabel) {
-              deploymentId = d.id;
-            }
-          }
-        }
+      let deploymentKey = experimentDeploymentKey ?? AMP_EXPERIMENT_DEPLOYMENT_KEY;
+      if (isEmpty(deploymentKey)) {
+        console.error(`${ICON_ERROR_W_TEXT} 'experimentDeploymentKey' is required.`);
+        return;
       }
-
-      if (!deploymentId) {
-        console.error(`Error:'experimentDeploymentLabel' or 'experimentDeploymentId' is required.`);
+      const deployments = await experimentApiService.getDeployments();
+      const deploymentId = deployments.find(d => d.key === deploymentKey)?.id;
+      if (isEmpty(deploymentId)) {
+        console.error(deployments);
+        console.error(`${ICON_ERROR_W_TEXT} unable to locate deployment for given key.`);
         return;
       }
 

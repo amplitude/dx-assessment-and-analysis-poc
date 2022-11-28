@@ -32,12 +32,8 @@ program.command('pull')
     "Experiment Management API key",
   )
   .option(
-    '--experimentDeploymentLabel [label]',
+    '--experimentDeploymentKey [deployment_key]',
     "Experiment deployment label to use for code generation.",
-  )
-  .option(
-    '--experimentDeploymentId [id]',
-    "Experiment deployment id to use for code generation. Will override label.",
   )
   .action(async (options) => new PullAction().run(options));
 

@@ -5,6 +5,7 @@ import { AmplitudeConfig, AmplitudeConfigModel } from "./AmplitudeConfig";
 import { allPlatforms } from "./CodeGenerationConfig";
 import { cloneDeep, isEmpty } from "lodash";
 import { sanitizeVariants } from "./ExperimentsConfig";
+import { ICON_INFO } from "../ui/icons";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   const config: AmplitudeConfigModel = parse(yaml);
@@ -58,7 +59,7 @@ export function isValid(config: AmplitudeConfigModel): ConfigValidation {
 }
 
 export function loadLocalConfiguration(configPath: string): AmplitudeConfig {
-  console.log(`Config Path:`, configPath);
+  console.log(`${ICON_INFO} Local Config:`, configPath);
 
   const ymlConfig = fs.readFileSync(path.resolve(configPath), 'utf8');
 

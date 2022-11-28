@@ -12,6 +12,7 @@ export const ICON_NOT_FOUND = redBright(hasUnicodeFonts ? '✘' : '[-]');
 export const ICON_SUCCESS = greenBright(hasUnicodeFonts ? '✔' : '+');
 export const ICON_WARNING = yellowBright(hasUnicodeFonts ? '⚠' : '!');
 export const ICON_ERROR = redBright(hasUnicodeFonts ? '✘' : 'X');
+export const ICON_INFO = blueBright(hasUnicodeFonts ? 'ℹ' : 'i');
 
 export const ICON_SUCCESS_W_TEXT = `${ICON_SUCCESS} ${green('SUCCESS')}`;
 export const ICON_ERROR_W_TEXT = `${ICON_ERROR} ${red('ERROR')}`;
@@ -24,5 +25,5 @@ export const ComparisonResultSymbol: Record<ComparisonResult, string> = {
   [ComparisonResult.Updated]: blueBright(`${padding}[U]`),
   // The follow results should exist in CLI (web merge only)
   [ComparisonResult.Conflict]: redBright(`${padding}[C]`),
-  [ComparisonResult.NoChanges]: white(`${padding}[-]`),
+  [ComparisonResult.NoChanges]: white(`${padding} ${ICON_SUCCESS} `),
 };

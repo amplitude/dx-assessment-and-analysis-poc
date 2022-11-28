@@ -4,6 +4,7 @@ import { ExperimentFlagComparator } from "../comparison/ExperimentFlagComparator
 import {
   ComparisonResultSymbol,
   ICON_ERROR_W_TEXT,
+  ICON_INFO,
   ICON_RETURN_ARROW,
   ICON_SUCCESS,
   ICON_WARNING_W_TEXT
@@ -21,7 +22,7 @@ export interface PullActionOptions {
 
 export class PullAction extends BaseAction {
   async run(options: PullActionOptions) {
-    console.log(`Pulling latest configuration`);
+    console.log(`${ICON_INFO} Pulling latest configuration`);
     const {
       config: configPath,
       experimentManagementApiKey,
@@ -37,9 +38,8 @@ export class PullAction extends BaseAction {
       const config = loadLocalConfiguration(configPath);
 
       const experimentToken = experimentManagementApiKey ?? AMP_EXPERIMENT_MANAGEMENT_API_KEY;
-      // console.log(`Experiment Management API key: ${experimentToken}`);
       if (!experimentToken) {
-        console.error(`Error: 'experimentManagementApiKey' is required.`);
+        console.error(`${ICON_ERROR_W_TEXT}  'experimentManagementApiKey' is required.`);
         return;
       }
 
@@ -62,13 +62,13 @@ export class PullAction extends BaseAction {
 
       // get flags from local amplitude.yml
       const flagsFromLocal = config.experiment().getFlags();
-      console.log(`Found ${flagsFromLocal.length} local flags.`);
+      console.log(`${ICON_INFO} Found ${flagsFromLocal.length} local flags.`);
 
       // load flags from server
       const flagsFromServer = (await experimentApiService.getFlags(deploymentId)).map(
         flag => convertToFlagConfigModel(flag),
       );
-      console.log(`Received ${flagsFromServer.length} flags from server.`);
+      console.log(`${ICON_INFO} Received ${flagsFromServer.length} flags from server.`);
 
       const mergedFlags: FlagConfigModel[] = [];
       const comparator = new ExperimentFlagComparator();

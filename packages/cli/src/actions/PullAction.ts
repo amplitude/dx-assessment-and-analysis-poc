@@ -1,5 +1,5 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
-import { ExperimentConfigModel } from "../config/ExperimentsConfig";
+import { convertToFlagConfigModel, ExperimentConfigModel } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
 import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_SUCCESS, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
@@ -50,7 +50,9 @@ export class PullAction extends BaseAction {
 
       // load flags from server
       const experimentApiService = new ExperimentApiService(experimentToken);
-      const flagsFromServer = await experimentApiService.loadFlagsList2(deploymentId);
+      const flagsFromServer = (await experimentApiService.getFlagsList(deploymentId)).map(
+        flag => convertToFlagConfigModel(flag),
+      );
       console.log(`Received ${flagsFromServer.length} flags from server.`);
 
       const mergedFlags: ExperimentConfigModel[] = [];
@@ -64,7 +66,7 @@ export class PullAction extends BaseAction {
           console.log(`${ComparisonResultSymbol[ComparisonResult.Added]} ${serverFlag.key}`);
           mergedFlags.push(serverFlag)
         } else {
-          const comparison = comparator.compare2(localFlag, serverFlag)
+          const comparison = comparator.compare(localFlag, serverFlag)
           console.log(`${ComparisonResultSymbol[comparison.result]} ${serverFlag.key}`);
           const { changes } = comparison;
           const changedFields = Object.keys(changes);

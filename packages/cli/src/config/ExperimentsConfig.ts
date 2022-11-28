@@ -1,4 +1,4 @@
-import { cloneDeep, isEmpty, kebabCase } from "lodash";
+import { cloneDeep, isEmpty, kebabCase, keyBy } from "lodash";
 import { stringify } from 'yaml';
 import { sortAlphabetically } from "../generators/util/sorting";
 import { JsonSchemaPropertyModel } from "../json-schema";
@@ -23,13 +23,14 @@ export interface ExperimentsConfigModel {
   };
 }
 
-// export function toFlagConfigModel(model: ExperimentFlagModel): ExperimentConfigModel {
-//   return {
-//     key: model.key,
-//     payload: model.
-//     variants: model.variants
-//   }
-// }
+export function convertToFlagConfigModel(model: ExperimentFlagModel): ExperimentConfigModel {
+  return {
+    key: model.key,
+    payload: undefined,
+    description: model.description,
+    variants: keyBy(model.variants, 'key')
+  }
+}
 
 export function sanitizeVariants(variants: Record<string, VariantModel>): Record<string, VariantModel> {
   let cleanVariants = omitDeep(variants, ['key', 'name', 'payload']);

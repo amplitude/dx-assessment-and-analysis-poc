@@ -1,8 +1,8 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
-import { ExperimentModel, VariantModel } from "../../services/experiment/models";
 import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
 import { AmplitudeConfig } from "../../config/AmplitudeConfig";
+import { VariantModel, ExperimentFlagModel } from "../../services/experiment/ExperimentApiService";
 
 /**
  * ExperimentCoreCodeGenerator
@@ -15,7 +15,7 @@ export class ExperimentCoreCodeGenerator implements CodeGenerator {
     private lang: TypeScriptCodeLanguage = new TypeScriptCodeLanguage(),
   ) {}
 
-  generateExperimentType(experiment: ExperimentModel): string {
+  generateExperimentType(experiment: ExperimentFlagModel): string {
     const { getClassName, getPropertyName, getPropertyType } = this.lang;
     const className = getClassName(experiment.name);
 
@@ -33,7 +33,7 @@ ${experiment.variants.map(
 };`;
   }
 
-  generateExperimentClass(experiment: ExperimentModel): string {
+  generateExperimentClass(experiment: ExperimentFlagModel): string {
     const { getClassName, getPropertyName, getPropertyType } = this.lang;
 
     const className = getClassName(experiment.name);
@@ -76,7 +76,7 @@ ${experiment.variants.map(v => `\
 }`;
   }
 
-  generateExperimentMethod(experiment: ExperimentModel): string {
+  generateExperimentMethod(experiment: ExperimentFlagModel): string {
     const { getClassName, getMethodName } = this.lang;
 
     const className = getClassName(experiment.name);

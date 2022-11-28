@@ -10,7 +10,7 @@ export interface VariantModel {
   key?: string;
 }
 
-export interface ExperimentConfigModel {
+export interface FlagConfigModel {
   description?: string;
   key?: string;
   payload?: JsonSchemaPropertyModel;
@@ -19,17 +19,8 @@ export interface ExperimentConfigModel {
 
 export interface ExperimentsConfigModel {
   flags?: {
-    [experimentName: string]: ExperimentConfigModel
+    [experimentName: string]: FlagConfigModel
   };
-}
-
-export function convertToFlagConfigModel(model: ExperimentFlagModel): ExperimentConfigModel {
-  return {
-    key: model.key,
-    payload: undefined,
-    description: model.description,
-    variants: keyBy(model.variants, 'key')
-  }
 }
 
 export function sanitizeVariants(variants: Record<string, VariantModel>): Record<string, VariantModel> {
@@ -44,25 +35,19 @@ export function sanitizeVariants(variants: Record<string, VariantModel>): Record
   return cleanVariants;
 }
 
-export function convertToYaml(flag: ExperimentConfigModel) {
-  const name = (flag as any).name || flag.key;
-
-  const payload = flag.payload.type == "object" ? undefined : {
-    payload: flag.payload
-  };
-  return stringify({
-    [name]: {
-      key: flag.key,
-      ...payload,
-      variants: flag.variants,
-    }
-  }).replace(/ \{\}/g, '');
+export function convertToFlagConfigModel(model: ExperimentFlagModel): FlagConfigModel {
+  return {
+    key: model.key,
+    payload: undefined,
+    description: model.description,
+    variants: keyBy(model.variants, 'key')
+  }
 }
 
-export function convertFlagArrayToMap(flags: ExperimentConfigModel[]): Record<string, ExperimentConfigModel> {
-  const flagMap: Record<string, ExperimentConfigModel> = {};
+export function convertFlagArrayToMap(flags: FlagConfigModel[]): Record<string, FlagConfigModel> {
+  const flagMap: Record<string, FlagConfigModel> = {};
 
-  flags.reduce((acc: Record<string, ExperimentConfigModel>, flag) => {
+  flags.reduce((acc: Record<string, FlagConfigModel>, flag) => {
     const name = (flag as any).name || flag.key;
 
     const payload = flag.payload.type == "object" ? undefined : {
@@ -122,7 +107,7 @@ export class ExperimentsConfig {
     });
   }
 
-  getFlags(): ExperimentConfigModel[] {
+  getFlags(): FlagConfigModel[] {
     return this.getExperimentNames().map(name => {
       const flag = this.model.flags[name];
       const variantNames = Object.keys(flag.variants);
@@ -144,7 +129,7 @@ export class ExperimentsConfig {
     });
   }
 
-  setFlags(flags: ExperimentConfigModel[]) {
+  setFlags(flags: FlagConfigModel[]) {
     this.model.flags = convertFlagArrayToMap(flags);
   }
 }

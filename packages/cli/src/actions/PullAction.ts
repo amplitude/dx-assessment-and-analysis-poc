@@ -1,5 +1,5 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
-import { convertToFlagConfigModel, ExperimentConfigModel } from "../config/ExperimentsConfig";
+import { convertToFlagConfigModel, FlagConfigModel } from "../config/ExperimentsConfig";
 import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
 import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_SUCCESS, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
@@ -55,7 +55,7 @@ export class PullAction extends BaseAction {
       );
       console.log(`Received ${flagsFromServer.length} flags from server.`);
 
-      const mergedFlags: ExperimentConfigModel[] = [];
+      const mergedFlags: FlagConfigModel[] = [];
       const comparator = new ExperimentFlagComparator();
 
       // check for changes in flags on both

@@ -5,18 +5,18 @@ import {
   ValueChangeMap
 } from "../../comparison/ComparisonResult";
 import { isEmpty } from "lodash";
-import { ExperimentConfigModel } from "../../config/ExperimentsConfig";
+import { FlagConfigModel } from "../../config/ExperimentsConfig";
 import { sortAlphabetically } from "../../generators/util/sorting";
 
-interface ExperimentConfigFlagVersionComparison {
+interface FlagConfigComparison {
   result: ComparisonResult;
-  origin: ExperimentConfigModel;
-  target: ExperimentConfigModel;
+  origin: FlagConfigModel;
+  target: FlagConfigModel;
   changes: ValueChangeMap;
 }
 
 export class ExperimentFlagComparator {
-  compare(origin: ExperimentConfigModel, target: ExperimentConfigModel): ExperimentConfigFlagVersionComparison {
+  compare(origin: FlagConfigModel, target: FlagConfigModel): FlagConfigComparison {
     let result = ComparisonResult.NoChanges;
     const changes: ValueChangeMap = {};
     if (origin.key !== target.key) {

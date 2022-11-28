@@ -3,10 +3,10 @@ import {
   addChangeExplicit,
   ComparisonResult,
   ValueChangeMap
-} from "../../comparison/ComparisonResult";
+} from "./ComparisonResult";
 import { isEmpty } from "lodash";
-import { FlagConfigModel } from "../../config/ExperimentsConfig";
-import { sortAlphabetically } from "../../generators/util/sorting";
+import { FlagConfigModel } from "../config/ExperimentsConfig";
+import { sortAlphabetically } from "../generators/util/sorting";
 
 interface FlagConfigComparison {
   result: ComparisonResult;

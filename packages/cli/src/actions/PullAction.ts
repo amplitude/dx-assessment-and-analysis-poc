@@ -1,15 +1,16 @@
 import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
 import { convertToFlagConfigModel, FlagConfigModel } from "../config/ExperimentsConfig";
-import { ExperimentFlagComparator } from "../services/experiment/ExperimentFlagComparator";
+import { ExperimentFlagComparator } from "../comparison/ExperimentFlagComparator";
 import { ComparisonResultSymbol, ICON_RETURN_ARROW, ICON_SUCCESS, ICON_WARNING_W_TEXT } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEmpty } from "lodash";
 import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
 import { BaseAction } from "./BaseAction";
 
 export interface PullActionOptions {
   config: string;
   experimentManagementApiKey?: string;
+  experimentDeploymentLabel?: string;
   experimentDeploymentId?: string;
 }
 
@@ -19,11 +20,13 @@ export class PullAction extends BaseAction {
     const {
       config: configPath,
       experimentManagementApiKey,
+      experimentDeploymentLabel,
       experimentDeploymentId
     } = options;
 
     const {
       AMP_EXPERIMENT_MANAGEMENT_API_KEY,
+      AMP_EXPERIMENT_DEPLOYMENT_LABEL,
       AMP_EXPERIMENT_DEPLOYMENT_ID
     } = process.env;
 
@@ -37,20 +40,37 @@ export class PullAction extends BaseAction {
         return;
       }
 
-      const deploymentId = experimentDeploymentId ?? AMP_EXPERIMENT_DEPLOYMENT_ID;
+      // Create Experiment API
+      const experimentApiService = new ExperimentApiService(experimentToken);
+
+      // Get Deployment
+      let deploymentId = experimentDeploymentId ?? AMP_EXPERIMENT_DEPLOYMENT_ID;
+      if (isEmpty(deploymentId)) {
+        // If no deploymentId is given try to look it up by label
+        const deploymentLabel = experimentDeploymentLabel ?? AMP_EXPERIMENT_DEPLOYMENT_LABEL;
+
+        if (!isEmpty(deploymentLabel)) {
+          console.log(`Looking up deployment by label: ${deploymentLabel}...`);
+          const deployments = await experimentApiService.getDeployments();
+          for (const d of deployments) {
+            if (d.label === deploymentLabel) {
+              deploymentId = d.id;
+            }
+          }
+        }
+      }
+
       if (!deploymentId) {
-        console.error(`Error: 'experimentDeploymentId' is required.`);
+        console.error(`Error:'experimentDeploymentLabel' or 'experimentDeploymentId' is required.`);
         return;
       }
-      // console.log(`Experiment Deployment Id: ${deploymentId}`);
 
       // get flags from local amplitude.yml
       const flagsFromLocal = config.experiment().getFlags();
       console.log(`Found ${flagsFromLocal.length} local flags.`);
 
       // load flags from server
-      const experimentApiService = new ExperimentApiService(experimentToken);
-      const flagsFromServer = (await experimentApiService.getFlagsList(deploymentId)).map(
+      const flagsFromServer = (await experimentApiService.getFlags(deploymentId)).map(
         flag => convertToFlagConfigModel(flag),
       );
       console.log(`Received ${flagsFromServer.length} flags from server.`);

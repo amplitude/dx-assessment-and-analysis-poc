@@ -28,12 +28,16 @@ program.command('pull')
     "amplitude.yml",
   )
   .option(
-    '--experimentManagementApiKey [experimentServerApiKey]',
+    '--experimentManagementApiKey [api_key]',
     "Experiment Management API key",
   )
   .option(
-    '--experimentDeploymentId [experimentDeploymentId]',
-    "Experiment deployment id to use for code generation.",
+    '--experimentDeploymentLabel [label]',
+    "Experiment deployment label to use for code generation.",
+  )
+  .option(
+    '--experimentDeploymentId [id]',
+    "Experiment deployment id to use for code generation. Will override label.",
   )
   .action(async (options) => new PullAction().run(options));
 

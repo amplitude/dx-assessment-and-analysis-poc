@@ -1,9 +1,8 @@
 import { cloneDeep, isEmpty, kebabCase, keyBy } from "lodash";
-import { stringify } from 'yaml';
 import { sortAlphabetically } from "../generators/util/sorting";
 import { JsonSchemaPropertyModel } from "../json-schema";
-import { ExperimentFlagModel } from "../services/experiment/models";
 import { omitDeep } from "../util/omitDeep";
+import { ExperimentFlagModel } from "../services/experiment/ExperimentApiService";
 
 export interface VariantModel {
   description?: string;

@@ -1,8 +1,8 @@
 import { CodeBlock, CodeGenerator } from "../code-generator";
 import { TypeScriptCodeLanguage } from "./TypeScriptCodeModel";
-import { ExperimentFlagModel, VariantModel } from "../../services/experiment/models";
 import { DuplicateNameMappingDetector } from "../DuplicateNameMappingDetector";
 import { AmplitudeConfig } from "../../config/AmplitudeConfig";
+import { VariantModel, ExperimentFlagModel } from "../../services/experiment/ExperimentApiService";
 
 /**
  * ExperimentCoreCodeGenerator

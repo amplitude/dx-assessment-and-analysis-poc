@@ -6,6 +6,8 @@ import { allPlatforms } from "./CodeGenerationConfig";
 import { cloneDeep, isEmpty } from "lodash";
 import { sanitizeVariants } from "./ExperimentsConfig";
 import { ICON_INFO } from "../ui/icons";
+import { JsonSchemaModel } from "../json-schema";
+import { sortAlphabetically } from "../generators/util/sorting";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   const config: AmplitudeConfigModel = parse(yaml);
@@ -87,6 +89,49 @@ export function saveYamlToFile(filePath: string, config: AmplitudeConfig) {
   })
 
   const yamlContents = stringify(outputConfig);
+
+  fs.writeFileSync(filePath, yamlContents);
+}
+
+export function saveEventSchemaYamlToFile(filePath: string, eventSchemas: JsonSchemaModel[]) {
+  // Clean up prior to output
+  const eventMap = {};
+  eventSchemas
+    .sort((a, b) => sortAlphabetically(a.title, b.title))
+    .forEach(event => {
+    const sanitizedEvent: any = {};
+    // description
+    if (!isEmpty(event.description)) {
+      sanitizedEvent.description = event.description;
+    }
+
+    // properties
+    const propertyNames = Object.keys(event.properties);
+    if (propertyNames.length > 0) {
+      let properties = {};
+      propertyNames.forEach(propName => {
+        const prop = event.properties[propName];
+        const sanitizedProp = { ...prop };
+        if (!prop.type) {
+          delete sanitizedProp.type;
+        }
+        if (isEmpty(prop.description)) {
+          delete sanitizedProp.description;
+        }
+        properties[propName] = sanitizedProp;
+      })
+      sanitizedEvent.properties = properties;
+    }
+
+    // required
+    if (!isEmpty(event.required)) {
+      sanitizedEvent.required = event.required;
+    }
+
+    eventMap[event.title] = sanitizedEvent;
+  });
+
+  const yamlContents = stringify(eventMap);
 
   fs.writeFileSync(filePath, yamlContents);
 }

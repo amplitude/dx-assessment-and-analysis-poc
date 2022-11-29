@@ -11,13 +11,19 @@ import {
 } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
 import { cloneDeep, isEmpty } from "lodash";
-import { loadLocalConfiguration, saveYamlToFile } from "../config/AmplitudeConfigYamlParser";
+import {
+  loadLocalConfiguration,
+  saveEventSchemaYamlToFile,
+  saveYamlToFile,
+} from "../config/AmplitudeConfigYamlParser";
 import { BaseAction } from "./BaseAction";
+import { convertToEventSchema, DataApiService } from "../services/data/DataApiService";
 
 export interface PullActionOptions {
   config: string;
   experimentManagementApiKey?: string;
   experimentDeploymentKey?: string;
+  dataApiToken?: string;
 }
 
 export class PullAction extends BaseAction {
@@ -27,11 +33,13 @@ export class PullAction extends BaseAction {
       config: configPath,
       experimentManagementApiKey,
       experimentDeploymentKey,
+      dataApiToken,
     } = options;
 
     const {
       AMP_EXPERIMENT_MANAGEMENT_API_KEY,
       AMP_EXPERIMENT_DEPLOYMENT_KEY,
+      AMP_DATA_API_TOKEN
     } = process.env;
 
     try {
@@ -42,6 +50,25 @@ export class PullAction extends BaseAction {
         console.error(`${ICON_ERROR_W_TEXT}  'experimentManagementApiKey' is required.`);
         return;
       }
+
+      const dataToken = dataApiToken ?? AMP_DATA_API_TOKEN;
+      const dataApiService = new DataApiService(dataToken);
+      const {
+        AMP_ORG_ID: orgId,
+        AMP_WORKSPACE_ID: workspaceId,
+        AMP_BRANCH_ID: branchId,
+        AMP_VERSION_ID: versionId,
+        AMP_SOURCE_ID: sourceId,
+      } = process.env;
+
+      const dataEvents = await dataApiService.getEvents(orgId, workspaceId, branchId, versionId, sourceId);
+      console.error(`${ICON_INFO} ${dataEvents.length} events loaded from server.`);
+
+      const eventSchemas = dataEvents
+        .filter(event => !event.isDeleted)
+        .map(event => convertToEventSchema(workspaceId, event));
+
+      saveEventSchemaYamlToFile('events.yml', eventSchemas);
 
       // Create Experiment API
       const experimentApiService = new ExperimentApiService(experimentToken);

@@ -25,5 +25,5 @@ export const ComparisonResultSymbol: Record<ComparisonResult, string> = {
   [ComparisonResult.Updated]: blueBright(`${padding}[U]`),
   // The follow results should exist in CLI (web merge only)
   [ComparisonResult.Conflict]: redBright(`${padding}[C]`),
-  [ComparisonResult.NoChanges]: white(`${padding} ${ICON_SUCCESS} `),
+  [ComparisonResult.NoChanges]: white(`${padding}[${ICON_SUCCESS}]`),
 };

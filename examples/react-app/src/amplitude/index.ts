@@ -91,39 +91,13 @@ export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> 
  */
 
 /**
- * A user signed up
+ * An Event with Array props
  */
-export interface UserSignedUpProperties {
+export interface EventWithArrayProperties {
   /**
-   * How the user was brought to the app
+   * An array of strings
    */
-  referralSource?: "facebook" | "twitter" | "other";
-}
-
-
-/**
- * The user logged in
- */
-export interface UserLoggedInProperties {
-  /**
-   * The song unique identifier
-   */
-  method: "email" | "facebook" | "google";
-}
-
-
-/**
- * A song was played
- */
-export interface SongPlayedProperties {
-  /**
-   * The song unique identifier
-   */
-  songId: string;
-  /**
-   * If the song is a favorite
-   */
-  songFavorited?: boolean;
+  arrayProp?: string[];
 }
 
 
@@ -143,45 +117,66 @@ export interface SongFavoritedProperties {
 
 
 /**
- * An Event with Array props
+ * A song was played
  */
-export interface EventWithArrayProperties {
+export interface SongPlayedProperties {
   /**
-   * An array of strings
+   * The song unique identifier
    */
-  arrayProp?: string[];
+  songId: string;
+  /**
+   * If the song is a favorite
+   */
+  songFavorited?: boolean;
+}
+
+
+/**
+ * The user logged in
+ */
+export interface UserLoggedInProperties {
+  /**
+   * The song unique identifier
+   */
+  method: "email" | "facebook" | "google";
+}
+
+
+/**
+ * A user signed up
+ */
+export interface UserSignedUpProperties {
+  /**
+   * How the user was brought to the app
+   */
+  referralSource?: "facebook" | "twitter" | "other";
 }
 
 
 
-export class UserSignedUp implements AnalyticsEvent {
-  event_type = 'User Signed Up';
+export class AddToCart implements AnalyticsEvent {
+  event_type = 'Add To Cart';
+}
+
+export class Checkout implements AnalyticsEvent {
+  event_type = 'Checkout';
+}
+
+export class EventWithArray implements AnalyticsEvent {
+  event_type = 'Event With Array';
 
   constructor(
-    public event_properties?: UserSignedUpProperties,
+    public event_properties?: EventWithArrayProperties,
   ) {
     this.event_properties = event_properties;
   }
 }
 
-export class UserLoggedIn implements AnalyticsEvent {
-  event_type = 'User Logged In';
-
-  constructor(
-    public event_properties: UserLoggedInProperties,
-  ) {
-    this.event_properties = event_properties;
-  }
-}
-
-export class SongPlayed implements AnalyticsEvent {
-  event_type = 'Song Played';
-
-  constructor(
-    public event_properties: SongPlayedProperties,
-  ) {
-    this.event_properties = event_properties;
-  }
+export class EventWithConst implements AnalyticsEvent {
+  event_type = 'Event With Const';
+  event_properties = {
+    'constProp': true,
+  };
 }
 
 export class SongFavorited implements AnalyticsEvent {
@@ -200,26 +195,31 @@ export class SongFavorited implements AnalyticsEvent {
   }
 }
 
-export class AddToCart implements AnalyticsEvent {
-  event_type = 'Add To Cart';
-}
-
-export class Checkout implements AnalyticsEvent {
-  event_type = 'Checkout';
-}
-
-export class EventWithConst implements AnalyticsEvent {
-  event_type = 'Event With Const';
-  event_properties = {
-    'constProp': true,
-  };
-}
-
-export class EventWithArray implements AnalyticsEvent {
-  event_type = 'Event With Array';
+export class SongPlayed implements AnalyticsEvent {
+  event_type = 'Song Played';
 
   constructor(
-    public event_properties?: EventWithArrayProperties,
+    public event_properties: SongPlayedProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
+}
+
+export class UserLoggedIn implements AnalyticsEvent {
+  event_type = 'User Logged In';
+
+  constructor(
+    public event_properties: UserLoggedInProperties,
+  ) {
+    this.event_properties = event_properties;
+  }
+}
+
+export class UserSignedUp implements AnalyticsEvent {
+  event_type = 'User Signed Up';
+
+  constructor(
+    public event_properties?: UserSignedUpProperties,
   ) {
     this.event_properties = event_properties;
   }
@@ -227,43 +227,43 @@ export class EventWithArray implements AnalyticsEvent {
 
 
 export interface TrackingPlanMethods{
-  userSignedUp(properties?: UserSignedUpProperties): Promise<void>;
-  userLoggedIn(properties: UserLoggedInProperties): Promise<void>;
-  songPlayed(properties: SongPlayedProperties): Promise<void>;
-  songFavorited(properties: SongFavoritedProperties): Promise<void>;
   addToCart(): Promise<void>;
   checkout(): Promise<void>;
-  eventWithConst(): Promise<void>;
   eventWithArray(properties?: EventWithArrayProperties): Promise<void>;
+  eventWithConst(): Promise<void>;
+  songFavorited(properties: SongFavoritedProperties): Promise<void>;
+  songPlayed(properties: SongPlayedProperties): Promise<void>;
+  userLoggedIn(properties: UserLoggedInProperties): Promise<void>;
+  userSignedUp(properties?: UserSignedUpProperties): Promise<void>;
 }
 
 export interface IAnalyticsClient extends IAnalyticsClientCore, Typed<TrackingPlanMethods> {}
 
 export class TrackingPlanClient implements TrackingPlanMethods {
   constructor(private analytics: IAnalyticsClientCore) {}
-  async userSignedUp(properties?: UserSignedUpProperties) {
-    return this.analytics.track(new UserSignedUp(properties))
-  }
-  async userLoggedIn(properties: UserLoggedInProperties) {
-    return this.analytics.track(new UserLoggedIn(properties))
-  }
-  async songPlayed(properties: SongPlayedProperties) {
-    return this.analytics.track(new SongPlayed(properties))
-  }
-  async songFavorited(properties: SongFavoritedProperties) {
-    return this.analytics.track(new SongFavorited(properties))
-  }
   async addToCart() {
     return this.analytics.track(new AddToCart())
   }
   async checkout() {
     return this.analytics.track(new Checkout())
   }
+  async eventWithArray(properties?: EventWithArrayProperties) {
+    return this.analytics.track(new EventWithArray(properties))
+  }
   async eventWithConst() {
     return this.analytics.track(new EventWithConst())
   }
-  async eventWithArray(properties?: EventWithArrayProperties) {
-    return this.analytics.track(new EventWithArray(properties))
+  async songFavorited(properties: SongFavoritedProperties) {
+    return this.analytics.track(new SongFavorited(properties))
+  }
+  async songPlayed(properties: SongPlayedProperties) {
+    return this.analytics.track(new SongPlayed(properties))
+  }
+  async userLoggedIn(properties: UserLoggedInProperties) {
+    return this.analytics.track(new UserLoggedIn(properties))
+  }
+  async userSignedUp(properties?: UserSignedUpProperties) {
+    return this.analytics.track(new UserSignedUp(properties))
   }
 }
 

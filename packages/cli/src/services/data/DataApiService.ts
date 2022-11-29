@@ -113,7 +113,6 @@ query versions($orgId: ID!, $workspaceId: ID!, $branchId: ID!, $versionId: ID!) 
         headers: this.headers
       });
 
-      console.log(jsons(response.data.data.orgs[0].workspaces[0])); // eslint-disable-line no-console
       return response.data.data.orgs[0].workspaces[0].branches[0].versions[0].events as DataEvent[];
     }
     catch (e) {

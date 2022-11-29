@@ -1,23 +1,11 @@
-import { ExperimentApiService } from "../services/experiment/ExperimentApiService";
-import { convertToFlagConfigModel, FlagConfigModel } from "../config/ExperimentsConfig";
-import { ExperimentFlagComparator } from "../comparison/ExperimentFlagComparator";
-import {
-  ComparisonResultSymbol,
-  ICON_ERROR_W_TEXT,
-  ICON_INFO,
-  ICON_RETURN_ARROW,
-  ICON_SUCCESS,
-  ICON_WARNING_W_TEXT
-} from "../ui/icons";
-import { ComparisonResult } from "../comparison/ComparisonResult";
-import { cloneDeep, isEmpty } from "lodash";
+import { ICON_RETURN_ARROW } from "../ui/icons";
 import {
   loadLocalConfiguration,
-  saveEventSchemaYamlToFile,
   saveYamlToFile,
 } from "../config/AmplitudeConfigYamlParser";
 import { BaseAction } from "./BaseAction";
-import { convertToEventSchema, DataApiService } from "../services/data/DataApiService";
+import { AnalyticsPullAction } from "./AnalyticsPullAction";
+import { ExperimentPullAction } from "./ExperimentPullAction";
 
 export interface PullActionOptions {
   config: string;
@@ -28,128 +16,29 @@ export interface PullActionOptions {
 
 export class PullAction extends BaseAction {
   async run(options: PullActionOptions) {
-    console.log(`${ICON_INFO} Pulling latest configuration`);
+    this.logger().info(`Pulling latest configuration`);
     const {
       config: configPath,
-      experimentManagementApiKey,
-      experimentDeploymentKey,
-      dataApiToken,
+      experimentManagementApiKey = process.env.AMP_EXPERIMENT_MANAGEMENT_API_KEY,
+      experimentDeploymentKey = process.env.AMP_EXPERIMENT_DEPLOYMENT_KEY,
+      dataApiToken = process.env.AMP_DATA_API_TOKEN,
     } = options;
-
-    const {
-      AMP_EXPERIMENT_MANAGEMENT_API_KEY,
-      AMP_EXPERIMENT_DEPLOYMENT_KEY,
-      AMP_DATA_API_TOKEN
-    } = process.env;
 
     try {
       const config = loadLocalConfiguration(configPath);
 
-      const experimentToken = experimentManagementApiKey ?? AMP_EXPERIMENT_MANAGEMENT_API_KEY;
-      if (!experimentToken) {
-        console.error(`${ICON_ERROR_W_TEXT}  'experimentManagementApiKey' is required.`);
-        return;
-      }
+      await new AnalyticsPullAction().run({ config, dataApiToken });
+      await new ExperimentPullAction().run({
+        config,
+        experimentManagementApiKey,
+        experimentDeploymentKey
+      });
 
-      const dataToken = dataApiToken ?? AMP_DATA_API_TOKEN;
-      const dataApiService = new DataApiService(dataToken);
-      const {
-        AMP_ORG_ID: orgId,
-        AMP_WORKSPACE_ID: workspaceId,
-        AMP_BRANCH_ID: branchId,
-        AMP_VERSION_ID: versionId,
-        AMP_SOURCE_ID: sourceId,
-      } = process.env;
-
-      const dataEvents = await dataApiService.getEvents(orgId, workspaceId, branchId, versionId, sourceId);
-      console.error(`${ICON_INFO} ${dataEvents.length} events loaded from server.`);
-
-      const eventSchemas = dataEvents
-        .filter(event => !event.isDeleted)
-        .map(event => convertToEventSchema(workspaceId, event));
-
-      config.analytics().setEvents(eventSchemas);
-
-      // Create Experiment API
-      const experimentApiService = new ExperimentApiService(experimentToken);
-
-      // Get Deployment
-      let deploymentKey = experimentDeploymentKey ?? AMP_EXPERIMENT_DEPLOYMENT_KEY;
-      if (isEmpty(deploymentKey)) {
-        console.error(`${ICON_ERROR_W_TEXT} 'experimentDeploymentKey' is required.`);
-        return;
-      }
-      const deployments = await experimentApiService.getDeployments();
-      const deploymentId = deployments.find(d => d.key === deploymentKey)?.id;
-      if (isEmpty(deploymentId)) {
-        console.error(deployments);
-        console.error(`${ICON_ERROR_W_TEXT} unable to locate deployment for given key.`);
-        return;
-      }
-
-      // get flags from local amplitude.yml
-      const flagsFromLocal = config.experiment().getFlags();
-      console.log(`${ICON_INFO} Found ${flagsFromLocal.length} local flags.`);
-
-      // load flags from server
-      const flagsFromServer = (await experimentApiService.getFlags(deploymentId)).map(
-        flag => convertToFlagConfigModel(flag),
-      );
-      console.log(`${ICON_INFO} Received ${flagsFromServer.length} flags from server.`);
-
-      const mergedFlags: FlagConfigModel[] = [];
-      const comparator = new ExperimentFlagComparator();
-
-      // check for changes in flags on both
-      let hasChanges = dataEvents.length > 0;
-      for (const serverFlag of flagsFromServer) {
-        const localFlag = flagsFromLocal.find(f => f.key === serverFlag.key);
-        if (!localFlag) {
-          console.log(`${ComparisonResultSymbol[ComparisonResult.Added]} ${serverFlag.key}`);
-          mergedFlags.push(serverFlag)
-        } else {
-          const comparison = comparator.compare(localFlag, serverFlag)
-          console.log(`${ComparisonResultSymbol[comparison.result]} ${serverFlag.key}`);
-          const { changes } = comparison;
-          const changedFields = Object.keys(changes);
-          changedFields.forEach(field => {
-            console.log(`    ${ICON_RETURN_ARROW} ${field}: ${changes[field].origin} -> ${changes[field].target}`);
-          })
-
-          const mergedFlag = cloneDeep(localFlag);
-          mergedFlags.push(mergedFlag);
-          if (comparison.result !== ComparisonResult.NoChanges) {
-            hasChanges = true;
-
-            // copy server changes but keep payload schema from local
-            mergedFlag.key = serverFlag.key;
-            mergedFlag.description = serverFlag.description;
-            mergedFlag.variants = serverFlag.variants;
-          }
-        }
-      }
-
-      // Check for local flags that no longer exist on server
-      for (const localFlag of flagsFromLocal) {
-        const serverFlag = flagsFromServer.find(f => f.key === localFlag.key);
-        if (!serverFlag) {
-          hasChanges = true;
-          console.log(`${ComparisonResultSymbol[ComparisonResult.Removed]} ${localFlag.key}`);
-        }
-      }
-
-      if (hasChanges) {
-        console.warn(`${ICON_WARNING_W_TEXT} Server changes will overwrite local values.`);
-        // Update config with updated flags & save to file
-        config.experiment().setFlags(mergedFlags);
-        saveYamlToFile(configPath, config);
-        console.log(`${ICON_SUCCESS} Configuration saved successfully.`);
-        console.log(`  ${ICON_RETURN_ARROW} ${configPath}`);
-      } else {
-        console.log(`${ICON_SUCCESS} Local configuration is already up to date.`);
-      }
+      saveYamlToFile(configPath, config);
+      this.logger().success(`Configuration saved successfully.`)
+        .log(`  ${ICON_RETURN_ARROW} ${configPath}`);
     } catch (err) {
-      console.log(`Unhandled exception ${err}`);
+      this.logger().error(`Unhandled exception ${err}`);
       return;
     }
   }

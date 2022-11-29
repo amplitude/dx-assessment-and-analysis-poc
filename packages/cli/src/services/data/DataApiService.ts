@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { jsons } from "@amplitude/util";
 import SchemaGen from "./schemagen";
+import { sortAlphabetically } from "../../generators/util/sorting";
 
 // https://data-api.amplitude.com/graphql?q=VersionTemplates
 // const DATA_API_BASE_URL = 'https://data-api.amplitude.com/graphql';
@@ -113,7 +113,9 @@ query versions($orgId: ID!, $workspaceId: ID!, $branchId: ID!, $versionId: ID!) 
         headers: this.headers
       });
 
-      return response.data.data.orgs[0].workspaces[0].branches[0].versions[0].events as DataEvent[];
+      const events:DataEvent[] = response.data.data.orgs[0].workspaces[0].branches[0].versions[0].events;
+
+      return events.sort((a, b) => sortAlphabetically(a.name, b.name))
     }
     catch (e) {
       console.error(`Error loading Events from Data server.`, e)

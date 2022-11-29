@@ -68,7 +68,7 @@ export class PullAction extends BaseAction {
         .filter(event => !event.isDeleted)
         .map(event => convertToEventSchema(workspaceId, event));
 
-      saveEventSchemaYamlToFile('events.yml', eventSchemas);
+      config.analytics().setEvents(eventSchemas);
 
       // Create Experiment API
       const experimentApiService = new ExperimentApiService(experimentToken);
@@ -101,7 +101,7 @@ export class PullAction extends BaseAction {
       const comparator = new ExperimentFlagComparator();
 
       // check for changes in flags on both
-      let hasChanges = false;
+      let hasChanges = dataEvents.length > 0;
       for (const serverFlag of flagsFromServer) {
         const localFlag = flagsFromLocal.find(f => f.key === serverFlag.key);
         if (!localFlag) {

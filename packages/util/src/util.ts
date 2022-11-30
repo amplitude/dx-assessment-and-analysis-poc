@@ -12,9 +12,6 @@ export function getProductConfigurationFromEnv(isReact = false) {
     ? process.env.REACT_APP_AMP_EXPERIMENT_API_KEY
     : process.env.AMP_EXPERIMENT_API_KEY;
 
-  console.log(`analyticsApiKey`, analyticsApiKey);
-  console.log(`experimentApiKey`, experimentApiKey);
-
   return !(analyticsApiKey || experimentApiKey)
     ? {}
     : {

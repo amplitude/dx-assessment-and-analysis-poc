@@ -36,13 +36,14 @@ export class AnalyticsPullAction extends BaseAction {
       dataEvents.forEach(event => {
         console.log(`${ComparisonResultSymbol[ComparisonResult.NoChanges]} ${event.name}`)
       });
-      this.logger().info(`${dataEvents.length} events loaded from server.`);
 
       const eventSchemas = dataEvents
         .filter(event => !event.isDeleted)
         .map(event => convertToEventSchema(workspaceId, event));
 
       config.analytics().setEvents(eventSchemas);
+
+      this.logger().success(`Loaded ${dataEvents.length} Analytics events from server.`);
     } catch (err) {
       this.logger().error(`Unhandled exception pulling Analytics data. ${err}`);
       return;

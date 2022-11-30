@@ -3,6 +3,7 @@ import { convertToFlagConfigModel, FlagConfigModel } from "../config/Experiments
 import { ExperimentFlagComparator } from "../comparison/ExperimentFlagComparator";
 import {
   ComparisonResultSymbol,
+  ICON_ARROW,
   ICON_RETURN_ARROW,
 } from "../ui/icons";
 import { ComparisonResult } from "../comparison/ComparisonResult";
@@ -51,13 +52,11 @@ export class ExperimentPullAction extends BaseAction {
 
       // get flags from local amplitude.yml
       const flagsFromLocal = config.experiment().getFlags();
-      this.logger().info(`Found ${flagsFromLocal.length} local flags.`);
-
       // load flags from server
       const flagsFromServer = (await experimentApiService.getFlags(deploymentId)).map(
         flag => convertToFlagConfigModel(flag),
       );
-      this.logger().info(`Received ${flagsFromServer.length} flags from server.`);
+      this.logger().log(`  ${ICON_RETURN_ARROW} Flags: ${flagsFromLocal.length} (local) ${ICON_ARROW} ${flagsFromServer.length} (server)`);
 
       const mergedFlags: FlagConfigModel[] = [];
       const comparator = new ExperimentFlagComparator();
@@ -105,7 +104,7 @@ export class ExperimentPullAction extends BaseAction {
         // Update config with updated flags
         config.experiment().setFlags(mergedFlags);
       } else {
-        this.logger().success(`Local configuration is already up to date.`);
+        this.logger().success(`Local Experiment configuration is already up to date.`);
       }
     } catch (err) {
       this.logger().error(`Unhandled exception pulling Experiment data. ${err}`);

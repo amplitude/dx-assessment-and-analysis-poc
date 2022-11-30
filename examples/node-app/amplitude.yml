@@ -1,100 +1,121 @@
-# Code generation configuration
 settings:
   platform: Node
   language: TypeScript
   sdk: "@amplitude/amplitude-node"
   output: ./src/amplitude
   typedAnchorName: typed
-
-# Environment configuration
 environments:
   development:
     experiment:
       apiKey: my-deployment-key
     analytics:
       apiKey: my-api-key
-
   production:
     experiment:
       apiKey: my-deployment-key
     analytics:
       apiKey: my-api-key
-
-# Collection of aliases used elsewhere in the config
-x-analytics-definitions:
-  referralSource: &referralSource
-    description: How the user was brought to the app
-    enum: [ "facebook", "twitter", "other" ]
-
-x-experiment-definitions:
-  payload: &arrayOfStringsPayload
-    description: An array of strings
-    type: array
-    items:
-      type: string
-
-# User configuration
 user:
   description: Collection of user properties
-  required: [referralSource]
+  required:
+    - referralSource
   properties:
-    referralSource: *referralSource
+    referralSource:
+      description: How the user was brought to the app
+      enum:
+        - facebook
+        - twitter
+        - other
     favoriteSongCount:
       description: Total number of favorited songs
       type: integer
-
-# Analytics configuration
 analytics:
   events:
+    Add To Cart:
+      description: An item was added to the cart
+    Checkout:
+      description: The user completed their purchase
+    Event With Array:
+      description: An Event with Array props
+      properties:
+        arrayProp:
+          type: array
+          items:
+            type: string
+    Event With Const:
+      description: An Event with only Const props
+      properties:
+        constProp:
+          description: Constant value shouldn't be settable
+          const: true
+      required:
+        - constProp
+    Song Favorited:
+      description: A song was added to a user's favorites
+      properties:
+        aConstant:
+          description: Constant values shouldn't be settable
+          const: true
+        songId:
+          description: The song unique identifier
+          type: string
+        optionalProp:
+          description: An optional value
+          type: string
+      required:
+        - aConstant
+        - songId
+    Song Played:
+      description: A song was played
+      properties:
+        songId:
+          description: The song unique identifier
+          type: string
+        songFavorited:
+          description: If the song is a favorite
+          type: boolean
+      required:
+        - songId
+    User Logged In:
+      description: The user logged in
+      properties:
+        method:
+          enum:
+            - email
+            - facebook
+            - google
+      required:
+        - method
     User Signed Up:
       description: A user signed up
       properties:
-        referralSource: *referralSource
-
-    User Logged In:
-      description: The user logged in
-      required: [ method ]
-      properties:
-        method:
-          description: The song unique identifier
-          enum: [ "email", "facebook", "google" ]
-
-    Add To Cart:
-      description: An item was added to the cart
-
-    Checkout:
-      description: The user completed their purchase
-
-# Experiment configuration
+        referralSource:
+          description: How the user was brought to the app
+          enum:
+            - facebook
+            - twitter
+            - other
 experiment:
   flags:
-    Codegen Boolean Experiment:
-      key: codegen-boolean-experiment
-      variants:
-        on:
-          payload:
-            type: boolean
-
     Codegen Array Experiment:
       key: codegen-array-experiment
+      description: Experiment with Array payload
       variants:
-        generic:
-          payload: *arrayOfStringsPayload
-        ampli:
-          payload: *arrayOfStringsPayload
-
+        ? generic
+        ? ampli
+    Codegen Boolean Experiment:
+      key: codegen-boolean-experiment
+      description: Experiment with boolean payload
+      variants:
+        ? on
     Codegen String Experiment:
       key: codegen-string-experiment
+      description: Example experiment with string payload
       variants:
-        control:
-          payload:
-            type: string
-        treatment:
-          payload:
-            type: string
-
+        ? control
+        ? treatment
     Codegen Experiment:
       key: codegen-experiment
       variants:
-        control:
-        treatment:
+        ? control
+        ? treatment

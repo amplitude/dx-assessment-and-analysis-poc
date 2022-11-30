@@ -94,9 +94,6 @@ export interface AmplitudeLoadOptions extends Partial<AmplitudeLoadOptionsCore> 
  * An Event with Array props
  */
 export interface EventWithArrayProperties {
-  /**
-   * An array of strings
-   */
   arrayProp?: string[];
 }
 
@@ -135,9 +132,6 @@ export interface SongPlayedProperties {
  * The user logged in
  */
 export interface UserLoggedInProperties {
-  /**
-   * The song unique identifier
-   */
   method: "email" | "facebook" | "google";
 }
 

@@ -19,7 +19,10 @@
     "@amplitude/plugin-segment-analytics-browser": "^0.0.0",
     "@amplitude/plugin-launch-darkly-experiment-browser": "^0.0.0",
     "@amplitude/user": "^0.0.0",
-    "@amplitude/user-messages": "^0.0.0"
+    "@amplitude/user-messages": "^0.0.0",
+    "xmlhttprequest": "^1.8.0",
+    "node-fetch": "^2.6.7",
+    "dotenv": "^16.0.3"
   },
   "scripts": {
     "start": "yarn example-all",

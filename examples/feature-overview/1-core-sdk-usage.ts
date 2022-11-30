@@ -1,11 +1,13 @@
 /**
  * Untyped Core SDK Usage
  */
-
 import { amplitude, Logger } from '@amplitude/amplitude-browser'
 import { user } from '@amplitude/user'
 import { analytics } from '@amplitude/analytics-browser'
 import { experiment } from '@amplitude/experiment-browser'
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
 
 /**
  * With a scoped source key we could reduce to a single API key to rule all sub-products
@@ -22,7 +24,9 @@ amplitude.load({
   plugins: [
     analytics,
     experiment
-  ]
+  ],
+  // Try loading API keys from Env
+  ...getProductConfigurationFromEnv(),
 })
 
 /**
@@ -30,7 +34,7 @@ amplitude.load({
  *   Amplitude keeps a reference to current user
  *   Plugins can access the user via config
  */
-amplitude.user.setUserId('u-id')
+amplitude.user.setUserId('unified-user-id')
 
 /**
  * Multiple users (server usage)

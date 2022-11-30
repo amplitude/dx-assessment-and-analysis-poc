@@ -2,6 +2,9 @@ import { amplitude, Logger } from "@amplitude/amplitude-browser";
 import { analytics } from "@amplitude/analytics-browser";
 import { experiment } from "@amplitude/experiment-browser";
 import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "@amplitude/plugin-segment-analytics-browser";
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
 
 /**
  * 1. Register plugins with Amplitude during load()
@@ -22,6 +25,8 @@ amplitude.load({
       apiKey: ''
     }
   },
+  // Uncomment to load configuration from .env
+  ...getProductConfigurationFromEnv(),
 })
 
 /**

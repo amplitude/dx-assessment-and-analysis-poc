@@ -2,6 +2,9 @@
  * Strongly typed SDK usage
  */
 import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from './amplitude/browser'
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
 
 /**
  * Code generated SDK can set sensible defaults based on environment including
@@ -11,7 +14,8 @@ import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from './
  */
 amplitude.typed.load({
   environment: 'production',
-  logger: new Logger()
+  logger: new Logger(),
+  ...getProductConfigurationFromEnv(),
 })
 
 /**
@@ -19,7 +23,7 @@ amplitude.typed.load({
  *   Amplitude keeps a reference to current user
  *   Plugins can access the user via config
  */
-amplitude.user.setUserId('u-id')
+amplitude.user.setUserId('unified-user-id')
 
 /**
  * Multiple users (server usage)

@@ -7,36 +7,19 @@
 import dotenv from 'dotenv';
 
 import { amplitude, analytics, experiment, UserLoggedIn, Logger, User } from './amplitude'
+import { getProductConfigurationFromEnv } from "@amplitude/util";
 
 // Read Configuration
 dotenv.config()
-const {
-  AMP_ANALYTICS_API_KEY,
-  AMP_EXPERIMENT_API_KEY,
-  AMP_USER_ID,
-  AMP_DEVICE_ID
-} = process.env;
 
-const userId = AMP_USER_ID || 'alpha-user-id-node';
-const deviceId = AMP_DEVICE_ID || 'alpha-device-id-node';
-
-const envConfig = !(AMP_ANALYTICS_API_KEY || AMP_EXPERIMENT_API_KEY)
-  ? {}
-  : {
-    configuration: {
-      analytics: {
-        apiKey: AMP_ANALYTICS_API_KEY,
-      },
-      experiment: {
-        apiKey: AMP_EXPERIMENT_API_KEY,
-      },
-    }
-  };
+const userId = process.env.AMP_USER_ID || 'alpha-user-id-node';
+const deviceId = process.env.AMP_DEVICE_ID || 'alpha-device-id-node';
 
 amplitude.typed.load({
   environment: 'production',
   logger: new Logger(),
-  ...envConfig,
+  // Try reading in ApiKeys from .env file
+  ...getProductConfigurationFromEnv(),
 })
 
 /**

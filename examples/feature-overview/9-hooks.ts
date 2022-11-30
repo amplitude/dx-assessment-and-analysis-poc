@@ -5,6 +5,9 @@ import { trackMessage } from "@amplitude/analytics-messages";
 import { hub } from "@amplitude/hub";
 import { user } from "@amplitude/user";
 import { userUpdatedMessage } from "@amplitude/user-messages";
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
 
 const logger = new Logger();
 
@@ -17,7 +20,8 @@ amplitude.load({
   plugins: [
     experiment,
     analytics,
-  ]
+  ],
+  ...getProductConfigurationFromEnv(),
 })
 
 /**

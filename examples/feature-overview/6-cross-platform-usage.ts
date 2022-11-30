@@ -12,11 +12,15 @@ import {
   analytics as analyticsBrowser,
   experiment as experimentBrowser,
 } from './amplitude/browser'
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
+const envConfig = getProductConfigurationFromEnv();
 
 /**
  * Client
  */
-amplitudeBrowser.typed.load({ logger: new Logger() })
+amplitudeBrowser.typed.load({ logger: new Logger(), ...envConfig })
 if (experimentBrowser.typed.aMultiVariateExperiment().generic) {
   analyticsBrowser.track('Client side event')
 }
@@ -24,9 +28,9 @@ if (experimentBrowser.typed.aMultiVariateExperiment().generic) {
 /**
  * Server
  */
-amplitudeNode.typed.load({ logger: new Logger() })
+amplitudeNode.typed.load({ logger: new Logger(), ...envConfig })
 if (experimentNode.deviceId('device').typed.flagCodegenEnabled()) {
-  analyticsNode.userId('user').track('Server side event')
+  analyticsNode.userId('unified-user-id').track('Server side event')
 }
 
 

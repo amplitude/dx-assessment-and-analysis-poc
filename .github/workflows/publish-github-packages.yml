@@ -7,6 +7,19 @@ on:
         description: "Do a dry run to preview instead of a real release (true/false)"
         required: true
         default: "true"
+    versionType:
+      type: choice
+      description: Version Type
+      options:
+        - conventional-commits
+        - patch
+        - minor
+        - major
+    versionExplicit:
+      description: "Exact version (e.g. '1.0.1', '1.2.3'). If set, this will override versionType."
+
+env:
+  DRY_RUN: ${{ github.event.inputs.dryRun }}
 
 jobs:
   authorize:
@@ -27,8 +40,21 @@ jobs:
       matrix:
         node-version: [ 16.x ]
 
+    env:
+      lerna_package_version: ''
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get version type
+        if: ${{ github.event.inputs.versionType != 'conventional-commits' }}
+        run: |
+          echo "lerna_package_version=${{ github.event.inputs.versionType }}" >> $GITHUB_ENV
+
+      - name: Get version input
+        if: ${{ github.event.inputs.versionExplicit != null }}
+        run: |
+          echo "lerna_package_version=${{ github.event.inputs.versionExplicit }}" >> $GITHUB_ENV
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -55,7 +81,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn lerna version --no-push --no-git-tag-version --loglevel silly --yes
+          yarn lerna version ${{ env.lerna_package_version }} --no-push --no-git-tag-version --loglevel silly --yes
 
       - name: Release (Github Registry)
         if: ${{ env.DRY_RUN == 'false' }}
@@ -63,4 +89,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn lerna version --yes
+          yarn lerna version ${{ env.lerna_package_version }} --yes
+          yarn lerna publish --yes --loglevel silly

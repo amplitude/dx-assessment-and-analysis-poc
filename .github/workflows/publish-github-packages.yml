@@ -67,4 +67,4 @@ jobs:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           yarn lerna version --yes
-          yarn lerna publish
+          yarn lerna publish --yes --loglevel silly

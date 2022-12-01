@@ -7,16 +7,16 @@ on:
         description: "Do a dry run to preview instead of a real release (true/false)"
         required: true
         default: "true"
-    versionType:
-      type: choice
-      description: Version Type
-      options:
-        - conventional-commits
-        - patch
-        - minor
-        - major
-    versionExplicit:
-      description: "Exact version (e.g. '1.0.1', '1.2.3'). If set, this will override versionType."
+      versionType:
+        type: choice
+        description: Version Type
+        options:
+          - conventional-commits
+          - patch
+          - minor
+          - major
+      versionExplicit:
+        description: "Exact version (e.g. '1.0.1', '1.2.3'). If set, this will override versionType."
 
 env:
   DRY_RUN: ${{ github.event.inputs.dryRun }}

@@ -21,6 +21,7 @@ export class AnalyticsPullAction extends BaseAction {
     try {
       if (isEmpty(dataApiToken)) {
         this.logger().error(`'dataApiToken' is required`);
+        return;
       }
 
       const dataApiService = new DataApiService(dataApiToken);

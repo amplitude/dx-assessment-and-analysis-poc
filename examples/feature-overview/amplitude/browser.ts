@@ -279,8 +279,8 @@ export type BaseExperiment = {
 
 /* A Multi Variate Experiment */
 export namespace AMultiVariateExperimentVariants {
-  export type Generic = { key: 'generic', payload: any };
-  export type Ampli = { key: 'ampli', payload: any };
+  export type Generic = { key: 'generic', payload: string[] };
+  export type Ampli = { key: 'ampli', payload: string[] };
 
   export enum Keys {
     Generic = 'generic',

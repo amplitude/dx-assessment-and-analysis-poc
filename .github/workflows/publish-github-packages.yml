@@ -5,7 +5,7 @@ on:
     inputs:
       dryRun:
         type: choice
-        description: "Do a dry run to preview instead of a real release (true/false)"
+        description: "Do a dry run to preview instead of a real release. WARNING: Choosing 'false' will do a production release."
         required: true
         options:
           - true

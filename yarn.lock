@@ -7,10 +7,9 @@
   resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.0.1.tgz#b38b444ad3aa5fedbb15f2f746dcd934226a12dd"
   integrity sha512-+u76oB43nOHrF4DDWRLWDCtci7f3QJoEBigemIdIeTi1ODqjx6Tad9NCVnPRwewWlKkVab5PlK8DCtPTyX7S8g==
 
-"@amplitude/analytics-browser-legacy@npm:@amplitude/analytics-browser@^1.2.1":
+"@amplitude/analytics-browser-legacy@https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.5.1.tgz", "@amplitude/analytics-browser-legacy@npm:@amplitude/analytics-browser@^1.2.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.5.1.tgz#ff89fcf4fbd76dc23f0e397ae7a7d3bf5e1b16b6"
-  integrity sha512-Z0i8JZNubzKvZjRITl7h2Y5QKuMmrNJRruF2vN0p3ZTIjVqgFMSs82hPIG714c3L6yZIpCXxe8UvMhOB1cJR+A==
   dependencies:
     "@amplitude/analytics-client-common" "^0.2.2"
     "@amplitude/analytics-core" "^0.9.4"
@@ -58,10 +57,9 @@
     "@amplitude/analytics-types" "^0.10.3"
     tslib "^2.3.1"
 
-"@amplitude/analytics-node-legacy@npm:@amplitude/analytics-node@^0.6.1":
+"@amplitude/analytics-node-legacy@https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-0.6.1.tgz":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-0.6.1.tgz#8266ac342f3e3b4fde20c9a73ad5a267c325f557"
-  integrity sha512-TEmYWgRYxnAwXfmnUwvJju3DOUYvsNucJblfvo+HK+OWsVrynJB5ZGefw5A0FBxC7ck6+8opAfDSVMhjxYmWOg==
   dependencies:
     "@amplitude/analytics-core" "^0.10.1"
     "@amplitude/analytics-types" "^0.13.0"

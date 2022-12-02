@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "@amplitude/amplitude-browser": "^0.0.1",
-    "@amplitude/analytics-browser-legacy": "npm:@amplitude/analytics-browser@^1.2.1",
+    "@amplitude/analytics-browser-legacy": "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.5.1.tgz",
     "@amplitude/analytics-core": "^0.0.1",
     "@amplitude/hub": "^0.0.1",
     "@amplitude/user-messages": "^0.0.1",

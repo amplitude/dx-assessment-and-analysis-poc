@@ -11,6 +11,11 @@
 import { analytics as segmentAnalytics, SegmentAnalyticsConfig } from "@amplitude/plugin-segment-analytics-browser";
 import { experiment as launchDarkly, LaunchDarklyConfig } from "@amplitude/plugin-launch-darkly-experiment-browser";
 import { amplitude, analytics, experiment, TrackingPlanClient, user, UserLoggedIn, Logger } from "./amplitude/browser";
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
+
+prepareExampleEnv();
+const envConfig = getProductConfigurationFromEnv();
+const configuration = envConfig.configuration;
 
 amplitude.load({
   apiKey: 'scoped-source-write-key',
@@ -32,13 +37,14 @@ amplitude.load({
     segment: {
       writeKey: 'my-segment-write-key'
     } as SegmentAnalyticsConfig,
+    ...configuration,
   }
 })
 
 /**
  * User
  */
-user.setUserId('u-id')
+user.setUserId('unified-user-id')
 user.typed.setUserProperties({
   referralSource: "twitter"
 });

@@ -6,6 +6,8 @@ import { allPlatforms } from "./CodeGenerationConfig";
 import { cloneDeep, isEmpty } from "lodash";
 import { sanitizeVariants } from "./ExperimentsConfig";
 import { ICON_INFO } from "../ui/icons";
+import { JsonSchemaModel } from "../json-schema";
+import { sortAlphabetically } from "../generators/util/sorting";
 
 export function parseFromYaml(yaml: string): AmplitudeConfigModel {
   const config: AmplitudeConfigModel = parse(yaml);

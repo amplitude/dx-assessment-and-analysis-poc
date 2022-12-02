@@ -28,6 +28,8 @@
     "clean": "",
     "test": "jest",
     "cli": "ts-node ../../packages/cli/src/cli.ts",
-    "pull": "yarn cli build --config amplitude.yml"
+    "amplitude:pull": "yarn cli pull",
+    "amplitude:build": "yarn cli build",
+    "pull": "yarn amplitude:pull && yarn amplitude:build"
   }
 }

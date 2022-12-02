@@ -41,20 +41,24 @@ jobs:
         node-version: [ 16.x ]
 
     env:
-      lerna_package_version: ''
+      LERNA_PACKAGE_VERSION: ''
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get version type
+      - name: Set version by type
         if: ${{ github.event.inputs.versionType != 'conventional-commits' }}
         run: |
-          echo "lerna_package_version=${{ github.event.inputs.versionType }}" >> $GITHUB_ENV
+          echo "LERNA_PACKAGE_VERSION=${{ github.event.inputs.versionType }}" >> $GITHUB_ENV
 
-      - name: Get version input
+      - name: Set version explicitly
         if: ${{ github.event.inputs.versionExplicit != null }}
         run: |
-          echo "lerna_package_version=${{ github.event.inputs.versionExplicit }}" >> $GITHUB_ENV
+          echo "LERNA_PACKAGE_VERSION=${{ github.event.inputs.versionExplicit }}" >> $GITHUB_ENV
+
+      - name: Version=${{ env.LERNA_PACKAGE_VERSION }} Dry-run=${{ env.DRY_RUN }}
+        run: |
+          echo "${{ env.LERNA_PACKAGE_VERSION }}"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -81,7 +85,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn lerna version ${{ env.lerna_package_version }} --no-push --no-git-tag-version --loglevel silly --yes
+          yarn lerna version ${{ env.LERNA_PACKAGE_VERSION }} --no-push --no-git-tag-version --loglevel silly --yes
+
+      - name: Configure Git User
+        if: ${{ env.DRY_RUN == 'false' }}
+        run: |
+          git config --global user.name amplitude-sdk-bot
+          git config --global user.email amplitude-sdk-bot@users.noreply.github.com
 
       - name: Release (Github Registry)
         if: ${{ env.DRY_RUN == 'false' }}
@@ -89,5 +99,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn lerna version ${{ env.lerna_package_version }} --yes
+          yarn lerna version ${{ env.LERNA_PACKAGE_VERSION }} --yes
           yarn lerna publish --yes --loglevel silly

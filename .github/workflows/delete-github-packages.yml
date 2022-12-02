@@ -3,11 +3,12 @@ name: Delete Packages from Github Registry
 on:
   workflow_dispatch:
     inputs:
-      versionExplicit:
+      packageSemVer:
         description: "Exact version (e.g. '1.0.1', '1.2.3')."
-
-env:
-  PACKAGE_SEM_VER: ${{ github.event.inputs.versionExplicit }}
+      dryRun:
+        type: boolean
+        description: "Dry run"
+        default: true
 
 jobs:
   authorize:
@@ -23,20 +24,30 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Delete PR packages
+      - name: Delete Github packages
         uses: smartsquaregmbh/delete-old-packages@v0.4.0
         with:
-          version-pattern: "^${{ env.PACKAGE_SEM_VER }}$"
+          version-pattern: "^${{ github.event.inputs.packageSemVer }}$"
+          dry-run: ${{ github.event.inputs.dryRun }}
           keep: 0
           names: |
-            empty
             cli
+            empty
+            groups
             hub
+            util
+            analytics-core
+            analytics-messages
+            analytics-browser
+            analytics-node
+            amplitude-core
+            amplitude-browser
+            amplitude-node
+            experiment-core
+            experiment-browser
+            experiment-node
+            user
+            user-messages
+            plugin-segment-analytics-browser
+            plugin-launch-darkly-experiment-browser

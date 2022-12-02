@@ -44,8 +44,3 @@ jobs:
       - name: Test
         run: |
           yarn test --verbose
-
-      - name: Run feature overview examples
-        working-directory: ./examples/feature-overview
-        run: |
-          yarn example-all

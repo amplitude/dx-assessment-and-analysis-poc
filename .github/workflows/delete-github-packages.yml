@@ -5,6 +5,10 @@ on:
     inputs:
       versionExplicit:
         description: "Exact version (e.g. '1.0.1', '1.2.3')."
+      dryRun:
+        type: boolean
+        description: "Dry run"
+        default: true
 
 env:
   PACKAGE_SEM_VER: ${{ github.event.inputs.versionExplicit }}
@@ -34,9 +38,9 @@ jobs:
       - name: Delete PR packages
         uses: smartsquaregmbh/delete-old-packages@v0.4.0
         with:
-          version-pattern: "^${{ env.PACKAGE_SEM_VER }}$"
+          semver-pattern: "^${PACKAGE_SEM_VER}$"
           keep: 0
           names: |
-            empty
             cli
             hub
+          dry-run: ${{ github.event.inputs.dryRun }}

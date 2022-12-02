@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/analytics-browser",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,12 +14,12 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-browser": "^0.0.1",
+    "@amplitude/amplitude-browser": "^0.0.2",
     "@amplitude/analytics-browser-legacy": "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.5.1.tgz",
-    "@amplitude/analytics-core": "^0.0.1",
-    "@amplitude/hub": "^0.0.1",
-    "@amplitude/user-messages": "^0.0.1",
-    "@amplitude/util": "^0.0.1"
+    "@amplitude/analytics-core": "^0.0.2",
+    "@amplitude/hub": "^0.0.2",
+    "@amplitude/user-messages": "^0.0.2",
+    "@amplitude/util": "^0.0.2"
   },
   "scripts": {
     "build": "tsc",

@@ -32,4 +32,22 @@ jobs:
           dry-run: ${{ github.event.inputs.dryRun }}
           keep: 0
           names: |
-            @amplitude/empty
+            cli
+            empty
+            groups
+            hub
+            util
+            analytics-core
+            analytics-messages
+            analytics-browser
+            analytics-node
+            amplitude-core
+            amplitude-browser
+            amplitude-node
+            experiment-core
+            experiment-browser
+            experiment-node
+            user
+            user-messages
+            plugin-segment-analytics-browser
+            plugin-launch-darkly-experiment-browser

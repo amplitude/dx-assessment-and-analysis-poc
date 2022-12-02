@@ -41,8 +41,11 @@
 import {
   amplitude, User, analytics, experiment, UserLoggedIn, AnalyticsClient, ExperimentClient, Logger,
 } from './amplitude/node'
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
 
-amplitude.typed.load({ logger: new Logger() })
+prepareExampleEnv();
+
+amplitude.typed.load({ logger: new Logger(), ...getProductConfigurationFromEnv() })
 
 /**
  * 1. Track with `userId`

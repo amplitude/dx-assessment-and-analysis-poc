@@ -36,7 +36,7 @@
     "cli": "ts-node ../../packages/cli/src/cli.ts",
     "amplitude:pull": "yarn cli pull",
     "amplitude:build": "yarn cli build",
-    "pull": "yarn cli build",
+    "pull": "yarn amplitude:pull && yarn amplitude:build",
     "test": "REACT_APP_LOGGING_DISABLED=true react-scripts test --verbose --watchAll=false",
     "eject": "react-scripts eject"
   },

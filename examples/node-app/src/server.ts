@@ -4,6 +4,7 @@
  * For basic NodeJS usage see [app.ts](./app.ts)
  */
 
+import { getProductConfigurationFromEnv } from "@amplitude/util";
 import dotenv from 'dotenv';
 import express  from "express";
 import {
@@ -19,40 +20,18 @@ import {
 
 // Read Configuration
 dotenv.config()
-const {
-  AMP_ANALYTICS_API_KEY,
-  AMP_EXPERIMENT_API_KEY,
-  AMP_USER_ID,
-  AMP_DEVICE_ID,
-  AMP_NODE_PORT
-} = process.env;
 
-const userId = AMP_USER_ID || 'alpha-user-id-node';
-const deviceId = AMP_DEVICE_ID || 'alpha-device-id-node';
-
-const envConfig = !(AMP_ANALYTICS_API_KEY || AMP_EXPERIMENT_API_KEY)
-  ? {}
-  : {
-    configuration: {
-      analytics: {
-        apiKey: AMP_ANALYTICS_API_KEY,
-      },
-      experiment: {
-        apiKey: AMP_EXPERIMENT_API_KEY,
-      },
-    }
-  };
+const userId = process.env.AMP_USER_ID || 'alpha-user-id-node';
+const deviceId = process.env.AMP_DEVICE_ID || 'alpha-device-id-node';
+const port = process.env.AMP_NODE_PORT || 8080; // default port to listen
 
 amplitude.typed.load({
   environment: 'production',
   logger: new Logger(),
-  ...envConfig,
+  ...getProductConfigurationFromEnv(),
 })
 
-
 const app = express();
-const port = AMP_NODE_PORT || 8080; // default port to listen
-
 // define a route handler for the default home page
 app.get( "/", ( req, res ) => {
   res.send(`

@@ -20,7 +20,10 @@
     "@amplitude/plugin-segment-analytics-browser": "^0.0.0",
     "@amplitude/plugin-launch-darkly-experiment-browser": "^0.0.0",
     "@amplitude/user": "^0.0.0",
-    "@amplitude/user-messages": "^0.0.0"
+    "@amplitude/user-messages": "^0.0.0",
+    "xmlhttprequest": "^1.8.0",
+    "node-fetch": "^2.6.7",
+    "dotenv": "^16.0.3"
   },
   "scripts": {
     "start": "yarn example-all",
@@ -28,9 +31,13 @@
     "clean": "",
     "test": "jest",
     "cli": "ts-node ../../packages/cli/src/cli.ts",
-    "pull": "yarn pull:browser && yarn pull:node",
-    "pull:browser": "yarn cli build --config amplitude.browser.yml",
-    "pull:node": "yarn cli build --config amplitude.node.yml",
+    "pull": "yarn amplitude:pull && yarn amplitude:build",
+    "amplitude:pull": "yarn amplitude:pull:browser && yarn amplitude:pull:node",
+    "amplitude:build": "yarn amplitude:build:browser && yarn amplitude:build:node",
+    "amplitude:pull:browser": "yarn cli pull --config amplitude.browser.yml",
+    "amplitude:build:browser": "yarn cli build --config amplitude.browser.yml",
+    "amplitude:pull:node": "yarn cli pull --config amplitude.node.yml",
+    "amplitude:build:node": "yarn cli build --config amplitude.node.yml",
     "example-1": "npx ts-node 1-core-sdk-usage.ts",
     "example-2": "npx ts-node 2-typed-sdk-usage.ts",
     "example-3": "npx ts-node 3-core-to-typed-sdk-migration.ts",

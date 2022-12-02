@@ -7,6 +7,7 @@ import { amplitude, Logger } from '@amplitude/amplitude-browser'
 import { user } from '@amplitude/user'
 import { analytics } from '@amplitude/analytics-browser'
 import { experiment } from '@amplitude/experiment-browser'
+import { prepareExampleEnv, getProductConfigurationFromEnv } from './utils'
 
 /**
  * [Typed] Imports
@@ -14,6 +15,9 @@ import { experiment } from '@amplitude/experiment-browser'
  * Migrating to the [Typed] SDK is as easy as changing your imports to the following
  */
 // import { amplitude, user, analytics, experiment, UserLoggedIn, Logger } from './amplitude/browser'
+
+prepareExampleEnv();
+const envConfig = getProductConfigurationFromEnv();
 
 /**
  * [Untyped] Load
@@ -31,7 +35,8 @@ amplitude.load({
   plugins: [
     analytics,
     experiment
-  ]
+  ],
+  ...envConfig,
 })
 
 /**
@@ -44,14 +49,14 @@ amplitude.load({
  *
  * Plugins are added automatically based on
  */
-// amplitude.typed.load({ environment: 'production'})
+// amplitude.typed.load({ environment: 'production', ...envConfig })
 
 /**
  * [Untyped] usage
  *
  * Notice: This will keep working even with the [Typed] imports
  */
-amplitude.user.setUserId('u-id')
+amplitude.user.setUserId('unified-user-id')
 
 user.setUserProperties({
   referralSource: "untyped"

@@ -6,30 +6,16 @@ import './App.css';
  * Import strongly typed SDKs for convenience
  */
 import { amplitude, user, analytics, experiment, UserLoggedIn, Logger, NoLogger } from './amplitude';
+import { getProductConfigurationFromEnv } from "@amplitude/util";
 
 const { REACT_APP_LOGGING_DISABLED } = process.env;
 const useLogger = REACT_APP_LOGGING_DISABLED !== 'true';
 
-// Try reading in ApiKeys from .env file
-let { REACT_APP_AMP_ANALYTICS_API_KEY, REACT_APP_AMP_EXPERIMENT_API_KEY } = process.env;
-
-const envConfig = !(REACT_APP_AMP_ANALYTICS_API_KEY || REACT_APP_AMP_EXPERIMENT_API_KEY)
-  ? {}
-  : {
-    configuration: {
-      analytics: {
-        apiKey: REACT_APP_AMP_ANALYTICS_API_KEY,
-      },
-      experiment: {
-        apiKey: REACT_APP_AMP_EXPERIMENT_API_KEY,
-      },
-    }
-  };
-
 amplitude.typed.load({
   environment: 'development',
   logger: useLogger ? new Logger() : new NoLogger(),
-  ...envConfig,
+  // Try reading in ApiKeys from .env file
+  ...getProductConfigurationFromEnv(true),
 })
 
 function App() {

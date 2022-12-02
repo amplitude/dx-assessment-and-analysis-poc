@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       dryRun:
+        type: choice
         description: "Do a dry run to preview instead of a real release (true/false)"
         required: true
+        options:
+          - true
+          - false
         default: "true"
       versionType:
         type: choice

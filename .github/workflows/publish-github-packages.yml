@@ -97,6 +97,12 @@ jobs:
           git config --global user.name amplitude-sdk-bot
           git config --global user.email amplitude-sdk-bot@users.noreply.github.com
 
+      - name: Setup registry token
+        if: ${{ env.DRY_RUN == 'false'}}
+        env:
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo //npm.pkg.github.com/:_authToken=${NPM_TOKEN} > .npmrc
+
       - name: Release (Github Registry)
         if: ${{ env.DRY_RUN == 'false' }}
         env:

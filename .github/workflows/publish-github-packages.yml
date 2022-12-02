@@ -103,5 +103,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          yarn lerna version ${{ env.LERNA_PACKAGE_VERSION }} --yes
-          yarn lerna publish --yes --loglevel silly
+          yarn lerna publish ${{ env.LERNA_PACKAGE_VERSION }} --yes --loglevel silly

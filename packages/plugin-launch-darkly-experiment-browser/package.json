@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/plugin-launch-darkly-experiment-browser",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,13 +14,13 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-browser": "^0.0.2",
-    "@amplitude/analytics-messages": "^0.0.2",
-    "@amplitude/experiment-browser": "^0.0.2",
-    "@amplitude/hub": "^0.0.2",
-    "@amplitude/user": "^0.0.2",
-    "@amplitude/user-messages": "^0.0.2",
-    "@amplitude/util": "^0.0.2"
+    "@amplitude/amplitude-browser": "^0.0.3",
+    "@amplitude/analytics-messages": "^0.0.3",
+    "@amplitude/experiment-browser": "^0.0.3",
+    "@amplitude/hub": "^0.0.3",
+    "@amplitude/user": "^0.0.3",
+    "@amplitude/user-messages": "^0.0.3",
+    "@amplitude/util": "^0.0.3"
   },
   "scripts": {
     "build": "tsc",

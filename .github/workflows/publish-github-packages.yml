@@ -3,6 +3,11 @@ name: Publish Packages to Github Registry
 on:
   workflow_dispatch:
     inputs:
+      warning:
+        type: boolean
+        description: "WARNING - Running a release during while other Github actions are running can cause errors. Make sure no other actions are running before continuing."
+        required: true
+        default: true
       releaseType:
         type: choice
         description: "Release type. Select 'production-release' to do an actual release."

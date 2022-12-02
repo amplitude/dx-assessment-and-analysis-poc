@@ -32,4 +32,4 @@ jobs:
           dry-run: ${{ github.event.inputs.dryRun }}
           keep: 0
           names: |
-            empty
+            @amplitude/empty

@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/util",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -13,8 +13,6 @@
   "files": [
     "lib"
   ],
-  "dependencies": {
-  },
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/amplitude-browser",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,10 +14,10 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-core": "^0.0.0",
-    "@amplitude/hub": "^0.0.0",
-    "@amplitude/user": "^0.0.0",
-    "@amplitude/util": "^0.0.0"
+    "@amplitude/amplitude-core": "^0.0.1",
+    "@amplitude/hub": "^0.0.1",
+    "@amplitude/user": "^0.0.1",
+    "@amplitude/util": "^0.0.1"
   },
   "scripts": {
     "build": "tsc",

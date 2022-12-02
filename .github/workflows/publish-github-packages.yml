@@ -5,7 +5,7 @@ on:
     inputs:
       warning:
         type: boolean
-        description: "WARNING - Running a release during while other Github actions are running can cause errors. Make sure no other actions are running before continuing."
+        description: "WARNING - Doing a release while other Github actions are running can cause errors. Make sure no other actions are running before continuing. https://github.com/lerna/lerna/issues/3115"
         required: true
         default: true
       releaseType:

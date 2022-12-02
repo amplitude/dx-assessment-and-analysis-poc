@@ -3,14 +3,14 @@ name: Publish Packages to Github Registry
 on:
   workflow_dispatch:
     inputs:
-      dryRun:
+      releaseType:
         type: choice
-        description: "Do a dry run to preview instead of a real release. WARNING: Choosing 'false' will do a production release."
+        description: "Release type. Select 'production-release' to do an actual release."
         required: true
         options:
-          - true
-          - false
-        default: "true"
+          - dry-run
+          - production-release
+        default: "dry-run"
       versionType:
         type: choice
         description: Version Type
@@ -23,7 +23,7 @@ on:
         description: "Exact version (e.g. '1.0.1', '1.2.3'). If set, this will override versionType."
 
 env:
-  DRY_RUN: ${{ github.event.inputs.dryRun }}
+  DRY_RUN: ${{ github.event.inputs.releaseType == 'dry-run' }}
 
 jobs:
   authorize:

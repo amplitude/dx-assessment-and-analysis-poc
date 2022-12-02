@@ -26,8 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete Github packages
-        uses: smartsquaregmbh/delete-old-packages@v0.4.0
+        uses: smartsquaregmbh/delete-old-packages@v0.6.0
         with:
+          organization: amplitude
+          token: ${{ secrets.GITHUB_TOKEN }}
+          type: container
           keep: 0
           names: |
             cli

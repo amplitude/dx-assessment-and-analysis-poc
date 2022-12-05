@@ -22,6 +22,9 @@
     "@amplitude/user": "^0.0.3",
     "@amplitude/util": "^0.0.3"
   },
+  "bundledDependencies": [
+    "@amplitude/experiment-js-client"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

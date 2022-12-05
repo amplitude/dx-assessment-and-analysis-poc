@@ -15,12 +15,15 @@
   ],
   "dependencies": {
     "@amplitude/amplitude-browser": "^0.0.3",
-    "@amplitude/analytics-browser-legacy": "https://registry.yarnpkg.com/@amplitude/analytics-browser/-/analytics-browser-1.5.1.tgz",
+    "@amplitude/analytics-browser-legacy": "npm:@amplitude/analytics-browser@^1.5.1",
     "@amplitude/analytics-core": "^0.0.3",
     "@amplitude/hub": "^0.0.3",
     "@amplitude/user-messages": "^0.0.3",
     "@amplitude/util": "^0.0.3"
   },
+  "bundledDependencies": [
+    "@amplitude/analytics-browser-legacy"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

@@ -22,6 +22,9 @@
     "@amplitude/user": "^0.0.3",
     "@amplitude/util": "^0.0.3"
   },
+  "bundledDependencies": [
+    "@amplitude/experiment-node-server"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

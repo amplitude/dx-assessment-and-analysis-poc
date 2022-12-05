@@ -16,12 +16,14 @@
   "dependencies": {
     "@amplitude/amplitude-node": "^0.0.3",
     "@amplitude/analytics-core": "^0.0.3",
-    "@amplitude/analytics-node-legacy": "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-0.6.1.tgz",
-    "@amplitude/analytics-types": "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.13.0.tgz",
+    "@amplitude/analytics-node-legacy": "npm:@amplitude/analytics-node@^0.6.1",
     "@amplitude/hub": "^0.0.3",
     "@amplitude/user": "^0.0.3",
     "@amplitude/util": "^0.0.3"
   },
+  "bundledDependencies": [
+    "@amplitude/analytics-node-legacy"
+  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

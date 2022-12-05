@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/experiment-node",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,13 +14,13 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-node": "^0.0.5",
-    "@amplitude/analytics-messages": "^0.0.5",
-    "@amplitude/experiment-core": "^0.0.5",
+    "@amplitude/amplitude-node": "^0.0.6",
+    "@amplitude/analytics-messages": "^0.0.6",
+    "@amplitude/experiment-core": "^0.0.6",
     "@amplitude/experiment-node-server": "^1.2.1",
-    "@amplitude/hub": "^0.0.5",
-    "@amplitude/user": "^0.0.5",
-    "@amplitude/util": "^0.0.5"
+    "@amplitude/hub": "^0.0.6",
+    "@amplitude/user": "^0.0.6",
+    "@amplitude/util": "^0.0.6"
   },
   "bundledDependencies": [
     "@amplitude/experiment-node-server"

@@ -16,13 +16,13 @@
   "dependencies": {
     "@amplitude/amplitude-node": "^0.0.5",
     "@amplitude/analytics-core": "^0.0.5",
-    "@amplitude/analytics-node-legacy": "file:static_modules/amplitude-analytics-node-0.6.2.tgz",
+    "@amplitude/analytics-node-legacy": "file:amplitude-analytics-node-0.6.2.tgz",
     "@amplitude/hub": "^0.0.5",
     "@amplitude/user": "^0.0.5",
     "@amplitude/util": "^0.0.5"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp amplitude-analytics-node-0.6.2.tgz ./lib",
     "clean": "rimraf lib",
     "test": ""
   }

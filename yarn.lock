@@ -78,10 +78,9 @@
     "@amplitude/analytics-types" "^0.10.3"
     tslib "^2.3.1"
 
-"@amplitude/analytics-node-legacy@npm:@amplitude/analytics-node@^0.6.1":
+"@amplitude/analytics-node-legacy@file:packages/analytics-node/static_modules/amplitude-analytics-node-0.6.2.tgz":
   version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-0.6.2.tgz#84cd38fa36c9231b2ebd3ad465f0b98046f235d4"
-  integrity sha512-mcI7sa7EAPh8mqEDyNxaQXs5vloaOOM7QhkKQzQJWAh14kwVkSbNY7aTluBlRv2GGUdNEQrmCyiPLRPnxj6b2w==
+  resolved "file:packages/analytics-node/static_modules/amplitude-analytics-node-0.6.2.tgz#13f285ab6c5054537d8df6957e92e78b5383a69c"
   dependencies:
     "@amplitude/analytics-core" "^0.11.0"
     "@amplitude/analytics-types" "^0.14.0"

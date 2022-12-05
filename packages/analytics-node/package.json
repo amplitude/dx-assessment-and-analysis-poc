@@ -16,14 +16,11 @@
   "dependencies": {
     "@amplitude/amplitude-node": "^0.0.4",
     "@amplitude/analytics-core": "^0.0.4",
-    "@amplitude/analytics-node-legacy": "npm:@amplitude/analytics-node@^0.6.1",
+    "@amplitude/analytics-node-legacy": "file:static_modules/amplitude-analytics-node-0.6.2.tgz",
     "@amplitude/hub": "^0.0.4",
     "@amplitude/user": "^0.0.4",
     "@amplitude/util": "^0.0.4"
   },
-  "bundledDependencies": [
-    "@amplitude/analytics-node-legacy"
-  ],
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",

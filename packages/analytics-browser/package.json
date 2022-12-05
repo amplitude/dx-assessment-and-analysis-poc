@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/analytics-browser",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,12 +14,12 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-browser": "^0.0.4",
+    "@amplitude/amplitude-browser": "^0.0.5",
     "@amplitude/analytics-browser-legacy": "npm:@amplitude/analytics-browser@^1.5.1",
-    "@amplitude/analytics-core": "^0.0.4",
-    "@amplitude/hub": "^0.0.4",
-    "@amplitude/user-messages": "^0.0.4",
-    "@amplitude/util": "^0.0.4"
+    "@amplitude/analytics-core": "^0.0.5",
+    "@amplitude/hub": "^0.0.5",
+    "@amplitude/user-messages": "^0.0.5",
+    "@amplitude/util": "^0.0.5"
   },
   "bundledDependencies": [
     "@amplitude/analytics-browser-legacy"

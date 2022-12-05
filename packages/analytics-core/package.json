@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/analytics-core",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,8 +14,8 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/hub": "^0.0.4",
-    "@amplitude/util": "^0.0.4"
+    "@amplitude/hub": "^0.0.5",
+    "@amplitude/util": "^0.0.5"
   },
   "scripts": {
     "build": "tsc",

@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/analytics-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,12 +14,12 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-node": "^0.0.3",
-    "@amplitude/analytics-core": "^0.0.3",
+    "@amplitude/amplitude-node": "^0.0.4",
+    "@amplitude/analytics-core": "^0.0.4",
     "@amplitude/analytics-node-legacy": "npm:@amplitude/analytics-node@^0.6.1",
-    "@amplitude/hub": "^0.0.3",
-    "@amplitude/user": "^0.0.3",
-    "@amplitude/util": "^0.0.3"
+    "@amplitude/hub": "^0.0.4",
+    "@amplitude/user": "^0.0.4",
+    "@amplitude/util": "^0.0.4"
   },
   "bundledDependencies": [
     "@amplitude/analytics-node-legacy"

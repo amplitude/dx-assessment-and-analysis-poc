@@ -1,20 +1,20 @@
 {
   "name": "node-app",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "src/app.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@amplitude/amplitude-node": "^0.0.3",
-    "@amplitude/analytics-messages": "^0.0.3",
-    "@amplitude/analytics-node": "^0.0.3",
-    "@amplitude/experiment-node": "^0.0.3",
-    "@amplitude/hub": "^0.0.3",
-    "@amplitude/user": "^0.0.3",
-    "@amplitude/user-messages": "^0.0.3",
+    "@amplitude/amplitude-node": "^0.0.4",
+    "@amplitude/analytics-messages": "^0.0.4",
+    "@amplitude/analytics-node": "^0.0.4",
+    "@amplitude/experiment-node": "^0.0.4",
+    "@amplitude/hub": "^0.0.4",
+    "@amplitude/user": "^0.0.4",
+    "@amplitude/user-messages": "^0.0.4",
     "express": "^4.18.2"
   },
   "devDependencies": {

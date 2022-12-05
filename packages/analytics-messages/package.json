@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/analytics-messages",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,9 +14,9 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-core": "^0.0.3",
-    "@amplitude/analytics-core": "^0.0.3",
-    "@amplitude/hub": "^0.0.3"
+    "@amplitude/amplitude-core": "^0.0.4",
+    "@amplitude/analytics-core": "^0.0.4",
+    "@amplitude/hub": "^0.0.4"
   },
   "scripts": {
     "build": "tsc",

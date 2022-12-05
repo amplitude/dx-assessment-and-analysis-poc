@@ -1,6 +1,6 @@
 {
   "name": "@amplitude/user",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "> TODO: description",
   "author": "justin.fiedler <justin.fiedler@amplitude.com>",
   "homepage": "",
@@ -14,8 +14,8 @@
     "lib"
   ],
   "dependencies": {
-    "@amplitude/amplitude-core": "^0.0.3",
-    "@amplitude/user-messages": "^0.0.3"
+    "@amplitude/amplitude-core": "^0.0.4",
+    "@amplitude/user-messages": "^0.0.4"
   },
   "scripts": {
     "build": "tsc",

@@ -78,9 +78,10 @@
     "@amplitude/analytics-types" "^0.10.3"
     tslib "^2.3.1"
 
-"@amplitude/analytics-node-legacy@file:packages/analytics-node/static_modules/amplitude-analytics-node-0.6.2.tgz":
+"@amplitude/analytics-node-legacy@file:packages/analytics-node/amplitude-analytics-node-0.6.2.tgz":
   version "0.6.2"
-  resolved "file:packages/analytics-node/static_modules/amplitude-analytics-node-0.6.2.tgz#13f285ab6c5054537d8df6957e92e78b5383a69c"
+  uid "13f285ab6c5054537d8df6957e92e78b5383a69c"
+  resolved "file:packages/analytics-node/amplitude-analytics-node-0.6.2.tgz#13f285ab6c5054537d8df6957e92e78b5383a69c"
   dependencies:
     "@amplitude/analytics-core" "^0.11.0"
     "@amplitude/analytics-types" "^0.14.0"
@@ -13113,9 +13114,9 @@ webpack-sources@^3.2.3:
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
 webpack@^5.64.4:
-  version "5.74.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.74.0.tgz#02a5dac19a17e0bb47093f2be67c695102a55980"
-  integrity sha512-A2InDwnhhGN4LYctJj6M1JEaGL7Luj6LOmyBHjcI8529cm5p6VXiTIW2sn6ffvEAKmveLzvu4jrihwXtPojlAA==
+  version "5.76.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.76.1.tgz#7773de017e988bccb0f13c7d75ec245f377d295c"
+  integrity sha512-4+YIK4Abzv8172/SGqObnUjaIHjLEuUasz9EwQj/9xmPPkYJy2Mh03Q/lJfSD3YLzbxy5FeTq5Uw0323Oh6SJQ==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^0.0.51"
